@@ -10,6 +10,6 @@ namespace TransDev.Invoicing.Domain.Entities
     {
         public long Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string Notes { get; set; }
+        public string Note { get; set; }
     }
 }
