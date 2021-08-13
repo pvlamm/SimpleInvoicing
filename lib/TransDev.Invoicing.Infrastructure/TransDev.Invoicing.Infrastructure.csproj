@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Persistance\Configurations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TransDev.Invoicing.Application\TransDev.Invoicing.Application.csproj" />
+    <ProjectReference Include="..\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
