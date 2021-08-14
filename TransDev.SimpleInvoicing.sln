@@ -7,7 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransDev.Invoicing.Applicat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransDev.Invoicing.Domain", "lib\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj", "{E6758335-0173-42D2-B101-8048F3377B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.Invoicing.Infrastructure", "lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj", "{178E8172-3034-47F0-8AF1-C53C239BAC37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransDev.Invoicing.Infrastructure", "lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj", "{178E8172-3034-47F0-8AF1-C53C239BAC37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[1 - Libraries]", "[1 - Libraries]", "{AACF2E52-829F-4F0C-8FF6-345F0473516B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[2 - Presentation]", "[2 - Presentation]", "{16378BA6-94AD-4530-9CD2-0F018F7A8A28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.Invoicing.WebUI", "web\TransDev.Invoicing.WebUI\TransDev.Invoicing.WebUI.csproj", "{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +33,19 @@ Global
 		{178E8172-3034-47F0-8AF1-C53C239BAC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{178E8172-3034-47F0-8AF1-C53C239BAC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{178E8172-3034-47F0-8AF1-C53C239BAC37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A742B36-A719-4450-B2E0-91F5F26F74EA} = {AACF2E52-829F-4F0C-8FF6-345F0473516B}
+		{E6758335-0173-42D2-B101-8048F3377B1D} = {AACF2E52-829F-4F0C-8FF6-345F0473516B}
+		{178E8172-3034-47F0-8AF1-C53C239BAC37} = {AACF2E52-829F-4F0C-8FF6-345F0473516B}
+		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2} = {16378BA6-94AD-4530-9CD2-0F018F7A8A28}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70C31E89-D881-46E1-A0BA-3785AEF70000}
