@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[1 - Libraries]", "[1 - Lib
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[2 - Presentation]", "[2 - Presentation]", "{16378BA6-94AD-4530-9CD2-0F018F7A8A28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.Invoicing.WebUI", "web\TransDev.Invoicing.WebUI\TransDev.Invoicing.WebUI.csproj", "{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransDev.Invoicing.WebUI", "web\TransDev.Invoicing.WebUI\TransDev.Invoicing.WebUI.csproj", "{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

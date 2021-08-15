@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TransDev.Invoicing.Application;
 using TransDev.Invoicing.Infrastructure;
+using VueCliMiddleware;
 
 namespace TransDev.Invoicing.WebUI
 {
@@ -38,6 +39,12 @@ namespace TransDev.Invoicing.WebUI
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
             services.AddControllers();
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp";
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TransDev.Invoicing.WebUI", Version = "v1" });
@@ -64,6 +71,31 @@ namespace TransDev.Invoicing.WebUI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseSpaStaticFiles();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                    spa.Options.SourcePath = "ClientApp/";
+                else
+                    spa.Options.SourcePath = "dist";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseVueCli(npmScript: "serve");
+                }
             });
         }
     }
