@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TransDev.Invoicing.Application;
+using TransDev.Invoicing.Infrastructure;
 
 namespace TransDev.Invoicing.WebUI
 {
@@ -29,6 +31,9 @@ namespace TransDev.Invoicing.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication();
+            services.AddInfrastructre(Configuration);
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
