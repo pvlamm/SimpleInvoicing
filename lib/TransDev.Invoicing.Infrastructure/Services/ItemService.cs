@@ -42,7 +42,7 @@ namespace TransDev.Invoicing.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<ItemHistory>> ItemLookup(string searchString, bool ActiveOnly = true)
+        public Task<ICollection<ItemHistory>> ItemLookup(string searchString, int pageSize, int page, bool ActiveOnly = true)
         {
             throw new NotImplementedException();
         }

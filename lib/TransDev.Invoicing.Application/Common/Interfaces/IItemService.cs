@@ -17,12 +17,11 @@ namespace TransDev.Invoicing.Application.Common.Interfaces
 
         Task<ICollection<ItemHistory>> GetItemHistoryByCodeAsync(string code);
         Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId);
-
         /// <summary>
         /// Returns Active only Items by default lookup
         /// </summary>
         /// <param name="searchString">Search part for fuzzy lookup</param>
         /// <returns>List of ItemHistory</returns>
-        Task<ICollection<ItemHistory>> ItemLookup(string searchString, bool ActiveOnly = true);
+        Task<ICollection<ItemHistory>> ItemLookup(string searchString, int pageSize, int page, bool ActiveOnly = true);
     }
 }

@@ -10,11 +10,11 @@ using TransDev.Invoicing.Domain.Enums;
 
 namespace TransDev.Invoicing.Application.Common.Dtos
 {
-    public class ActiveItemDto : IMapFrom<ItemHistory>
+    public class ItemDto : IMapFrom<ItemHistory>
     {
         void IMapFrom<ItemHistory>.Mapping(Profile profile)
         {
-            profile.CreateMap<ItemHistory, ActiveItemDto>()
+            profile.CreateMap<ItemHistory, ItemDto>()
                 .ForMember(dest => dest.Code, opt => opt.MapFrom(a => a.Parent.Code))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(a => a.Parent.Type));
         }
