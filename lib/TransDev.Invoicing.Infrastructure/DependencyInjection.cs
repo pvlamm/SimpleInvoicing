@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Infrastructure.Persistance;
+using TransDev.Invoicing.Infrastructure.Services;
 
 namespace TransDev.Invoicing.Infrastructure
 {
@@ -38,6 +38,8 @@ namespace TransDev.Invoicing.Infrastructure
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+
+            services.AddTransient<IDateTime, DateTimeService>();
 
             return services;
         }
