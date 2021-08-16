@@ -10,7 +10,7 @@ using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Items.Commands.CreateItem
+namespace TransDev.Invoicing.Application.Items.Commands
 {
     public class CreateItemCommand : IRequest<CreateItemResponse>
     {

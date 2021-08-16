@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 
-namespace TransDev.Invoicing.Application.Items.Queries.GetActiveItems
+namespace TransDev.Invoicing.Application.Items.Queries
 {
     public class GetActiveItemsQuery : IRequest<GetActiveItemsResponse>
     {

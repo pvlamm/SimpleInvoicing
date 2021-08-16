@@ -27,6 +27,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Web" Version="1.15.2" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.13.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
     <PackageReference Include="VueCliMiddleware" Version="5.0.0" />
   </ItemGroup>
@@ -37,4 +42,14 @@
     <ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\src\models\" />
+    <Folder Include="ClientApp\src\services\" />
+  </ItemGroup>
+
+  <Target Name="NSwag" AfterTargets="Build" Condition="'$(GenerateTSClient)'=='True' ">
+    <Exec Command="$(NSwagExe_Net50) run nswag.json /variables:Configuration=$(Configuration)" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />
+    <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
+  </Target>
 </Project>

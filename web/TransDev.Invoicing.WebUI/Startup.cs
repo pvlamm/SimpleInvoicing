@@ -44,6 +44,8 @@ namespace TransDev.Invoicing.WebUI
             {
                 configuration.RootPath = "ClientApp";
             });
+            services.AddSwaggerDocument(options =>
+                options.GenerateEnumMappingDescription = true);
 
             services.AddSwaggerGen(c =>
             {
@@ -57,13 +59,32 @@ namespace TransDev.Invoicing.WebUI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
             app.UseRouting();
+
+            const string swaggerRoot = "/api/docs";
+            const string swaggerJson = swaggerRoot + "/v1/swagger.json";
+            app.UseOpenApi(options => options.Path = swaggerJson);
+            app.UseSwaggerUi3(options =>
+            {
+                options.DocumentPath = swaggerJson;
+                options.Path = swaggerRoot;
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -78,11 +99,11 @@ namespace TransDev.Invoicing.WebUI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSpaStaticFiles();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

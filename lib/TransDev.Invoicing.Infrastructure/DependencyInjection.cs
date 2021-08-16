@@ -40,6 +40,7 @@ namespace TransDev.Invoicing.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
             services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<IItemService, ItemService>();
 
             return services;
         }
