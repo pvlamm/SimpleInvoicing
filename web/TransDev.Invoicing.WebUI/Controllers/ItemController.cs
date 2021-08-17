@@ -67,5 +67,24 @@ namespace TransDev.Invoicing.WebUI.Controllers
                 return BadRequest(new SerializableException(ex));
             }
         }
+
+
+        [HttpDelete]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(bool), Description = "Get Item History by Code or Id")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
+        public async Task<ActionResult<bool>> DeleteItemById([FromBody] int itemId)
+        {
+            try
+            {
+                //var results = await _mediator.Send(query);
+                //return Ok(results);
+                
+                return Ok(await Task.FromResult(true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new SerializableException(ex));
+            }
+        }
     }
 }

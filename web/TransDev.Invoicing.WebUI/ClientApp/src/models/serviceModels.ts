@@ -160,6 +160,54 @@ export class ItemClient {
         }
         return Promise.resolve<GetActiveItemsResponse>(<any>null);
     }
+
+    /**
+     * @return Get Item History by Code or Id
+     */
+    deleteItemById(itemId: number): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Item/DeleteItemById";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(itemId);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteItemById(_response);
+        });
+    }
+
+    protected processDeleteItemById(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
 }
 
 export class WeatherForecastClient {
@@ -216,7 +264,7 @@ export class WeatherForecastClient {
 
 export abstract class ResponseBase implements IResponseBase {
     isSuccess!: boolean;
-    message?: string | undefined;
+    message?: string | null;
 
     constructor(data?: IResponseBase) {
         if (data) {
@@ -229,8 +277,8 @@ export abstract class ResponseBase implements IResponseBase {
 
     init(_data?: any) {
         if (_data) {
-            this.isSuccess = _data["isSuccess"];
-            this.message = _data["message"];
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
         }
     }
 
@@ -241,15 +289,15 @@ export abstract class ResponseBase implements IResponseBase {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["isSuccess"] = this.isSuccess;
-        data["message"] = this.message;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
         return data; 
     }
 }
 
 export interface IResponseBase {
     isSuccess: boolean;
-    message?: string | undefined;
+    message?: string | null;
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {
@@ -281,8 +329,8 @@ export interface ICreateItemResponse extends IResponseBase {
 
 export class SerializableException implements ISerializableException {
     message!: string;
-    stackTrace?: string | undefined;
-    inner?: SerializableException[] | undefined;
+    stackTrace?: string | null;
+    inner?: SerializableException[] | null;
 
     constructor(data?: ISerializableException) {
         if (data) {
@@ -295,12 +343,15 @@ export class SerializableException implements ISerializableException {
 
     init(_data?: any) {
         if (_data) {
-            this.message = _data["message"];
-            this.stackTrace = _data["stackTrace"];
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.stackTrace = _data["stackTrace"] !== undefined ? _data["stackTrace"] : <any>null;
             if (Array.isArray(_data["inner"])) {
                 this.inner = [] as any;
                 for (let item of _data["inner"])
                     this.inner!.push(SerializableException.fromJS(item));
+            }
+            else {
+                this.inner = <any>null;
             }
         }
     }
@@ -314,8 +365,8 @@ export class SerializableException implements ISerializableException {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["message"] = this.message;
-        data["stackTrace"] = this.stackTrace;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["stackTrace"] = this.stackTrace !== undefined ? this.stackTrace : <any>null;
         if (Array.isArray(this.inner)) {
             data["inner"] = [];
             for (let item of this.inner)
@@ -327,12 +378,12 @@ export class SerializableException implements ISerializableException {
 
 export interface ISerializableException {
     message: string;
-    stackTrace?: string | undefined;
-    inner?: SerializableException[] | undefined;
+    stackTrace?: string | null;
+    inner?: SerializableException[] | null;
 }
 
 export class CreateItemCommand implements ICreateItemCommand {
-    item?: ItemDto | undefined;
+    item?: ItemDto | null;
 
     constructor(data?: ICreateItemCommand) {
         if (data) {
@@ -345,7 +396,7 @@ export class CreateItemCommand implements ICreateItemCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.item = _data["item"] ? ItemDto.fromJS(_data["item"]) : <any>undefined;
+            this.item = _data["item"] ? ItemDto.fromJS(_data["item"]) : <any>null;
         }
     }
 
@@ -358,20 +409,20 @@ export class CreateItemCommand implements ICreateItemCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["item"] = this.item ? this.item.toJSON() : <any>undefined;
+        data["item"] = this.item ? this.item.toJSON() : <any>null;
         return data; 
     }
 }
 
 export interface ICreateItemCommand {
-    item?: ItemDto | undefined;
+    item?: ItemDto | null;
 }
 
 export class ItemDto implements IItemDto {
     id!: number;
-    code?: string | undefined;
+    code?: string | null;
     type!: ItemType;
-    description?: string | undefined;
+    description?: string | null;
     price!: number;
 
     constructor(data?: IItemDto) {
@@ -385,11 +436,11 @@ export class ItemDto implements IItemDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.code = _data["code"];
-            this.type = _data["type"];
-            this.description = _data["description"];
-            this.price = _data["price"];
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.price = _data["price"] !== undefined ? _data["price"] : <any>null;
         }
     }
 
@@ -402,20 +453,20 @@ export class ItemDto implements IItemDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["code"] = this.code;
-        data["type"] = this.type;
-        data["description"] = this.description;
-        data["price"] = this.price;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["price"] = this.price !== undefined ? this.price : <any>null;
         return data; 
     }
 }
 
 export interface IItemDto {
     id: number;
-    code?: string | undefined;
+    code?: string | null;
     type: ItemType;
-    description?: string | undefined;
+    description?: string | null;
     price: number;
 }
 
@@ -425,7 +476,7 @@ export enum ItemType {
 }
 
 export class GetActiveItemsResponse extends ResponseBase implements IGetActiveItemsResponse {
-    items?: ItemDto[] | undefined;
+    items?: ItemDto[] | null;
 
     constructor(data?: IGetActiveItemsResponse) {
         super(data);
@@ -438,6 +489,9 @@ export class GetActiveItemsResponse extends ResponseBase implements IGetActiveIt
                 this.items = [] as any;
                 for (let item of _data["items"])
                     this.items!.push(ItemDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
             }
         }
     }
@@ -462,11 +516,11 @@ export class GetActiveItemsResponse extends ResponseBase implements IGetActiveIt
 }
 
 export interface IGetActiveItemsResponse extends IResponseBase {
-    items?: ItemDto[] | undefined;
+    items?: ItemDto[] | null;
 }
 
 export class GetActiveItemsQuery implements IGetActiveItemsQuery {
-    searchQuery?: string | undefined;
+    searchQuery?: string | null;
     pageSize!: number;
     page!: number;
 
@@ -481,9 +535,9 @@ export class GetActiveItemsQuery implements IGetActiveItemsQuery {
 
     init(_data?: any) {
         if (_data) {
-            this.searchQuery = _data["searchQuery"];
-            this.pageSize = _data["pageSize"];
-            this.page = _data["page"];
+            this.searchQuery = _data["searchQuery"] !== undefined ? _data["searchQuery"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.page = _data["page"] !== undefined ? _data["page"] : <any>null;
         }
     }
 
@@ -496,22 +550,22 @@ export class GetActiveItemsQuery implements IGetActiveItemsQuery {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["searchQuery"] = this.searchQuery;
-        data["pageSize"] = this.pageSize;
-        data["page"] = this.page;
+        data["searchQuery"] = this.searchQuery !== undefined ? this.searchQuery : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["page"] = this.page !== undefined ? this.page : <any>null;
         return data; 
     }
 }
 
 export interface IGetActiveItemsQuery {
-    searchQuery?: string | undefined;
+    searchQuery?: string | null;
     pageSize: number;
     page: number;
 }
 
 export class GetItemHistoryQuery implements IGetItemHistoryQuery {
-    code?: string | undefined;
-    id?: number | undefined;
+    code?: string | null;
+    id?: number | null;
 
     constructor(data?: IGetItemHistoryQuery) {
         if (data) {
@@ -524,8 +578,8 @@ export class GetItemHistoryQuery implements IGetItemHistoryQuery {
 
     init(_data?: any) {
         if (_data) {
-            this.code = _data["code"];
-            this.id = _data["id"];
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
         }
     }
 
@@ -538,22 +592,22 @@ export class GetItemHistoryQuery implements IGetItemHistoryQuery {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["code"] = this.code;
-        data["id"] = this.id;
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
         return data; 
     }
 }
 
 export interface IGetItemHistoryQuery {
-    code?: string | undefined;
-    id?: number | undefined;
+    code?: string | null;
+    id?: number | null;
 }
 
 export class WeatherForecast implements IWeatherForecast {
     date!: Date;
     temperatureC!: number;
     temperatureF!: number;
-    summary?: string | undefined;
+    summary?: string | null;
 
     constructor(data?: IWeatherForecast) {
         if (data) {
@@ -566,10 +620,10 @@ export class WeatherForecast implements IWeatherForecast {
 
     init(_data?: any) {
         if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>null;
+            this.temperatureC = _data["temperatureC"] !== undefined ? _data["temperatureC"] : <any>null;
+            this.temperatureF = _data["temperatureF"] !== undefined ? _data["temperatureF"] : <any>null;
+            this.summary = _data["summary"] !== undefined ? _data["summary"] : <any>null;
         }
     }
 
@@ -582,10 +636,10 @@ export class WeatherForecast implements IWeatherForecast {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
+        data["date"] = this.date ? this.date.toISOString() : <any>null;
+        data["temperatureC"] = this.temperatureC !== undefined ? this.temperatureC : <any>null;
+        data["temperatureF"] = this.temperatureF !== undefined ? this.temperatureF : <any>null;
+        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
         return data; 
     }
 }
@@ -594,7 +648,7 @@ export interface IWeatherForecast {
     date: Date;
     temperatureC: number;
     temperatureF: number;
-    summary?: string | undefined;
+    summary?: string | null;
 }
 
 export class ApiException extends Error {

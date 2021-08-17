@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-TransDev.Invoicing.WebUI-7994D47A-94D1-4570-8D53-F4D9E14F32E2</UserSecretsId>
     <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,10 +47,26 @@
     <Folder Include="ClientApp\src\models\" />
     <Folder Include="ClientApp\src\services\" />
   </ItemGroup>
-
-  <Target Name="NSwag" AfterTargets="Build" Condition="'$(GenerateTSClient)'=='True' ">
+  <!--Condition="'$(GenerateTSClient)'=='True' "-->
+  <Target Name="NSwag" AfterTargets="Build" >
     <Exec Command="$(NSwagExe_Net50) run nswag.json /variables:Configuration=$(Configuration)" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />
-    <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
+    <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
   </Target>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 </Project>
