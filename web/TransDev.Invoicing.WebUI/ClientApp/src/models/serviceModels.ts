@@ -221,7 +221,7 @@ export class WeatherForecastClient {
     }
 
     get(): Promise<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/WeatherForecast";
+        let url_ = this.baseUrl + "/api/WeatherForecast/Get";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{

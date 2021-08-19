@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace TransDev.Invoicing.WebUI.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -32,7 +31,7 @@ namespace TransDev.Invoicing.WebUI.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

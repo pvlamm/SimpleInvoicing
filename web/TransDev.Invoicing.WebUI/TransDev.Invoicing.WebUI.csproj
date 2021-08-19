@@ -45,10 +45,9 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\models\" />
-    <Folder Include="ClientApp\src\services\" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
-  <Target Name="NSwag" AfterTargets="Build" >
+  <Target Name="NSwag" AfterTargets="Build">
     <Exec Command="$(NSwagExe_Net50) run nswag.json /variables:Configuration=$(Configuration)" />
     <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
