@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
+import { WeatherForecast, WeatherForecastClient } from '../models/serviceModels'
 
 @Options({
   props: {
@@ -42,6 +43,10 @@ import { Options, Vue } from 'vue-class-component'
 })
 export default class HelloWorld extends Vue {
   msg!: string
+  mounted () {
+    var resources = new WeatherForecastClient().get()
+    console.log(resources)
+  }
 }
 </script>
 
