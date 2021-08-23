@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ClientApp\src\node_modules\**" />
+    <Content Remove="ClientApp\src\node_modules\**" />
+    <EmbeddedResource Remove="ClientApp\src\node_modules\**" />
+    <None Remove="ClientApp\src\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="ClientApp\package-lock.json" />
     <Content Remove="ClientApp\package.json" />
   </ItemGroup>
