@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="clientapp\src\views\Invoices.vue" />
+    <None Remove="clientapp\src\views\Items.vue" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="ClientApp\package-lock.json" />
     <None Include="ClientApp\package.json" />
   </ItemGroup>
@@ -52,6 +57,11 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="clientapp\src\views\Invoices.vue" />
+    <TypeScriptCompile Include="clientapp\src\views\Items.vue" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
   <Target Name="NSwag" AfterTargets="Build">
