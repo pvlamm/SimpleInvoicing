@@ -1,7 +1,8 @@
 <template>
   <div id="nav" class="aside aside-fixed">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <router-link to="/items">Items </router-link>
   </div>
   <div id="main">
     <router-view />

@@ -1,7 +1,9 @@
 ﻿<template>
-<div> Hello Item List Vue</div>
-  <div v-for="item in items" :key="item.id">
-    <label>{{ item.code }}</label>
+  <div>
+    <div> Hello Item List Vue</div>
+    <div v-for="item in items" :key="item.id">
+      <label>{{ item.code }} - {{ item.description }} - {{ item.price }}</label>
+    </div>
   </div>
 </template>
 
@@ -21,7 +23,7 @@ export default class ItemList extends Vue {
   pageSize!: number
   page!: number
   searchQuery!: string
-  items!: IItemDto[]
+  private items: Array<IItemDto> = []
   mounted () {
     const query = new GetActiveItemsQuery()
     query.page = 1
@@ -30,9 +32,9 @@ export default class ItemList extends Vue {
     new ItemClient().searchActiveItems(query).then(result => { this.setItems(result.items) })
   }
 
-  setItems (items: ItemDto[] | any) {
-    console.log(items)
-    this.items = items
+  setItems (itms: ItemDto[] | any) {
+    console.log(itms)
+    this.items = itms
   }
 }
 </script>
