@@ -5,5 +5,5 @@ import router from './router'
 
 createApp(App)
   .use(router)
-  .use(vuetify)
+  .use(vuetify, { iconfont: 'mdiSvg' })
   .mount('#app')
