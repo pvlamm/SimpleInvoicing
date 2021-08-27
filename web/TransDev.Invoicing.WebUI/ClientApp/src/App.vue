@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer"
                          app>
-      <nav-list></nav-list>
+      <nav-list v-bind:drawer="drawer"></nav-list>
     </v-navigation-drawer>
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>

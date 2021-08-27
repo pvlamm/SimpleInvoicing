@@ -8,34 +8,36 @@
                          color="primary">
         <v-list-item v-for="(item, i) in items"
                      :key="i">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
-          <v-spacing></v-spacing>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
-          </v-list-item-content>
+          <router-link :to="item.to" @click="drawer = !drawer">
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
+          </router-link>
         </v-list-item>
       </v-list-item-group>
     </v-list>
-    <v-icon aria-label="My Account" role="img" aria-hidden="false">
-      mdiAccount
-    </v-icon>
   </v-card>
 </template>
 
 <script lang="ts">
-import { mdiAccount } from '@mdi/js'
 
 export default {
+  prop: { drawer: false },
   data: () => ({
     selectedItem: 1,
-    icons: { mdiAccount },
     items: [
-      { text: 'Real-Time', icon: 'mdi-clock' },
-      { text: 'Audience', icon: 'mdi-account' },
-      { text: 'Conversions', icon: 'mdi-flag' }
+      { text: 'Real-Time', icon: 'mdi-clock', to: '/' },
+      { text: 'Audience', icon: 'mdi-account', to: '/about' },
+      { text: 'Conversions', icon: 'mdi-flag', to: '/' }
     ]
-  })
+  }),
+  methods: {
+    closeDrawer () {
+      return false
+    }
+  }
 }
 </script>
