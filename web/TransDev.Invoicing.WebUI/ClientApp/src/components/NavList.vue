@@ -29,8 +29,8 @@ export default {
   data: () => ({
     selectedItem: 1,
     items: [
-      { text: 'Real-Time', icon: 'mdi-clock', to: '/' },
-      { text: 'Audience', icon: 'mdi-account', to: '/about' },
+      { text: 'Items', icon: 'mdi-clipboard', to: '/' },
+      { text: 'Invoices', icon: 'mdi-equal-box', to: '/about' },
       { text: 'Conversions', icon: 'mdi-flag', to: '/' }
     ]
   }),
