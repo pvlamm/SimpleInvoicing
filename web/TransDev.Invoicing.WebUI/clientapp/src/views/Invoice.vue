@@ -1,16 +1,11 @@
 ﻿<template>
-  <invoice-list></invoice-list>
+  <h3>This is an Invoices Page</h3>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import InvoiceList from '../components/InvoiceList.vue'
 
 export default defineComponent({
-  name: 'Invoices',
-
-  components: {
-    InvoiceList
-  }
+  name: 'Invoices'
 })
 </script>

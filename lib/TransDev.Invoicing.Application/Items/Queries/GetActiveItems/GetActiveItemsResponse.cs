@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace TransDev.Invoicing.Application.Items.Queries
 {
     public class GetActiveItemsResponse : ResponseBase
     {
+        [JsonRequired()]
         public ItemDto[] Items { get; set; }
     }
 }

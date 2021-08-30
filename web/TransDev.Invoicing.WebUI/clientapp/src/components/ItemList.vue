@@ -13,33 +13,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { ItemClient, IItemDto, GetActiveItemsQuery } from '../models/serviceModels'
 
-export default defineComponent({
+export default {
   name: 'ItemList',
-  data: () => {
-    return {
-      items: []
-    }
-  },
-  mounted () {
-    initializeData()
-  },
-  methods: {
-    initalizeData: function () {
-      const client = new ItemClient()
-      const initQuery = new GetActiveItemsQuery()
-      initQuery.page = 1
-      initQuery.pageSize = 25
-      initQuery.searchQuery = ''
-      client.searchActiveItems(initQuery).then(results => console.log(results.items))
-    },
-    loadItems: function (items) {
-      // this.data.items = items
-      console.log('loadItems')
+  props: {
+    items: {
+      type: Array
     }
   }
-})
-
+}
 </script>
