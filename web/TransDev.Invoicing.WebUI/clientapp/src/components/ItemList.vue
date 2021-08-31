@@ -1,59 +1,43 @@
 ﻿<template>
-<div> Hello Item List Vue</div>
-  <div v-for="item in items" :key="item.id">
-    <label>{{ item.code }}</label>
-  </div>
+  <v-container>
+    <v-row no-gutters>
+      <v-col cols="3" sm="4">Item Code</v-col>
+      <v-col cols="3" sm="4">Description</v-col>
+      <v-col cols="3" sm="4">Price</v-col>
+    </v-row>
+    <v-row v-for="item in items" :key="item"  no-gutters>
+      <v-col cols="3" sm="4">
+        {{ item.code }}
+      </v-col>
+      <v-col cols="3" sm="4">
+        {{ item.description }}
+      </v-col>
+      <v-col cols="3" sm="4" right>
+        {{ formatMoney(item.price) }}
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { ItemDto, IItemDto, ItemClient, GetActiveItemsQuery } from '../models/serviceModels'
 
-@Options({
+export default {
+  name: 'ItemList',
   props: {
-    pageSize: Number,
-    page: Number,
-    searchQuery: String
-  }
-})
-
-export default class ItemList extends Vue {
-  pageSize!: number
-  page!: number
-  searchQuery!: string
-  items!: IItemDto[]
-  mounted () {
-    const query = new GetActiveItemsQuery()
-    query.page = 1
-    query.pageSize = 25
-    query.searchQuery = ''
-    new ItemClient().searchActiveItems(query).then(result => { this.setItems(result.items) })
-  }
-
-  setItems (items: ItemDto[] | any) {
-    console.log(items)
-    this.items = items
+    items: {
+      type: Array
+    }
+  },
+  methods: {
+    formatMoney (pennies: number) {
+      const formatter = new Intl.NumberFormat('en-US',
+        {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        })
+      return formatter.format(pennies * 0.01)
+    }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  h3 {
-    margin: 40px 0 0;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
-  }
-</style>

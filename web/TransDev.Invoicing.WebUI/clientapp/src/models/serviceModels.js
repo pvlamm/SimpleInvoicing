@@ -428,6 +428,9 @@ export class GetActiveItemsResponse extends ResponseBase {
     items;
     constructor(data) {
         super(data);
+        if (!data) {
+            this.items = [];
+        }
     }
     init(_data) {
         super.init(_data);

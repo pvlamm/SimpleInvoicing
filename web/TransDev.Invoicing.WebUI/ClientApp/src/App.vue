@@ -1,57 +1,33 @@
 <template>
-  <div id="nav" class="aside aside-fixed">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <div id="main">
-    <router-view />
-  </div>
+  <v-app>
+    <v-navigation-drawer v-model="drawer"
+                         app>
+      <nav-list v-bind:drawer="drawer"></nav-list>
+    </v-navigation-drawer>
+    <v-app-bar app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Simple Invoicing</v-toolbar-title>
+    </v-app-bar>
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-  #main {
-    padding-top: 119px;
-    padding-left: 265px;
-    min-width: 0;
-    -webkit-box-flex: 1;
-    flex: 1 auto;
-    -webkit-box-orient: vertical !important;
-    flex-direction: column !important;
-    box-sizing: border-box;
-    background-repeat: no-repeat;
-  }
-  #nav {
-    padding: 30px;
-  }
+<script lang="ts">
+import { defineComponent } from 'vue'
+import NavList from './components/NavList.vue'
 
-    #nav a {
-      font-weight: bold;
-      color: #2c3e50;
+export default defineComponent({
+  name: 'App',
+  components: {
+    NavList
+  },
+  data () {
+    return {
+      drawer: null
     }
-
-      #nav a.router-link-exact-active {
-        color: #42b983;
-      }
-
-  .aside {
-    width: 265px;
-    background-color: #1e1e2d;
-    padding: 0;
-    margin: 0;
   }
-
-  .aside-fixed {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 98;
-  }
-</style>
+})
+</script>

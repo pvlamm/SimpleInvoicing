@@ -476,10 +476,13 @@ export enum ItemType {
 }
 
 export class GetActiveItemsResponse extends ResponseBase implements IGetActiveItemsResponse {
-    items?: ItemDto[] | null;
+    items!: ItemDto[];
 
     constructor(data?: IGetActiveItemsResponse) {
         super(data);
+        if (!data) {
+            this.items = [];
+        }
     }
 
     init(_data?: any) {
@@ -516,7 +519,7 @@ export class GetActiveItemsResponse extends ResponseBase implements IGetActiveIt
 }
 
 export interface IGetActiveItemsResponse extends IResponseBase {
-    items?: ItemDto[] | null;
+    items: ItemDto[];
 }
 
 export class GetActiveItemsQuery implements IGetActiveItemsQuery {
