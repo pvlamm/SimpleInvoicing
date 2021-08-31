@@ -11,6 +11,9 @@ export default defineComponent({
   name: 'Items',
   data: function () {
     return {
+      currentPage: 1 as number,
+      pageSize: 25 as number,
+      searchQuery: '' as string,
       items: [] as IItemDto[] | null
     }
   },
@@ -24,9 +27,9 @@ export default defineComponent({
     async loadItems () {
       const client = new ItemClient()
       const initQuery = new GetActiveItemsQuery()
-      initQuery.page = 1
-      initQuery.pageSize = 25
-      initQuery.searchQuery = ''
+      initQuery.page = this.currentPage
+      initQuery.pageSize = this.pageSize
+      initQuery.searchQuery = this.searchQuery
       const response = await client.searchActiveItems(initQuery)
       this.items = response.items
     }
