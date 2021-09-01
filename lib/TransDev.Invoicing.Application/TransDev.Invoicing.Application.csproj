@@ -19,4 +19,8 @@
     <ProjectReference Include="..\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Authentication\Commands\" />
+  </ItemGroup>
+
 </Project>

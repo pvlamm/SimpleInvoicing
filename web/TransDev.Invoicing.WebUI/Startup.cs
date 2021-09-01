@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,9 @@ namespace TransDev.Invoicing.WebUI
             });
             services.AddSwaggerDocument(options =>
                 options.GenerateEnumMappingDescription = true);
+
+            services.AddRazorPages()
+                 .AddMicrosoftIdentityUI();
 
             services.AddSwaggerGen(c =>
             {

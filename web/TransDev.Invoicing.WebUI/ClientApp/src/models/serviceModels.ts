@@ -262,6 +262,238 @@ export class WeatherForecastClient {
     }
 }
 
+export class AccountClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * Handles user sign in.
+     * @param scheme Authentication scheme.
+     * @param redirectUri (optional) Redirect URI.
+     * @return Challenge generating a redirect to Azure AD to sign in the user.
+     */
+    signIn(scheme: string | null, redirectUri: string | null | undefined): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/SignIn/{scheme}?";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        if (redirectUri !== undefined && redirectUri !== null)
+            url_ += "redirectUri=" + encodeURIComponent("" + redirectUri) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSignIn(_response);
+        });
+    }
+
+    protected processSignIn(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    /**
+     * Challenges the user.
+     * @param redirectUri (optional) Redirect URI.
+     * @param scope (optional) Scopes to request.
+     * @param loginHint (optional) Login hint.
+     * @param domainHint (optional) Domain hint.
+     * @param claims (optional) Claims.
+     * @param policy (optional) AAD B2C policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD to sign in the user.
+     */
+    challenge(redirectUri: string | null | undefined, scope: string | null | undefined, loginHint: string | null | undefined, domainHint: string | null | undefined, claims: string | null | undefined, policy: string | null | undefined, scheme: string | null): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/Challenge/{scheme}?";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        if (redirectUri !== undefined && redirectUri !== null)
+            url_ += "redirectUri=" + encodeURIComponent("" + redirectUri) + "&";
+        if (scope !== undefined && scope !== null)
+            url_ += "scope=" + encodeURIComponent("" + scope) + "&";
+        if (loginHint !== undefined && loginHint !== null)
+            url_ += "loginHint=" + encodeURIComponent("" + loginHint) + "&";
+        if (domainHint !== undefined && domainHint !== null)
+            url_ += "domainHint=" + encodeURIComponent("" + domainHint) + "&";
+        if (claims !== undefined && claims !== null)
+            url_ += "claims=" + encodeURIComponent("" + claims) + "&";
+        if (policy !== undefined && policy !== null)
+            url_ += "policy=" + encodeURIComponent("" + policy) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processChallenge(_response);
+        });
+    }
+
+    protected processChallenge(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    /**
+     * Handles the user sign-out.
+     * @param scheme Authentication scheme.
+     * @return Sign out result.
+     */
+    signOut(scheme: string | null): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/SignOut/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSignOut(_response);
+        });
+    }
+
+    protected processSignOut(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    /**
+     * In B2C applications handles the Reset password policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD B2C.
+     */
+    resetPassword(scheme: string | null): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/ResetPassword/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processResetPassword(_response);
+        });
+    }
+
+    protected processResetPassword(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    /**
+     * In B2C applications, handles the Edit Profile policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD B2C.
+     */
+    editProfile(scheme: string | null): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/EditProfile/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEditProfile(_response);
+        });
+    }
+
+    protected processEditProfile(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+}
+
 export abstract class ResponseBase implements IResponseBase {
     isSuccess!: boolean;
     message?: string | null;
@@ -652,6 +884,13 @@ export interface IWeatherForecast {
     temperatureC: number;
     temperatureF: number;
     summary?: string | null;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {
