@@ -9,6 +9,8 @@ namespace TransDev.Invoicing.Application.Authentication.Queries.AuthenticateUser
 {
     public class AuthenticateUserResponse : ResponseBase
     {
-        string Token { get; set; }
+        public string Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
+        public string Username { get; set; }
     }
 }

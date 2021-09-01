@@ -16,6 +16,7 @@ using System.Security.Claims;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using TransDev.Invoicing.Application.Common.Helpers;
 
 namespace TransDev.Invoicing.WebUI.Controllers
 {
@@ -41,16 +42,18 @@ namespace TransDev.Invoicing.WebUI.Controllers
         {
             try
             {
-                var respionse = await _mediator.Send(query);
-                if (!respionse.IsSuccess)
+                var response = await _mediator.Send(query);
+                if (!response.IsSuccess)
                     throw new UnauthorizedAccessException("Attempted to login to a deactivated user");
 
                 var token = CreateJWTToken(query.Username);
 
-                return new AuthenticateResponse()
+                return new AuthenticateUserResponse()
                 {
-                    Token = token,
-                    UserInfo = resp.UserData
+                    Token = token.Token,
+                    ExpiresAt = token.ExpiresAt,
+                    IsSuccess = response.IsSuccess,
+                    Username = query.Username
                 };
             }
             catch (Exception ex)
@@ -70,9 +73,6 @@ namespace TransDev.Invoicing.WebUI.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user)
             };
 
-            if (!string.IsNullOrEmpty(boomiToken))
-                claims.Add(new Claim(ClaimTypes.UserData, boomiToken));
-
             var token = new JwtSecurityToken(
                 issuer: _config.JWTIssuer(),
                 audience: _config.JWTIssuer(),
@@ -84,7 +84,7 @@ namespace TransDev.Invoicing.WebUI.Controllers
 
             return new JWTTokenModel()
             {
-                Value = value,
+                Token = value,
                 ExpiresAt = expiresAt
             };
         }
