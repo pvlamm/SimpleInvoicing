@@ -4,7 +4,7 @@ using NSwag.Annotations;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using TransDev.Invoicing.Application.Common.Models;
+using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Items.Queries;
 

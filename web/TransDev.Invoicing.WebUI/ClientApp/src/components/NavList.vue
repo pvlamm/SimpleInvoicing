@@ -32,7 +32,8 @@ export default {
       { text: 'Items', icon: 'mdi-clipboard', to: '/items' },
       { text: 'Invoices', icon: 'mdi-equal-box', to: '/invoices' },
       { text: 'Home', icon: 'mdi-flag', to: '/' },
-      { text: 'About', icon: 'mdi-flag', to: '/about' }
+      { text: 'About', icon: 'mdi-flag', to: '/about' },
+      { text: 'Login', icon: 'mdi-flag', to: '/login' }
     ]
   }),
   methods: {

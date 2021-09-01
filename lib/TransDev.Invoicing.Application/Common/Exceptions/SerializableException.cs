@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TransDev.Invoicing.Application.Common.Models
+namespace TransDev.Invoicing.Application.Common.Exceptions
 {
     public class SerializableException
     {
