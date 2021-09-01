@@ -6,6 +6,64 @@
 // </auto-generated>
 //----------------------
 // ReSharper disable InconsistentNaming
+export class AuthenticationClient {
+    http;
+    baseUrl;
+    jsonParseReviver = undefined;
+    constructor(baseUrl, http) {
+        this.http = http ? http : window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+    /**
+     * @return System User Authentication. Response includes a JWT token to authorize future requests.
+     */
+    authenticate(query) {
+        let url_ = this.baseUrl + "/api/Authentication/Authenticate";
+        url_ = url_.replace(/[?&]$/, "");
+        const content_ = JSON.stringify(query);
+        let options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processAuthenticate(_response);
+        });
+    }
+    processAuthenticate(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200 = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = AuthenticateUserQuery.fromJS(resultData200);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then((_responseText) => {
+                let result400 = null;
+                let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = SerializableException.fromJS(resultData400);
+                return throwException("User not authorized. Returns exception details.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+}
 export class ItemClient {
     http;
     baseUrl;
@@ -262,9 +320,244 @@ export class WeatherForecastClient {
         return Promise.resolve(null);
     }
 }
-export class ResponseBase {
-    isSuccess;
-    message;
+export class AccountClient {
+    http;
+    baseUrl;
+    jsonParseReviver = undefined;
+    constructor(baseUrl, http) {
+        this.http = http ? http : window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+    /**
+     * Handles user sign in.
+     * @param scheme Authentication scheme.
+     * @param redirectUri (optional) Redirect URI.
+     * @return Challenge generating a redirect to Azure AD to sign in the user.
+     */
+    signIn(scheme, redirectUri) {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/SignIn/{scheme}?";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        if (redirectUri !== undefined && redirectUri !== null)
+            url_ += "redirectUri=" + encodeURIComponent("" + redirectUri) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+        let options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processSignIn(_response);
+        });
+    }
+    processSignIn(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+    /**
+     * Challenges the user.
+     * @param redirectUri (optional) Redirect URI.
+     * @param scope (optional) Scopes to request.
+     * @param loginHint (optional) Login hint.
+     * @param domainHint (optional) Domain hint.
+     * @param claims (optional) Claims.
+     * @param policy (optional) AAD B2C policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD to sign in the user.
+     */
+    challenge(redirectUri, scope, loginHint, domainHint, claims, policy, scheme) {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/Challenge/{scheme}?";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        if (redirectUri !== undefined && redirectUri !== null)
+            url_ += "redirectUri=" + encodeURIComponent("" + redirectUri) + "&";
+        if (scope !== undefined && scope !== null)
+            url_ += "scope=" + encodeURIComponent("" + scope) + "&";
+        if (loginHint !== undefined && loginHint !== null)
+            url_ += "loginHint=" + encodeURIComponent("" + loginHint) + "&";
+        if (domainHint !== undefined && domainHint !== null)
+            url_ += "domainHint=" + encodeURIComponent("" + domainHint) + "&";
+        if (claims !== undefined && claims !== null)
+            url_ += "claims=" + encodeURIComponent("" + claims) + "&";
+        if (policy !== undefined && policy !== null)
+            url_ += "policy=" + encodeURIComponent("" + policy) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+        let options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processChallenge(_response);
+        });
+    }
+    processChallenge(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+    /**
+     * Handles the user sign-out.
+     * @param scheme Authentication scheme.
+     * @return Sign out result.
+     */
+    signOut(scheme) {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/SignOut/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+        let options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processSignOut(_response);
+        });
+    }
+    processSignOut(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+    /**
+     * In B2C applications handles the Reset password policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD B2C.
+     */
+    resetPassword(scheme) {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/ResetPassword/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+        let options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processResetPassword(_response);
+        });
+    }
+    processResetPassword(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+    /**
+     * In B2C applications, handles the Edit Profile policy.
+     * @param scheme Authentication scheme.
+     * @return Challenge generating a redirect to Azure AD B2C.
+     */
+    editProfile(scheme) {
+        let url_ = this.baseUrl + "/MicrosoftIdentity/Account/EditProfile/{scheme}";
+        if (scheme === undefined || scheme === null)
+            throw new Error("The parameter 'scheme' must be defined.");
+        url_ = url_.replace("{scheme}", encodeURIComponent("" + scheme));
+        url_ = url_.replace(/[?&]$/, "");
+        let options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+        return this.http.fetch(url_, options_).then((_response) => {
+            return this.processEditProfile(_response);
+        });
+    }
+    processEditProfile(response) {
+        const status = response.status;
+        let _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach((v, k) => _headers[k] = v);
+        }
+        ;
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    }
+}
+export class AuthenticateUserQuery {
+    username;
+    password;
     constructor(data) {
         if (data) {
             for (var property in data) {
@@ -275,37 +568,20 @@ export class ResponseBase {
     }
     init(_data) {
         if (_data) {
-            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : null;
-            this.message = _data["message"] !== undefined ? _data["message"] : null;
+            this.username = _data["username"] !== undefined ? _data["username"] : null;
+            this.password = _data["password"] !== undefined ? _data["password"] : null;
         }
     }
     static fromJS(data) {
         data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'ResponseBase' cannot be instantiated.");
-    }
-    toJSON(data) {
-        data = typeof data === 'object' ? data : {};
-        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : null;
-        data["message"] = this.message !== undefined ? this.message : null;
-        return data;
-    }
-}
-export class CreateItemResponse extends ResponseBase {
-    constructor(data) {
-        super(data);
-    }
-    init(_data) {
-        super.init(_data);
-    }
-    static fromJS(data) {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateItemResponse();
+        let result = new AuthenticateUserQuery();
         result.init(data);
         return result;
     }
     toJSON(data) {
         data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
+        data["username"] = this.username !== undefined ? this.username : null;
+        data["password"] = this.password !== undefined ? this.password : null;
         return data;
     }
 }
@@ -350,6 +626,53 @@ export class SerializableException {
             for (let item of this.inner)
                 data["inner"].push(item.toJSON());
         }
+        return data;
+    }
+}
+export class ResponseBase {
+    isSuccess;
+    message;
+    constructor(data) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    this[property] = data[property];
+            }
+        }
+    }
+    init(_data) {
+        if (_data) {
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : null;
+            this.message = _data["message"] !== undefined ? _data["message"] : null;
+        }
+    }
+    static fromJS(data) {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'ResponseBase' cannot be instantiated.");
+    }
+    toJSON(data) {
+        data = typeof data === 'object' ? data : {};
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : null;
+        data["message"] = this.message !== undefined ? this.message : null;
+        return data;
+    }
+}
+export class CreateItemResponse extends ResponseBase {
+    constructor(data) {
+        super(data);
+    }
+    init(_data) {
+        super.init(_data);
+    }
+    static fromJS(data) {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateItemResponse();
+        result.init(data);
+        return result;
+    }
+    toJSON(data) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
         return data;
     }
 }

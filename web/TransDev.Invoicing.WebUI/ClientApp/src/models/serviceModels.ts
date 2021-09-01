@@ -7,6 +7,65 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+export class AuthenticationClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return System User Authentication. Response includes a JWT token to authorize future requests.
+     */
+    authenticate(query: AuthenticateUserQuery): Promise<AuthenticateUserQuery> {
+        let url_ = this.baseUrl + "/api/Authentication/Authenticate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAuthenticate(_response);
+        });
+    }
+
+    protected processAuthenticate(response: Response): Promise<AuthenticateUserQuery> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticateUserQuery.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("User not authorized. Returns exception details.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AuthenticateUserQuery>(<any>null);
+    }
+}
+
 export class ItemClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -494,6 +553,101 @@ export class AccountClient {
     }
 }
 
+export class AuthenticateUserQuery implements IAuthenticateUserQuery {
+    username?: string | null;
+    password?: string | null;
+
+    constructor(data?: IAuthenticateUserQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["username"] !== undefined ? _data["username"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AuthenticateUserQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticateUserQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["username"] = this.username !== undefined ? this.username : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data; 
+    }
+}
+
+export interface IAuthenticateUserQuery {
+    username?: string | null;
+    password?: string | null;
+}
+
+export class SerializableException implements ISerializableException {
+    message!: string;
+    stackTrace?: string | null;
+    inner?: SerializableException[] | null;
+
+    constructor(data?: ISerializableException) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.stackTrace = _data["stackTrace"] !== undefined ? _data["stackTrace"] : <any>null;
+            if (Array.isArray(_data["inner"])) {
+                this.inner = [] as any;
+                for (let item of _data["inner"])
+                    this.inner!.push(SerializableException.fromJS(item));
+            }
+            else {
+                this.inner = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): SerializableException {
+        data = typeof data === 'object' ? data : {};
+        let result = new SerializableException();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["stackTrace"] = this.stackTrace !== undefined ? this.stackTrace : <any>null;
+        if (Array.isArray(this.inner)) {
+            data["inner"] = [];
+            for (let item of this.inner)
+                data["inner"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISerializableException {
+    message: string;
+    stackTrace?: string | null;
+    inner?: SerializableException[] | null;
+}
+
 export abstract class ResponseBase implements IResponseBase {
     isSuccess!: boolean;
     message?: string | null;
@@ -557,61 +711,6 @@ export class CreateItemResponse extends ResponseBase implements ICreateItemRespo
 }
 
 export interface ICreateItemResponse extends IResponseBase {
-}
-
-export class SerializableException implements ISerializableException {
-    message!: string;
-    stackTrace?: string | null;
-    inner?: SerializableException[] | null;
-
-    constructor(data?: ISerializableException) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
-            this.stackTrace = _data["stackTrace"] !== undefined ? _data["stackTrace"] : <any>null;
-            if (Array.isArray(_data["inner"])) {
-                this.inner = [] as any;
-                for (let item of _data["inner"])
-                    this.inner!.push(SerializableException.fromJS(item));
-            }
-            else {
-                this.inner = <any>null;
-            }
-        }
-    }
-
-    static fromJS(data: any): SerializableException {
-        data = typeof data === 'object' ? data : {};
-        let result = new SerializableException();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["message"] = this.message !== undefined ? this.message : <any>null;
-        data["stackTrace"] = this.stackTrace !== undefined ? this.stackTrace : <any>null;
-        if (Array.isArray(this.inner)) {
-            data["inner"] = [];
-            for (let item of this.inner)
-                data["inner"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface ISerializableException {
-    message: string;
-    stackTrace?: string | null;
-    inner?: SerializableException[] | null;
 }
 
 export class CreateItemCommand implements ICreateItemCommand {

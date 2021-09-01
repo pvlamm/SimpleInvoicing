@@ -41,6 +41,7 @@ namespace TransDev.Invoicing.Infrastructure
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IItemService, ItemService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
 
             return services;
         }
