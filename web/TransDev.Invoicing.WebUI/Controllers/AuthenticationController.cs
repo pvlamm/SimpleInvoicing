@@ -15,6 +15,7 @@ using TransDev.Invoicing.Application.Common.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using TransDev.Invoicing.Application.Common.Helpers;
 using TransDev.Invoicing.Application.Common.Exceptions;
+using Microsoft.Identity.Web.Resource;
 
 namespace TransDev.Invoicing.WebUI.Controllers
 {
@@ -24,6 +25,9 @@ namespace TransDev.Invoicing.WebUI.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IDateTime _dateTime;
+
+        // The web API will only accept tokens 1) for users, and 2) having the "access_as_user" scope for this API
+        static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
         public AuthenticationController(IConfiguration config, IDateTime dateTime, IMediator mediator)
             : base(mediator)
@@ -38,6 +42,8 @@ namespace TransDev.Invoicing.WebUI.Controllers
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
         public async Task<ActionResult<AuthenticateUserResponse>> Authenticate([FromBody] AuthenticateUserQuery query)
         {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
             try
             {
                 var response = await _mediator.Send(query);

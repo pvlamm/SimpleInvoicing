@@ -72,13 +72,13 @@ namespace TransDev.Invoicing.WebUI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
             }
 
+            app.UseHttpsRedirection();
             app.UseRouting();
 
             const string swaggerRoot = "/api/docs";
@@ -108,6 +108,7 @@ namespace TransDev.Invoicing.WebUI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>

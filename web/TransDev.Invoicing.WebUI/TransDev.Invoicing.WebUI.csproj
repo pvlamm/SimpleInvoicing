@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="clientapp\src\plugins\UIManager.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="ClientApp\package-lock.json" />
     <None Include="ClientApp\package.json" />
   </ItemGroup>
@@ -55,6 +59,10 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="clientapp\src\plugins\UIManager.ts" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
   <Target Name="NSwag" AfterTargets="Build">
