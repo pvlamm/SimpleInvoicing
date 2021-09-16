@@ -1,7 +1,6 @@
 ﻿<template>
   <v-content>
     <h2>Login Authentication Tester</h2>
-    <login-form v-bind:login="login" v-on:submit="authenticate($event)"></login-form>
   </v-content>
 </template>
 
@@ -11,7 +10,8 @@ import * as Msal from 'msal'
 
 const msalConfig = {
   auth: {
-    clientId: 'b4dafc40-8606-497e-9880-7364993da30d'
+    clientId: 'b4dafc40-8606-497e-9880-7364993da30d',
+    authority: 'https://login.microsoftonline.com/common'
   }
 }
 
@@ -31,4 +31,7 @@ msalInstance.loginPopup(loginRequest)
     console.log(err)
   })
 
+export default {
+
+}
 </script>
