@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="clientapp\src\models\dataStore.ts" />
+    <TypeScriptCompile Include="clientapp\src\models\DataStore.ts" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
   <Target Name="NSwag" AfterTargets="Build">
