@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="clientapp\src\models\dataStore.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="ClientApp\package-lock.json" />
     <None Include="ClientApp\package.json" />
   </ItemGroup>
@@ -54,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\models\" />
+    <TypeScriptCompile Include="clientapp\src\models\dataStore.ts" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
   <Target Name="NSwag" AfterTargets="Build">
