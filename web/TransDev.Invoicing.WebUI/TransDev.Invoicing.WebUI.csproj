@@ -59,7 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="clientapp\src\shims-vue.d.ts" />
     <TypeScriptCompile Include="ClientApp\src\shims-vuex.d.ts" />
+    <TypeScriptCompile Include="clientapp\src\shims-vuetify.d.ts" />
     <TypeScriptCompile Include="clientapp\src\store\index.ts" />
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
