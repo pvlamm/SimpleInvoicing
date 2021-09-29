@@ -1,6 +1,8 @@
 import { createStore, createLogger } from 'vuex';
 // set state
-const state = { counter: 0 };
+const state = {
+    counter: 0, userSession: { token: 'rosco', firstName: '', lastName: '' }
+};
 // mutations and action enums
 export var MutationTypes;
 (function (MutationTypes) {

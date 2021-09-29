@@ -89,6 +89,7 @@
                   @click="actionInc()">
             Press Me
           </button>
+          <h3>THIS IS THE LOGIN TOKEN VALUE: {{ count.userSession.token }} </h3>
           <h5 class="text-3xl">Counter: {{count.counter}}</h5>
           <h3>Double Counter:</h3>
           {{ doubleCounter }}

@@ -11,10 +11,14 @@
 } from 'vuex'
 
 // declare state
-export type State = { counter: number }
+export type UserSession = { token: string, firstName: string, lastName: string }
+
+export type State = { counter: number, userSession: UserSession }
 
 // set state
-const state: State = { counter: 0 }
+const state: State = {
+  counter: 0, userSession: { token: 'rosco', firstName: '', lastName: '' }
+}
 
 // mutations and action enums
 
