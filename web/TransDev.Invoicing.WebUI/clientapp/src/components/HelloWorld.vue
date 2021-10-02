@@ -76,15 +76,23 @@
         </h2>
 
         <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
+          <a v-for="(eco, i) in ecosystem"
+             :key="i"
+             :href="eco.href"
+             class="subheading mx-3"
+             target="_blank">
             {{ eco.text }}
           </a>
+
+          <h3 class="text-xl font-semibold">Increment Counter</h3>
+          <button class="bg-red-500 text-blue-900 border rounded-lg px-8 m-4 h-10 text-2xl font-bold focus:outline-none"
+                  @click="actionInc()">
+            Press Me
+          </button>
+          <h3>THIS IS THE LOGIN TOKEN VALUE: {{ count.userSession.token }} </h3>
+          <h5 class="text-3xl">Counter: {{count.counter}}</h5>
+          <h3>Double Counter:</h3>
+          {{ doubleCounter }}
         </v-row>
       </v-col>
     </v-row>
@@ -92,9 +100,27 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
+import { useStore, MutationTypes, ActionTypes } from '../store'
 
 export default defineComponent({
+  setup () {
+    const store = useStore()
+    const count = ref(store.state)
+    const inc = () => {
+      store.commit(MutationTypes.INC_COUNTER, 1)
+    }
+    const actionInc = () => {
+      store.dispatch(ActionTypes.INC_COUNTER, 2)
+    }
+    const doubleCounter = computed(() => store.getters.doubleCounter)
+    return {
+      count,
+      inc,
+      doubleCounter,
+      actionInc
+    }
+  },
   name: 'HelloWorld',
 
   data () {
