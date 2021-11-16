@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace TransDev.Invoicing.Application.Common.Interfaces;
 
-public interface IDateTime
+internal interface IClientService
 {
-    DateTime Now { get; }
 }

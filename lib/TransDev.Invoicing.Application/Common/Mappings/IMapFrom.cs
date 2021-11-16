@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TransDev.Invoicing.Application.Common.Mappings
+namespace TransDev.Invoicing.Application.Common.Mappings;
+
+public interface IMapFrom<T>
 {
-    public interface IMapFrom<T>
-    {
-        void Mapping(Profile profile) => profile.CreateMap(typeof(T), GetType());
-    }
+    void Mapping(Profile profile) => profile.CreateMap(typeof(T), GetType());
 }

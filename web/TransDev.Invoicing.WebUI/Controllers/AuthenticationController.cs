@@ -16,75 +16,74 @@ using System.IdentityModel.Tokens.Jwt;
 using TransDev.Invoicing.Application.Common.Helpers;
 using TransDev.Invoicing.Application.Common.Exceptions;
 
-namespace TransDev.Invoicing.WebUI.Controllers
+namespace TransDev.Invoicing.WebUI.Controllers;
+
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class AuthenticationController : BaseController
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class AuthenticationController : BaseController
+    private readonly IConfiguration _config;
+    private readonly IDateTime _dateTime;
+
+    public AuthenticationController(IConfiguration config, IDateTime dateTime, IMediator mediator)
+        : base(mediator)
     {
-        private readonly IConfiguration _config;
-        private readonly IDateTime _dateTime;
+        _config = config;
+        _dateTime = dateTime;
+    }
 
-        public AuthenticationController(IConfiguration config, IDateTime dateTime, IMediator mediator)
-            : base(mediator)
+    [AllowAnonymous]
+    [HttpPost]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(AuthenticateUserQuery), Description = "System User Authentication. Response includes a JWT token to authorize future requests.")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
+    public async Task<ActionResult<AuthenticateUserResponse>> Authenticate([FromBody] AuthenticateUserQuery query)
+    {
+        try
         {
-            _config = config;
-            _dateTime = dateTime;
-        }
+            var response = await _mediator.Send(query);
+            if (!response.IsSuccess)
+                throw new UnauthorizedAccessException("Attempted to login to a deactivated user");
 
-        [AllowAnonymous]
-        [HttpPost]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(AuthenticateUserQuery), Description = "System User Authentication. Response includes a JWT token to authorize future requests.")]
-        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
-        public async Task<ActionResult<AuthenticateUserResponse>> Authenticate([FromBody] AuthenticateUserQuery query)
-        {
-            try
+            var token = CreateJWTToken(query.Username);
+
+            return new AuthenticateUserResponse()
             {
-                var response = await _mediator.Send(query);
-                if (!response.IsSuccess)
-                    throw new UnauthorizedAccessException("Attempted to login to a deactivated user");
-
-                var token = CreateJWTToken(query.Username);
-
-                return new AuthenticateUserResponse()
-                {
-                    Token = token.Token,
-                    ExpiresAt = token.ExpiresAt,
-                    IsSuccess = response.IsSuccess,
-                    Username = query.Username
-                };
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new SerializableException(ex));
-            }
+                Token = token.Token,
+                ExpiresAt = token.ExpiresAt,
+                IsSuccess = response.IsSuccess,
+                Username = query.Username
+            };
         }
-
-
-        private JWTTokenModel CreateJWTToken(string user)
+        catch (Exception ex)
         {
-            var credentials = new SigningCredentials(_config.JWTKey(), SecurityAlgorithms.HmacSha256);
-            var expiresAt = _dateTime.Now.AddMinutes(_config.JWTExpiresAfterXMinutes());
+            return BadRequest(new SerializableException(ex));
+        }
+    }
 
-            var claims = new List<Claim>()
+
+    private JWTTokenModel CreateJWTToken(string user)
+    {
+        var credentials = new SigningCredentials(_config.JWTKey(), SecurityAlgorithms.HmacSha256);
+        var expiresAt = _dateTime.Now.AddMinutes(_config.JWTExpiresAfterXMinutes());
+
+        var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user)
             };
 
-            var token = new JwtSecurityToken(
-                issuer: _config.JWTIssuer(),
-                audience: _config.JWTIssuer(),
-                claims: claims.ToArray(),
-                expires: expiresAt,
-                signingCredentials: credentials
-            );
-            var value = new JwtSecurityTokenHandler().WriteToken(token);
+        var token = new JwtSecurityToken(
+            issuer: _config.JWTIssuer(),
+            audience: _config.JWTIssuer(),
+            claims: claims.ToArray(),
+            expires: expiresAt,
+            signingCredentials: credentials
+        );
+        var value = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new JWTTokenModel()
-            {
-                Token = value,
-                ExpiresAt = expiresAt
-            };
-        }
+        return new JWTTokenModel()
+        {
+            Token = value,
+            ExpiresAt = expiresAt
+        };
     }
 }

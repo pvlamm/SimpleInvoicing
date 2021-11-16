@@ -10,44 +10,42 @@ using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Items.Commands
+namespace TransDev.Invoicing.Application.Items.Commands;
+
+public class CreateItemCommand : IRequest<CreateItemResponse>
 {
-    public class CreateItemCommand : IRequest<CreateItemResponse>
+    public ItemDto Item { get; set; }
+}
+
+public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, CreateItemResponse>
+{
+    private readonly IItemService _itemService;
+    private readonly IMapper _mapper;
+
+    public CreateItemCommandHandler(IItemService itemService, IMapper mapper)
     {
-        public ItemDto Item { get; set; }
+        _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, CreateItemResponse>
+    public async Task<CreateItemResponse> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IItemService _itemService;
-        private readonly IMapper _mapper;
+        var itemHistory = _mapper.Map<Item>(request.Item);
 
-        public CreateItemCommandHandler(IItemService itemService, IMapper mapper)
+        try
         {
-            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            await _itemService.SaveChangesToItemSaveAsync(itemHistory);
+            return new CreateItemResponse
+            {
+                IsSuccess = true
+            };
         }
-
-        public async Task<CreateItemResponse> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+        catch (Exception e)
         {
-            var itemHistory = _mapper.Map<ItemHistory>(request.Item);
-
-            try
+            return new CreateItemResponse
             {
-                await _itemService.SaveChangesToItemSaveAsync(itemHistory);
-                return new CreateItemResponse
-                {
-                    IsSuccess = true
-                };
-            }
-            catch (Exception e)
-            {
-                return new CreateItemResponse
-                {
-                    IsSuccess = false,
-                    Message = e.Message
-                };
-            }
+                Message = e.Message
+            };
         }
     }
 }

@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Abstracts;
 using TransDev.Invoicing.Application.Common.Dtos;
 
-namespace TransDev.Invoicing.Application.Items.Queries
+namespace TransDev.Invoicing.Application.Items.Queries;
+
+public class GetItemHistoryResponse : ResponseBase
 {
-    public class GetItemHistoryResponse : ResponseBase
-    {
-        [JsonRequired()]
-        public ItemHistoryDto[] Items { get; set; }
-    }
+    [JsonRequired()]
+    public ItemDto Item { get; set; }
 }

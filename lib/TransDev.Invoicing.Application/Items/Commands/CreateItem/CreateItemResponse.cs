@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Abstracts;
 
-namespace TransDev.Invoicing.Application.Items.Commands
-{
-    public class CreateItemResponse : ResponseBase
-    {
+namespace TransDev.Invoicing.Application.Items.Commands;
 
-    }
+public class CreateItemResponse : ResponseBase
+{
+
 }

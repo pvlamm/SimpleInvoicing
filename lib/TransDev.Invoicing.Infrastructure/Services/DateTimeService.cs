@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Interfaces;
 
-namespace TransDev.Invoicing.Infrastructure.Services
+namespace TransDev.Invoicing.Infrastructure.Services;
+
+public class DateTimeService : IDateTime
 {
-    public class DateTimeService : IDateTime
-    {
-        public DateTime Now => DateTime.UtcNow;
-    }
+    public DateTime Now => DateTime.UtcNow;
 }

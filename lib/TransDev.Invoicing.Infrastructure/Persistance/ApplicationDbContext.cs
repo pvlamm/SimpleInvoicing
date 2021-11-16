@@ -8,95 +8,93 @@ using System.Threading.Tasks;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Infrastructure.Persistance
+namespace TransDev.Invoicing.Infrastructure.Persistance;
+
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    private readonly IDateTime _dateTime;
+    private IDbContextTransaction _currentTransaction;
+
+    public DbSet<AuditTrail> AuditTrails { get; set; }
+    public DbSet<Item> Items { get; set; }
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IDateTime dateTime) : base(options)
     {
-        private readonly IDateTime _dateTime;
-        private IDbContextTransaction _currentTransaction;
+        _dateTime = dateTime;
+    }
 
-        public DbSet<AuditTrail> AuditTrails { get; set; }
-        public DbSet<Item> Items { get; set; }
-        public DbSet<ItemHistory> ItemHistories { get; set; }
+    IModel IApplicationDbContext.Model => base.Model;
 
-        public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options,
-            IDateTime dateTime) : base(options)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<AuditTrail>())
         {
-            _dateTime = dateTime;
-        }
-
-        IModel IApplicationDbContext.Model => base.Model;
-
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            foreach (var entry in ChangeTracker.Entries<AuditTrail>())
+            switch (entry.State)
             {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedDate = _dateTime.Now;
-                        break;
-                }
+                case EntityState.Added:
+                    entry.Entity.CreatedDate = _dateTime.Now;
+                    break;
             }
-
-            return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BeginTransactionAsync()
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task BeginTransactionAsync()
+    {
+        if (_currentTransaction != null)
+        {
+            return;
+        }
+
+        _currentTransaction = await base.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted).ConfigureAwait(false);
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        try
+        {
+            await SaveChangesAsync().ConfigureAwait(false);
+
+            _currentTransaction?.Commit();
+        }
+        catch
+        {
+            RollbackTransaction();
+            throw;
+        }
+        finally
         {
             if (_currentTransaction != null)
             {
-                return;
+                _currentTransaction.Dispose();
+                _currentTransaction = null;
             }
-
-            _currentTransaction = await base.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted).ConfigureAwait(false);
         }
+    }
 
-        public async Task CommitTransactionAsync()
+    public void RollbackTransaction()
+    {
+        try
         {
-            try
-            {
-                await SaveChangesAsync().ConfigureAwait(false);
-
-                _currentTransaction?.Commit();
-            }
-            catch
-            {
-                RollbackTransaction();
-                throw;
-            }
-            finally
-            {
-                if (_currentTransaction != null)
-                {
-                    _currentTransaction.Dispose();
-                    _currentTransaction = null;
-                }
-            }
+            _currentTransaction?.Rollback();
         }
-
-        public void RollbackTransaction()
+        finally
         {
-            try
+            if (_currentTransaction != null)
             {
-                _currentTransaction?.Rollback();
-            }
-            finally
-            {
-                if (_currentTransaction != null)
-                {
-                    _currentTransaction.Dispose();
-                    _currentTransaction = null;
-                }
+                _currentTransaction.Dispose();
+                _currentTransaction = null;
             }
         }
+    }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            base.OnModelCreating(builder);
-        }
+        base.OnModelCreating(builder);
     }
 }

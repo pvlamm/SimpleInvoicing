@@ -8,19 +8,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Common.Interfaces
+namespace TransDev.Invoicing.Application.Common.Interfaces;
+
+public interface IApplicationDbContext
 {
-    public interface IApplicationDbContext
-    {
-        DbSet<AuditTrail> AuditTrails { get; set; }
-        DbSet<Item> Items { get; set; }
-        DbSet<ItemHistory> ItemHistories { get; set; }
+    DbSet<AuditTrail> AuditTrails { get; set; }
+    DbSet<Item> Items { get; set; }
 
-        IModel Model { get; }
+    IModel Model { get; }
 
-        Task<int> SaveChangesAsync(CancellationToken token = default);
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-        void RollbackTransaction();
-    }
+    Task<int> SaveChangesAsync(CancellationToken token = default);
+    Task BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    void RollbackTransaction();
 }

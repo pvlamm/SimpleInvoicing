@@ -10,39 +10,39 @@ using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Items.Queries
+namespace TransDev.Invoicing.Application.Items.Queries;
+
+public class GetItemHistoryQuery : IRequest<GetItemHistoryResponse>
 {
-    public class GetItemHistoryQuery : IRequest<GetItemHistoryResponse>
+    public string Code { get; set; }
+    public int? Id { get; set; }
+}
+
+public class GetItemHistoryHandler : IRequestHandler<GetItemHistoryQuery, GetItemHistoryResponse>
+{
+    private readonly IItemService _itemService;
+    private readonly IMapper _mapper;
+
+    public GetItemHistoryHandler(IItemService itemService, IMapper mapper)
     {
-        public string Code { get; set; }
-        public int? Id { get; set; }
+        _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public class GetItemHistoryHandler : IRequestHandler<GetItemHistoryQuery, GetItemHistoryResponse>
+    public async Task<GetItemHistoryResponse> Handle(GetItemHistoryQuery request, CancellationToken cancellationToken)
     {
-        private readonly IItemService _itemService;
-        private readonly IMapper _mapper;
+        var item = new Item();
 
-        public GetItemHistoryHandler(IItemService itemService, IMapper mapper)
+        if (request.Id.HasValue)
+            item = (await _itemService.GetItemByItemIdAsync(request.Id.Value));
+        else
+            item = (await _itemService.GetItemByCodeAsync(request.Code));
+
+        var itemHistoryArray = _mapper.Map<ItemDto>(item);
+        return new GetItemHistoryResponse
         {
-            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
-        public async Task<GetItemHistoryResponse> Handle(GetItemHistoryQuery request, CancellationToken cancellationToken)
-        {
-            var itemHistory = new List<ItemHistory>();
-            if (request.Id.HasValue)
-                itemHistory = (await _itemService.GetItemHistoryByItemIdAsync(request.Id.Value)).ToList();
-            else
-                itemHistory = (await _itemService.GetItemHistoryByCodeAsync(request.Code)).ToList();
-
-            var itemHistoryArray = _mapper.Map<ItemHistoryDto[]>(itemHistory);
-            return new GetItemHistoryResponse
-            {
-                Items = itemHistoryArray,
-                IsSuccess = true
-            };
-        }
+            Item = itemHistoryArray,
+            IsSuccess = true
+        };
     }
 }
