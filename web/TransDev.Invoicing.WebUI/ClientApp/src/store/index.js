@@ -7,20 +7,28 @@ const state = {
 export var MutationTypes;
 (function (MutationTypes) {
     MutationTypes["INC_COUNTER"] = "SET_COUNTER";
+    MutationTypes["SET_TOKEN"] = "SET_TOKEN";
 })(MutationTypes || (MutationTypes = {}));
 export var ActionTypes;
 (function (ActionTypes) {
     ActionTypes["INC_COUNTER"] = "SET_COUNTER";
+    ActionTypes["SET_TOKEN"] = "SET_TOKEN";
 })(ActionTypes || (ActionTypes = {}));
 // define mutations
 const mutations = {
     [MutationTypes.INC_COUNTER](state, payload) {
         state.counter += payload;
+    },
+    [MutationTypes.SET_TOKEN](state, payload) {
+        state.userSession.token = payload;
     }
 };
 export const actions = {
     [ActionTypes.INC_COUNTER]({ commit }, payload) {
         commit(MutationTypes.INC_COUNTER, payload);
+    },
+    [ActionTypes.SET_TOKEN]({ commit }, payload) {
+        commit(MutationTypes.SET_TOKEN, payload);
     }
 };
 // getters

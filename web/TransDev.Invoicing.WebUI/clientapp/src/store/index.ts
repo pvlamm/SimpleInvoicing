@@ -23,22 +23,28 @@ const state: State = {
 // mutations and action enums
 
 export enum MutationTypes {
-  INC_COUNTER = 'SET_COUNTER'
+  INC_COUNTER = 'SET_COUNTER',
+  SET_TOKEN = 'SET_TOKEN'
 }
 
 export enum ActionTypes {
-  INC_COUNTER = 'SET_COUNTER'
+  INC_COUNTER = 'SET_COUNTER',
+  SET_TOKEN = 'SET_TOKEN'
 }
 
 // Mutation Types
 export type Mutations<S = State> = {
-  [MutationTypes.INC_COUNTER](state: S, payload: number): void
+  [MutationTypes.INC_COUNTER](state: S, payload: number): void,
+  [MutationTypes.SET_TOKEN](token: S, payload: string): void
 }
 
 // define mutations
 const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.INC_COUNTER] (state: State, payload: number) {
     state.counter += payload
+  },
+  [MutationTypes.SET_TOKEN] (state: State, payload: string) {
+    state.userSession.token = payload
   }
 }
 
@@ -57,12 +63,19 @@ export interface Actions {
   [ActionTypes.INC_COUNTER](
     { commit }: AugmentedActionContext,
     payload: number
+  ): void,
+  [ActionTypes.SET_TOKEN](
+    { commit }: AugmentedActionContext,
+    payload: string
   ): void
 }
 
 export const actions: ActionTree<State, State> & Actions = {
   [ActionTypes.INC_COUNTER] ({ commit }, payload: number) {
     commit(MutationTypes.INC_COUNTER, payload)
+  },
+  [ActionTypes.SET_TOKEN] ({ commit }, payload: string) {
+    commit(MutationTypes.SET_TOKEN, payload)
   }
 }
 
