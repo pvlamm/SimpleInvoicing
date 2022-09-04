@@ -1,26 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace TransDev.Invoicing.Application.Common.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using System.Threading;
 using System.Threading.Tasks;
+
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Common.Interfaces
+public interface IApplicationDbContext
 {
-    public interface IApplicationDbContext
-    {
-        DbSet<AuditTrail> AuditTrails { get; set; }
-        DbSet<Item> Items { get; set; }
-        DbSet<ItemHistory> ItemHistories { get; set; }
+    DbSet<AuditTrail> AuditTrails { get; set; }
+    DbSet<Client> Clients { get; set; }
+    DbSet<ClientHistory> ClientHistory { get; set; }
+    DbSet<Contact> Contacts { get; set; }
+    DbSet<ContactHistory> ContactHistory { get; set; }
+    DbSet<Item> Items { get; set; }
+    DbSet<ItemHistory> ItemHistories { get; set; }
+    DbSet<SystemAddress> SystemAddresses { get; set; }
+    DbSet<SystemCity> SystemCities { get; set; }
+    DbSet<SystemState> SystemStates { get; set; }
 
-        IModel Model { get; }
+    IModel Model { get; }
 
-        Task<int> SaveChangesAsync(CancellationToken token = default);
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-        void RollbackTransaction();
-    }
+    Task<int> SaveChangesAsync(CancellationToken token = default);
+    Task BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    void RollbackTransaction();
 }
