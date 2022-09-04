@@ -9,6 +9,16 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
 {
     public void Configure(EntityTypeBuilder<ContactHistory> builder)
     {
-        throw new System.NotImplementedException();
+        builder.ToTable("ContactHistory");
+        builder.HasKey(x => x.Id);
+
+        builder.HasOne(a => a.AuditTrail).WithMany().IsRequired().HasForeignKey(a => a.AuditTrailId);
+        builder.HasOne(a => a.UpdatedAuditTrail).WithMany().IsRequired(false).HasForeignKey(a => a.UpdatedAuditTrailId);
+
+        builder.HasOne(history => history.Parent)
+            .WithMany(contact => contact.History)
+            .HasForeignKey(history => history.ParentId);
+
+
     }
 }
