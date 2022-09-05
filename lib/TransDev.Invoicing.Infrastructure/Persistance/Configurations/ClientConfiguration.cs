@@ -11,6 +11,15 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
     public void Configure(EntityTypeBuilder<Client> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("Client");
+        builder.HasKey(client => client.Id);
+
+        builder.HasMany(client => client.Contacts)
+            .WithOne(contact => contact.Client)
+            .HasForeignKey(contact => contact.ClientId);
+
+        builder.HasMany(client => client.ClientHistory)
+            .WithOne(history => history.Parent)
+            .HasForeignKey(history => history.ParentId);
     }
 }

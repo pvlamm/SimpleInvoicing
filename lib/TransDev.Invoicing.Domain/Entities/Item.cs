@@ -9,5 +9,5 @@ public record Item
     public int Id { get; set; }
     public string Code { get; set; }
     public ItemType Type { get; set; }
-    public ICollection<ItemHistory> ItemHistories { get; set; } = new HashSet<ItemHistory>();
+    public ICollection<ItemHistory> History { get; set; } = new HashSet<ItemHistory>();
 }

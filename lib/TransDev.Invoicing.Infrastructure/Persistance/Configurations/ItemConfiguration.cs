@@ -14,6 +14,6 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 
         builder.Property(a => a.Code).IsRequired().HasMaxLength(16);
 
-        builder.HasMany(a => a.ItemHistories).WithOne(a => a.Parent).HasForeignKey(a => a.ParentId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(a => a.History).WithOne(a => a.Parent).HasForeignKey(a => a.ParentId).OnDelete(DeleteBehavior.Cascade);
     }
 }
