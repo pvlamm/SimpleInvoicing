@@ -9,10 +9,11 @@ public record ContactHistory
     public AuditTrail AuditTrail { get; set; }
     public long? UpdatedAuditTrailId { get; set; }
     public AuditTrail UpdatedAuditTrail { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
     public int SystemAddressId { get; set; }
     public SystemAddress Address { get; set; }
+    public string FirstName { get; set; }
+    public string MiddleName { get; set; }
+    public string LastName { get; set; }
     public string EmailAddress { get; set; }
     public string PhoneNumber { get; set; }
 }
