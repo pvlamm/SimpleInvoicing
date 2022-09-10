@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <Folder Include="Authentication\Commands\" />
+    <Folder Include="Client\Commands\" />
+    <Folder Include="Contact\Commands\" />
+    <Folder Include="Contact\Queries\" />
   </ItemGroup>
 
 </Project>
