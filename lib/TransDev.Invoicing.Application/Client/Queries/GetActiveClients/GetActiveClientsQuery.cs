@@ -10,13 +10,14 @@ public class GetActiveClientsQuery : IRequest<GetActiveClientsResponse>
 
 }
 
-public class GetActiveClientsQueryHandler : IRequestHandler<GetActiveClientsResponse>
+public class GetActiveClientsQueryHandler : IRequestHandler<GetActiveClientsQuery, GetActiveClientsResponse>
 {
     public GetActiveClientsQueryHandler()
     {
+
     }
 
-    public Task<Unit> Handle(GetActiveClientsResponse request, CancellationToken token)
+    public Task<GetActiveClientsResponse> Handle(GetActiveClientsQuery request, CancellationToken token)
     {
         throw new System.NotImplementedException();
     }
