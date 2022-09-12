@@ -22,4 +22,12 @@ public interface IClientService
     /// <returns>Complete History to provided clientId</returns>
     Task<IEnumerable<ClientHistory>> GetClientHistoryAsync(int clientId, CancellationToken token);
     Task<bool> ClientExistsAsync(string name, CancellationToken token);
+    /// <summary>
+    /// Provide a ClientHistory record with Parent/Client to get Created anew;
+    /// Method will 0 out Ids.
+    /// </summary>
+    /// <param name="history"></param>
+    /// <param name="token"></param>
+    /// <returns>Newly Created ClientHistory Record with Parent/Client entry</returns>
+    Task<ClientHistory> CreateClientAsync(ClientHistory history, CancellationToken token);
 }

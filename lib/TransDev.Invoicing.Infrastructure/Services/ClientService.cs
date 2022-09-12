@@ -62,4 +62,11 @@ public class ClientService : IClientService
             .ToListAsync(token);
     }
 
+    public async Task<ClientHistory> CreateClientAsync(ClientHistory history, CancellationToken token)
+    {
+        await _context.ClientHistory.AddAsync(history, token);
+        await _context.SaveChangesAsync(token);
+
+        return history;
+    }
 }

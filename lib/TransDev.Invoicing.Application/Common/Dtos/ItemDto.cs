@@ -6,12 +6,6 @@ using TransDev.Invoicing.Application.Common.Mappings;
 using TransDev.Invoicing.Domain.Entities;
 using TransDev.Invoicing.Domain.Enums;
 
-/*
-Missing type map configuration or unsupported mapping.
-Mapping types:
-    ItemHistory -> ItemDto
-    TransDev.Invoicing.Domain.Entities.ItemHistory -> TransDev.Invoicing.Application.Common.Dtos.ItemDto
- */
 public class ItemDto : IMapFrom<ItemHistory>
 {
     void IMapFrom<ItemHistory>.Mapping(Profile profile)

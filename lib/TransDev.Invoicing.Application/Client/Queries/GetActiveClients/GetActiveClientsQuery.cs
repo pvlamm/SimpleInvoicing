@@ -1,4 +1,4 @@
-﻿namespace TransDev.Invoicing.Application.Client.Queries.GetActiveClients;
+﻿namespace TransDev.Invoicing.Application.Client.Queries;
 
 using System.Threading;
 using System.Threading.Tasks;
