@@ -17,5 +17,6 @@ public record ClientHistory
     public Contact PrimaryContact { get; set; }
     public int PrimaryBillingContactId { get; set; }
     public Contact PrimaryBillingContact { get; set; }
+    public bool IsActive { get; set; } = true;
     public string Name { get; set; }
 }

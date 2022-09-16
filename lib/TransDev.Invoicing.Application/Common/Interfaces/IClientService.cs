@@ -23,6 +23,15 @@ public interface IClientService
     Task<IEnumerable<ClientHistory>> GetClientHistoryAsync(int clientId, CancellationToken token);
     Task<bool> ClientExistsAsync(string name, CancellationToken token);
     /// <summary>
+    /// Checks by Client.Id will review the current
+    /// ClientHistory state and check the IsActive flag
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<bool> ClientIsActiveAsync(int clientId, CancellationToken token);
+    Task<bool> UpdateClientAsync(ClientHistory clientHistory, CancellationToken token);
+    /// <summary>
     /// Provide a ClientHistory record with Parent/Client to get Created anew;
     /// Method will 0 out Ids.
     /// </summary>

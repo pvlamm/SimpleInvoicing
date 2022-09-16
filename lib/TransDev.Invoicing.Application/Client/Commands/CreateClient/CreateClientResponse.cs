@@ -1,9 +1,9 @@
 ﻿namespace TransDev.Invoicing.Application.Client.Commands;
 
+using TransDev.Invoicing.Application.Common.Abstracts;
 using TransDev.Invoicing.Application.Common.Dtos;
 
-public class CreateClientResponse
+public sealed class CreateClientResponse : ResponseBase
 {
-    public bool Success { get; set; }
     public ClientDto Client { get; set; }
 }

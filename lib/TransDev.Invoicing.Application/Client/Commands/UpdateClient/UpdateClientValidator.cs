@@ -1,5 +1,7 @@
 ﻿namespace TransDev.Invoicing.Application.Client.Commands;
 
-public class UpdateClientValidator
+using FluentValidation;
+
+public class UpdateClientValidator : AbstractValidator<UpdateClientCommand>
 {
 }
