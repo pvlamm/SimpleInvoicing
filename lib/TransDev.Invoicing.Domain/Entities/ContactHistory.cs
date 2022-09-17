@@ -1,14 +1,12 @@
 ﻿namespace TransDev.Invoicing.Domain.Entities;
 
-public record ContactHistory
+using TransDev.Invoicing.Domain.BaseEntities;
+
+public record ContactHistory : HistoryEntityBase
 {
     public long Id { get; set; }
     public int ParentId { get; set; }
     public Contact Parent { get; set; }
-    public long AuditTrailId { get; set; }
-    public AuditTrail AuditTrail { get; set; }
-    public long? UpdatedAuditTrailId { get; set; }
-    public AuditTrail UpdatedAuditTrail { get; set; }
     public int SystemAddressId { get; set; }
     public SystemAddress Address { get; set; }
     public string FirstName { get; set; }
