@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Authentication\Commands\" />
-    <Folder Include="Contact\Commands\" />
+    <Folder Include="Contact\Commands\UpdateContactEmail\" />
     <Folder Include="Contact\Queries\" />
   </ItemGroup>
 
