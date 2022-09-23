@@ -7,9 +7,9 @@ public record ClientHistory : HistoryEntityBase
     public long Id { get; set; }
     public int ParentId { get; set; }
     public Client Parent { get; set; }
-    public int PrimarySystemAddressId { get; set; }
+    public long PrimarySystemAddressId { get; set; }
     public SystemAddress PrimaryAddress { get; set; }
-    public int BillingSystemAddressId { get; set; }
+    public long BillingSystemAddressId { get; set; }
     public SystemAddress BillingAddress { get; set; }
     public int PrimaryContactId { get; set; }
     public Contact PrimaryContact { get; set; }
