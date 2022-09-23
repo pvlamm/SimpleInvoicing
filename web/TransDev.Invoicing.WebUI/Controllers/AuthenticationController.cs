@@ -24,12 +24,12 @@ using Microsoft.Identity.Web.Resource;
 public class AuthenticationController : BaseController
 {
     private readonly IConfiguration _config;
-    private readonly IDateTime _dateTime;
+    private readonly IDateTimeService _dateTime;
 
     // The web API will only accept tokens 1) for users, and 2) having the "access_as_user" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
-    public AuthenticationController(IConfiguration config, IDateTime dateTime, IMediator mediator)
+    public AuthenticationController(IConfiguration config, IDateTimeService dateTime, IMediator mediator)
         : base(mediator)
     {
         _config = config;

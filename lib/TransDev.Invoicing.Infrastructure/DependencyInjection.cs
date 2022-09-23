@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
+using TransDev.Invoicing.Domain.Entities;
 using TransDev.Invoicing.Infrastructure.Persistance;
 using TransDev.Invoicing.Infrastructure.Services;
 
@@ -34,10 +35,18 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-        services.AddTransient<IDateTime, DateTimeService>();
-        services.AddTransient<IItemService, ItemService>();
+        services.AddTransient<IDateTimeService, DateTimeService>();
+        
+        services.AddTransient<ISystemAddressService, SystemAddressService>();
+        services.AddTransient<ISystemCityService, SystemCityService>();
+        services.AddTransient<ISystemStateService, SystemStateService>();
+        
         services.AddTransient<IAuthenticationService, AuthenticationService>();
 
+        services.AddTransient<IItemService, ItemService>();
+        services.AddTransient<IClientService, ClientService>();
+        
+        
         return services;
     }
 

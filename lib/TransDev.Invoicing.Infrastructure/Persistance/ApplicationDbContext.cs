@@ -14,7 +14,7 @@ using TransDev.Invoicing.Domain.Entities;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    private readonly IDateTime _dateTime;
+    private readonly IDateTimeService _dateTime;
 
     private IDbContextTransaction _currentTransaction;
 
@@ -31,7 +31,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        IDateTime dateTime) : base(options)
+        IDateTimeService dateTime) : base(options)
     {
         _dateTime = dateTime;
     }

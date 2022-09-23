@@ -15,9 +15,9 @@ using TransDev.Invoicing.Domain.Entities;
 public class ClientService : IClientService
 {
     IApplicationDbContext _context;
-    IDateTime _dateTime;
+    IDateTimeService _dateTime;
 
-    public ClientService(IApplicationDbContext context, IDateTime dateTime)
+    public ClientService(IApplicationDbContext context, IDateTimeService dateTime)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _dateTime = dateTime ?? throw new ArgumentNullException(nameof(dateTime));
