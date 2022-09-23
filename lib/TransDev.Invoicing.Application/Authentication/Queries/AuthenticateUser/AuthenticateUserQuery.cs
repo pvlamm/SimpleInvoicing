@@ -28,7 +28,7 @@ public class AuthenticateUserQueryHandler : IRequestHandler<AuthenticateUserQuer
 
         return new AuthenticateUserResponse
         {
-            IsSuccess = result
+            Success = result
         };
     }
 }

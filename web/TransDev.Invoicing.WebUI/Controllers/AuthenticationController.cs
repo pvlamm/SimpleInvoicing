@@ -47,7 +47,7 @@ public class AuthenticationController : BaseController
         try
         {
             var response = await _mediator.Send(query);
-            if (!response.IsSuccess)
+            if (!response.Success)
                 throw new UnauthorizedAccessException("Attempted to login to a deactivated user");
 
             var token = CreateJWTToken(query.Username);
@@ -56,7 +56,7 @@ public class AuthenticationController : BaseController
             {
                 Token = token.Token,
                 ExpiresAt = token.ExpiresAt,
-                IsSuccess = response.IsSuccess,
+                Success = response.Success,
                 Username = query.Username
             };
         }
