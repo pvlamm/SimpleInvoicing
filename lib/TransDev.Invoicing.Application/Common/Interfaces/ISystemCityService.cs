@@ -9,8 +9,17 @@ using TransDev.Invoicing.Domain.Entities;
 public interface ISystemCityService
 {
     Task<SystemCity> GetCityByNameAndStateAsync(string name, string stateId, CancellationToken token);
-    Task<bool> CityExistsAsync(string name, string stateId, CancellationToken cancellationToken);
+    Task<bool> CityExistsAsync(string name, string stateId, CancellationToken token);
+    Task<bool> CityExistsAsync(int id, CancellationToken token);
+    /// <summary>
+    /// Creates new City, if Database fails, returns SystemState w/ Id == 0
+    /// </summary>
+    /// <param name="name">City name</param>
+    /// <param name="stateId">State Id (NC, SC, etc.)</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     Task<SystemCity> CreateNewCityAsync(string name, string stateId, CancellationToken token);
+    Task<SystemCity> GetCityByIdAsync(int id, CancellationToken token);
     Task<IEnumerable<SystemCity>> GetCitiesByStateIdAsync(string stateId, CancellationToken token);
     /// <summary>
     /// City Lookup

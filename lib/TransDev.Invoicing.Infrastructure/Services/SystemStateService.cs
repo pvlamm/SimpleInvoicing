@@ -6,29 +6,53 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+
+using Microsoft.EntityFrameworkCore;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 
 public class SystemStateService : ISystemStateService
 {
-    public Task<SystemState> GetSystemStateByIdAsync(string id, CancellationToken token)
+    IApplicationDbContext _context;
+
+    public SystemStateService(IApplicationDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+
     }
 
-    public Task<IEnumerable<SystemState>> GetSystemStatesAsync(CancellationToken token)
+    public async Task<SystemState> GetSystemStateByIdAsync(string id, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return await _context.SystemStates.FirstOrDefaultAsync(state => state.Id == id, token);
     }
 
-    public Task<IEnumerable<SystemState>> SearchStatesByIdAsync(string id, CancellationToken token)
+    public async Task<IEnumerable<SystemState>> GetSystemStatesAsync(CancellationToken token)
     {
-        throw new NotImplementedException();
+        return await _context.SystemStates.ToListAsync(token);
     }
 
-    public Task<IEnumerable<SystemState>> SearchStatesByNameAsync(string name, CancellationToken token)
+    public async Task<IEnumerable<SystemState>> SearchStatesByIdAsync(string id, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return await _context
+            .SystemStates
+            .Where(state =>
+                state.Id.Contains(id, StringComparison.CurrentCultureIgnoreCase))
+            .ToListAsync(token);
+    }
+
+    public async Task<IEnumerable<SystemState>> SearchStatesByNameAsync(string name, CancellationToken token)
+    {
+        return await _context
+            .SystemStates
+            .Where(state =>
+                state.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
+            .ToListAsync(token);
+    }
+
+    public async Task<bool> SystemStateExistsById(string id, CancellationToken token)
+    {
+        return await _context.SystemStates.AnyAsync(state => state.Id == id, token);
     }
 }
