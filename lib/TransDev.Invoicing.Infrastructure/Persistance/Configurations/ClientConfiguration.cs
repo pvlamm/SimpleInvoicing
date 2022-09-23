@@ -18,7 +18,7 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .WithOne(contact => contact.Client)
             .HasForeignKey(contact => contact.ClientId);
 
-        builder.HasMany(client => client.ClientHistory)
+        builder.HasMany(client => client.History)
             .WithOne(history => history.Parent)
             .HasForeignKey(history => history.ParentId);
     }
