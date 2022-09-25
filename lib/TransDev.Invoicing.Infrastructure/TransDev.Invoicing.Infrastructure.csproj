@@ -21,4 +21,8 @@
     <ProjectReference Include="..\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

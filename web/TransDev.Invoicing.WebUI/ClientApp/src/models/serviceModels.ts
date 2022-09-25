@@ -67,6 +67,65 @@ export class AuthenticationClient {
     }
 }
 
+export class ClientClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return List of Active Clients
+     */
+    get(query: GetActiveClientsQuery): Promise<GetActiveClientsResponse> {
+        let url_ = this.baseUrl + "/api/Client";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<GetActiveClientsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetActiveClientsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetActiveClientsResponse>(null as any);
+    }
+}
+
 export class ItemClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -650,8 +709,9 @@ export interface ISerializableException {
     inner?: SerializableException[] | null;
 }
 
-export abstract class ResponseBase implements IResponseBase {
-    isSuccess!: boolean;
+export class ResponseBase implements IResponseBase {
+    success!: boolean;
+    error?: string | null;
     message?: string | null;
 
     constructor(data?: IResponseBase) {
@@ -665,27 +725,166 @@ export abstract class ResponseBase implements IResponseBase {
 
     init(_data?: any) {
         if (_data) {
-            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.error = _data["error"] !== undefined ? _data["error"] : <any>null;
             this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
         }
     }
 
     static fromJS(data: any): ResponseBase {
         data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'ResponseBase' cannot be instantiated.");
+        let result = new ResponseBase();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["error"] = this.error !== undefined ? this.error : <any>null;
         data["message"] = this.message !== undefined ? this.message : <any>null;
         return data;
     }
 }
 
 export interface IResponseBase {
-    isSuccess: boolean;
+    success: boolean;
+    error?: string | null;
     message?: string | null;
+}
+
+export class GetActiveClientsResponse extends ResponseBase implements IGetActiveClientsResponse {
+    clients?: SearchClientDto[] | null;
+
+    constructor(data?: IGetActiveClientsResponse) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["clients"])) {
+                this.clients = [] as any;
+                for (let item of _data["clients"])
+                    this.clients!.push(SearchClientDto.fromJS(item));
+            }
+            else {
+                this.clients = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): GetActiveClientsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetActiveClientsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.clients)) {
+            data["clients"] = [];
+            for (let item of this.clients)
+                data["clients"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGetActiveClientsResponse extends IResponseBase {
+    clients?: SearchClientDto[] | null;
+}
+
+export class SearchClientDto implements ISearchClientDto {
+    name?: string | null;
+    primaryContactName?: string | null;
+    primaryContactEmail?: string | null;
+    primaryContactPhone?: string | null;
+    billingContactName?: string | null;
+    billingContactEmail?: string | null;
+    billingContactPhone?: string | null;
+
+    constructor(data?: ISearchClientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.primaryContactName = _data["primaryContactName"] !== undefined ? _data["primaryContactName"] : <any>null;
+            this.primaryContactEmail = _data["primaryContactEmail"] !== undefined ? _data["primaryContactEmail"] : <any>null;
+            this.primaryContactPhone = _data["primaryContactPhone"] !== undefined ? _data["primaryContactPhone"] : <any>null;
+            this.billingContactName = _data["billingContactName"] !== undefined ? _data["billingContactName"] : <any>null;
+            this.billingContactEmail = _data["billingContactEmail"] !== undefined ? _data["billingContactEmail"] : <any>null;
+            this.billingContactPhone = _data["billingContactPhone"] !== undefined ? _data["billingContactPhone"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SearchClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["primaryContactName"] = this.primaryContactName !== undefined ? this.primaryContactName : <any>null;
+        data["primaryContactEmail"] = this.primaryContactEmail !== undefined ? this.primaryContactEmail : <any>null;
+        data["primaryContactPhone"] = this.primaryContactPhone !== undefined ? this.primaryContactPhone : <any>null;
+        data["billingContactName"] = this.billingContactName !== undefined ? this.billingContactName : <any>null;
+        data["billingContactEmail"] = this.billingContactEmail !== undefined ? this.billingContactEmail : <any>null;
+        data["billingContactPhone"] = this.billingContactPhone !== undefined ? this.billingContactPhone : <any>null;
+        return data;
+    }
+}
+
+export interface ISearchClientDto {
+    name?: string | null;
+    primaryContactName?: string | null;
+    primaryContactEmail?: string | null;
+    primaryContactPhone?: string | null;
+    billingContactName?: string | null;
+    billingContactEmail?: string | null;
+    billingContactPhone?: string | null;
+}
+
+export class GetActiveClientsQuery implements IGetActiveClientsQuery {
+
+    constructor(data?: IGetActiveClientsQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): GetActiveClientsQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetActiveClientsQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IGetActiveClientsQuery {
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {
