@@ -8,7 +8,7 @@
 <script lang="ts">
 import * as Msal from '@azure/msal-browser'
 import { useStore, MutationTypes, ActionTypes } from '../store'
-import { axios } from 'axios'
+import { Axios } from 'Axios'
 
 // if using cdn version, 'Msal' will be available in the global scope
 
@@ -47,7 +47,7 @@ export default {
           // handle response
           console.log(response)
           store.commit(MutationTypes.SET_TOKEN, response.accessToken)
-          axios.defaults.headers.common.Authorization = response.accessToken
+          //Axios.defaults.headers.common.Authorization = response.accessToken
         })
         .catch(err => {
           // handle error

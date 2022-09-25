@@ -117,14 +117,13 @@ public class Startup
         app.UseSpa(spa =>
         {
             if (env.IsDevelopment())
+            {
                 spa.Options.SourcePath = "ClientApp/";
+                spa.UseVueCli(npmScript: "serve");
+            }
             else
                 spa.Options.SourcePath = "dist";
 
-            if (env.IsDevelopment())
-            {
-                spa.UseVueCli(npmScript: "serve");
-            }
         });
     }
 }
