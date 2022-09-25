@@ -37,22 +37,26 @@ public class ClientHistoryConfiguration : IEntityTypeConfiguration<ClientHistory
         builder
             .HasOne(history => history.PrimaryAddress)
             .WithMany()
-            .HasForeignKey(history => history.PrimarySystemAddressId);
+            .HasForeignKey(history => history.PrimarySystemAddressId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(history => history.BillingAddress)
             .WithMany()
-            .HasForeignKey(history => history.BillingSystemAddressId);
+            .HasForeignKey(history => history.BillingSystemAddressId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(history => history.PrimaryContact)
             .WithMany()
-            .HasForeignKey(history => history.PrimaryContactId);
+            .HasForeignKey(history => history.PrimaryContactId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(history => history.PrimaryBillingContact)
             .WithMany()
-            .HasForeignKey(history => history.PrimaryBillingContactId);
+            .HasForeignKey(history => history.PrimaryBillingContactId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .Property(history => history.Name)

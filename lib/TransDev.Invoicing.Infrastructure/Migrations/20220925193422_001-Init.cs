@@ -201,26 +201,22 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_ClientHistory_Contact_PrimaryBillingContactId",
                         column: x => x.PrimaryBillingContactId,
                         principalTable: "Contact",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ClientHistory_Contact_PrimaryContactId",
                         column: x => x.PrimaryContactId,
                         principalTable: "Contact",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ClientHistory_SystemAddress_BillingSystemAddressId",
                         column: x => x.BillingSystemAddressId,
                         principalTable: "SystemAddress",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ClientHistory_SystemAddress_PrimarySystemAddressId",
                         column: x => x.PrimarySystemAddressId,
                         principalTable: "SystemAddress",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -246,8 +242,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_ContactHistory_AuditTrail_AuditTrailId",
                         column: x => x.AuditTrailId,
                         principalTable: "AuditTrail",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ContactHistory_AuditTrail_UpdatedAuditTrailId",
                         column: x => x.UpdatedAuditTrailId,
@@ -263,8 +258,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_ContactHistory_SystemAddress_SystemAddressId",
                         column: x => x.SystemAddressId,
                         principalTable: "SystemAddress",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

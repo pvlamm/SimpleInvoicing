@@ -99,10 +99,10 @@ CREATE TABLE [ClientHistory] (
     CONSTRAINT [FK_ClientHistory_AuditTrail_AuditTrailId] FOREIGN KEY ([AuditTrailId]) REFERENCES [AuditTrail] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_ClientHistory_AuditTrail_UpdatedAuditTrailId] FOREIGN KEY ([UpdatedAuditTrailId]) REFERENCES [AuditTrail] ([Id]),
     CONSTRAINT [FK_ClientHistory_Client_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [Client] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ClientHistory_Contact_PrimaryBillingContactId] FOREIGN KEY ([PrimaryBillingContactId]) REFERENCES [Contact] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ClientHistory_Contact_PrimaryContactId] FOREIGN KEY ([PrimaryContactId]) REFERENCES [Contact] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ClientHistory_SystemAddress_BillingSystemAddressId] FOREIGN KEY ([BillingSystemAddressId]) REFERENCES [SystemAddress] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ClientHistory_SystemAddress_PrimarySystemAddressId] FOREIGN KEY ([PrimarySystemAddressId]) REFERENCES [SystemAddress] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_ClientHistory_Contact_PrimaryBillingContactId] FOREIGN KEY ([PrimaryBillingContactId]) REFERENCES [Contact] ([Id]),
+    CONSTRAINT [FK_ClientHistory_Contact_PrimaryContactId] FOREIGN KEY ([PrimaryContactId]) REFERENCES [Contact] ([Id]),
+    CONSTRAINT [FK_ClientHistory_SystemAddress_BillingSystemAddressId] FOREIGN KEY ([BillingSystemAddressId]) REFERENCES [SystemAddress] ([Id]),
+    CONSTRAINT [FK_ClientHistory_SystemAddress_PrimarySystemAddressId] FOREIGN KEY ([PrimarySystemAddressId]) REFERENCES [SystemAddress] ([Id])
 );
 GO
 
@@ -118,10 +118,10 @@ CREATE TABLE [ContactHistory] (
     [AuditTrailId] bigint NOT NULL,
     [UpdatedAuditTrailId] bigint NULL,
     CONSTRAINT [PK_ContactHistory] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_ContactHistory_AuditTrail_AuditTrailId] FOREIGN KEY ([AuditTrailId]) REFERENCES [AuditTrail] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_ContactHistory_AuditTrail_AuditTrailId] FOREIGN KEY ([AuditTrailId]) REFERENCES [AuditTrail] ([Id]),
     CONSTRAINT [FK_ContactHistory_AuditTrail_UpdatedAuditTrailId] FOREIGN KEY ([UpdatedAuditTrailId]) REFERENCES [AuditTrail] ([Id]),
     CONSTRAINT [FK_ContactHistory_Contact_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [Contact] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ContactHistory_SystemAddress_SystemAddressId] FOREIGN KEY ([SystemAddressId]) REFERENCES [SystemAddress] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_ContactHistory_SystemAddress_SystemAddressId] FOREIGN KEY ([SystemAddressId]) REFERENCES [SystemAddress] ([Id])
 );
 GO
 
@@ -180,7 +180,7 @@ CREATE INDEX [IX_SystemCity_SystemStateId] ON [SystemCity] ([SystemStateId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20220923234658_001-Init', N'6.0.8');
+VALUES (N'20220925193422_001-Init', N'6.0.8');
 GO
 
 COMMIT;

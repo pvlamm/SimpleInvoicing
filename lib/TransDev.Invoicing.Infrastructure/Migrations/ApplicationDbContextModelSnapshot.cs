@@ -329,7 +329,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.HasOne("TransDev.Invoicing.Domain.Entities.SystemAddress", "BillingAddress")
                         .WithMany()
                         .HasForeignKey("BillingSystemAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.Client", "Parent")
@@ -341,19 +341,19 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.HasOne("TransDev.Invoicing.Domain.Entities.Contact", "PrimaryBillingContact")
                         .WithMany()
                         .HasForeignKey("PrimaryBillingContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.Contact", "PrimaryContact")
                         .WithMany()
                         .HasForeignKey("PrimaryContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.SystemAddress", "PrimaryAddress")
                         .WithMany()
                         .HasForeignKey("PrimarySystemAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.AuditTrail", "UpdatedAuditTrail")
@@ -391,7 +391,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.HasOne("TransDev.Invoicing.Domain.Entities.AuditTrail", "AuditTrail")
                         .WithMany()
                         .HasForeignKey("AuditTrailId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.Contact", "Parent")
@@ -403,7 +403,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.HasOne("TransDev.Invoicing.Domain.Entities.SystemAddress", "Address")
                         .WithMany()
                         .HasForeignKey("SystemAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TransDev.Invoicing.Domain.Entities.AuditTrail", "UpdatedAuditTrail")

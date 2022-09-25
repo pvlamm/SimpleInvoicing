@@ -19,7 +19,8 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
             .HasOne(a => a.AuditTrail)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(a => a.AuditTrailId);
+            .HasForeignKey(a => a.AuditTrailId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(a => a.UpdatedAuditTrail)
@@ -35,7 +36,8 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
         builder
             .HasOne(history => history.Address)
             .WithMany()
-            .HasForeignKey(history => history.SystemAddressId);
+            .HasForeignKey(history => history.SystemAddressId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .Property(history => history.FirstName)

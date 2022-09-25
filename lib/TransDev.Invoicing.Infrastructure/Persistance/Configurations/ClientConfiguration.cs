@@ -16,10 +16,12 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.HasMany(client => client.Contacts)
             .WithOne(contact => contact.Client)
-            .HasForeignKey(contact => contact.ClientId);
+            .HasForeignKey(contact => contact.ClientId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(client => client.History)
             .WithOne(history => history.Parent)
-            .HasForeignKey(history => history.ParentId);
+            .HasForeignKey(history => history.ParentId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
