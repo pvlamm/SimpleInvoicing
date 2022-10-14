@@ -8,28 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ClientApp\src\node_modules\**" />
-    <Content Remove="ClientApp\src\node_modules\**" />
-    <EmbeddedResource Remove="ClientApp\src\node_modules\**" />
-    <None Remove="ClientApp\src\node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="ClientApp\package-lock.json" />
-    <Content Remove="ClientApp\package.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="clientapp\src\models\dataStore.ts" />
-    <None Remove="ClientApp\src\shims-vuex.d.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ClientApp\package-lock.json" />
-    <None Include="ClientApp\package.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
@@ -56,13 +34,9 @@
     <ProjectReference Include="..\..\lib\TransDev.Invoicing.Application\TransDev.Invoicing.Application.csproj" />
     <ProjectReference Include="..\..\lib\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj" />
     <ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="clientapp\src\shims-vue.d.ts" />
-    <TypeScriptCompile Include="ClientApp\src\shims-vuex.d.ts" />
-    <TypeScriptCompile Include="clientapp\src\shims-vuetify.d.ts" />
-    <TypeScriptCompile Include="clientapp\src\store\index.ts" />
+    <ProjectReference Include="..\TransDev.Invoicing.WebUI.Client.VueJS\transdev.invoicing.webui.client.vuejs.esproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <!--Condition="'$(GenerateTSClient)'=='True' "-->
   <Target Name="NSwag" AfterTargets="Build">
