@@ -33,16 +33,8 @@ public class Startup
 
         services.AddControllers();
 
-        //services.AddSpaStaticFiles(configuration =>
-        //{
-        //    configuration.RootPath = "ClientApp";
-        //});
-
         services.AddSwaggerDocument(options =>
             options.GenerateEnumMappingDescription = true);
-
-        //services.AddRazorPages()
-        //     .AddMicrosoftIdentityUI();
 
         services.AddSwaggerGen(c =>
         {
@@ -66,10 +58,6 @@ public class Startup
         }
 
         app.UseStaticFiles();
-        //if (!env.IsDevelopment())
-        //{
-        //    app.UseSpaStaticFiles();
-        //}
 
         app.UseHttpsRedirection();
         app.UseRouting();
