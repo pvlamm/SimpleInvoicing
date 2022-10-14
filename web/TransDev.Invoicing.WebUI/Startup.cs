@@ -69,6 +69,7 @@ public class Startup
         {
             options.DocumentPath = swaggerJson;
             options.Path = swaggerRoot;
+            options.ServerUrl = string.Empty;
         });
 
         app.UseAuthentication();
