@@ -1,28 +1,17 @@
 namespace TransDev.Invoicing.WebUI;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using TransDev.Invoicing.Application;
 using TransDev.Invoicing.Infrastructure;
-
-using VueCliMiddleware;
 
 public class Startup
 {
@@ -44,15 +33,16 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddSpaStaticFiles(configuration =>
-        {
-            configuration.RootPath = "ClientApp";
-        });
+        //services.AddSpaStaticFiles(configuration =>
+        //{
+        //    configuration.RootPath = "ClientApp";
+        //});
+
         services.AddSwaggerDocument(options =>
             options.GenerateEnumMappingDescription = true);
 
-        services.AddRazorPages()
-             .AddMicrosoftIdentityUI();
+        //services.AddRazorPages()
+        //     .AddMicrosoftIdentityUI();
 
         services.AddSwaggerGen(c =>
         {
@@ -76,10 +66,10 @@ public class Startup
         }
 
         app.UseStaticFiles();
-        if (!env.IsDevelopment())
-        {
-            app.UseSpaStaticFiles();
-        }
+        //if (!env.IsDevelopment())
+        //{
+        //    app.UseSpaStaticFiles();
+        //}
 
         app.UseHttpsRedirection();
         app.UseRouting();
@@ -112,18 +102,6 @@ public class Startup
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
-        });
-
-        app.UseSpa(spa =>
-        {
-            if (env.IsDevelopment())
-            {
-                spa.Options.SourcePath = "ClientApp/";
-                spa.UseVueCli(npmScript: "serve");
-            }
-            else
-                spa.Options.SourcePath = "dist";
-
         });
     }
 }
