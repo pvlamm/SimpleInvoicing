@@ -69,7 +69,6 @@ public class Startup
         {
             options.DocumentPath = swaggerJson;
             options.Path = swaggerRoot;
-            options.ServerUrl = string.Empty;
         });
 
         app.UseAuthentication();
@@ -90,7 +89,7 @@ public class Startup
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
-            endpoints.MapRazorPages();
+            //endpoints.MapRazorPages();
         });
     }
 }
