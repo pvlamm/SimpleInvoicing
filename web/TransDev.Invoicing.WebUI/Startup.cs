@@ -25,6 +25,14 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+        {
+            builder
+            .WithOrigins("http://localhost:8081")
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }));
         services.AddApplication();
         services.AddInfrastructre(Configuration);
 
@@ -45,10 +53,11 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseCors("CorsPolicy");
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
         }
         else
         {

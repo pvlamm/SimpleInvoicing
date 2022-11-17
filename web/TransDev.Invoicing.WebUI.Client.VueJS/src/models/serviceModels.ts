@@ -80,17 +80,13 @@ export class ClientClient {
     /**
      * @return List of Active Clients
      */
-    get(query: GetActiveClientsQuery): Promise<GetActiveClientsResponse> {
+    get(): Promise<GetActiveClientsResponse> {
         let url_ = this.baseUrl + "/api/Client";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(query);
-
         let options_: RequestInit = {
-            body: content_,
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -571,36 +567,6 @@ export interface ISearchClientDto {
     billingContactName?: string | null;
     billingContactEmail?: string | null;
     billingContactPhone?: string | null;
-}
-
-export class GetActiveClientsQuery implements IGetActiveClientsQuery {
-
-    constructor(data?: IGetActiveClientsQuery) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): GetActiveClientsQuery {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetActiveClientsQuery();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IGetActiveClientsQuery {
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {
