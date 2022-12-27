@@ -1,28 +1,42 @@
 <template>
-    This is a Client List from Server - {{ msg }}
+    This is a Client List from Server {{ msg }}
+
+    <ul>
+        <li v-for="item in results" :key="item.name">{{ item.name }}</li>
+    </ul>
 </template>
 <script lang="ts">
 
-    import { defineComponent } from 'vue';
-    import { ClientClient, GetActiveClientsQuery } from '@/models/serviceModels';
+import { defineComponent } from 'vue';
+import { ClientClient, SearchClientDto } from '@/models/serviceModels'
 
-    export default defineComponent({
-        name: 'ClientList',
-        props: {
-            msg: String,
-        },
-        data: async () => {
-            let client = new ClientClient('https://localhost:5001');
-            let clientData = {};
+export default defineComponent({
+    name: 'ClientList',
+    props: {
+        msg: String,
+    },
+    data() { 
+        return {
+            results: Array<SearchClientDto>()
+        };
+    },
+    async mounted() {
 
-            client.get(new GetActiveClientsQuery()).then(response => clientData = response);
+        let cClient = new ClientClient('https://localhost:5001');
+        let clientTest = new SearchClientDto();
+        clientTest.name = 'A Name';
 
-            console.log(clientData);
+        this.results.push(clientTest);
 
-            return clientData;
-        }
+        let apiResults = await cClient
+            .get()
+            .then(response => response.clients) as SearchClientDto[];
 
-    });
+        this.results = apiResults;
+        
+    }
+});
+
 </script>
 <style>
 </style>

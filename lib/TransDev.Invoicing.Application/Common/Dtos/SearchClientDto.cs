@@ -31,6 +31,11 @@ public class SearchClientDto
         }
     }
 
+    public SearchClientDto()
+    {
+
+    }
+
     private ContactHistory GetCurrentContact(Contact contact)
     {
         return contact.History?

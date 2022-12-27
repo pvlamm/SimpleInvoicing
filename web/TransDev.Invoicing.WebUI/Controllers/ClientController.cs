@@ -13,6 +13,7 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Client.Queries;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -25,11 +26,11 @@ public class ClientController : BaseController
     [HttpGet]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetActiveClientsResponse), Description = "List of Active Clients")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<CreateItemResponse>> Get([FromBody] GetActiveClientsQuery query)
+    public async Task<ActionResult<CreateItemResponse>> Get()
     {
         try
         {
-            var results = await _mediator.Send(query);
+            var results = await _mediator.Send(new GetActiveClientsQuery());
             return Ok(results);
         }
         catch (Exception ex)

@@ -26,14 +26,28 @@ public class GetActiveClientsQueryHandler : IRequestHandler<GetActiveClientsQuer
 
     public async Task<GetActiveClientsResponse> Handle(GetActiveClientsQuery request, CancellationToken token)
     {
-        var activeClients = await _clientService.GetActiveClientsAsync(token);
-        var clientDtos = activeClients
-            .Select(client => new SearchClientDto(client)).ToArray();
+        //var activeClients = await _clientService.GetActiveClientsAsync(token);
+        //var clientDtos = activeClients
+        //    .Select(client => new SearchClientDto(client)).ToArray();
 
         return new GetActiveClientsResponse
         {
             Success = true,
-            Clients = clientDtos
+            Clients = new SearchClientDto[]
+            {
+                new SearchClientDto
+                {
+                    Name = "Fred"
+                },
+                new SearchClientDto
+                {
+                    Name = "Mavis"
+                },
+                new SearchClientDto
+                {
+                    Name = "Clubber Lang"
+                },
+            }
         };
 
     }

@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "yourbackendapp": {
+    "TransDev.SimpleInvoicing": {
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
