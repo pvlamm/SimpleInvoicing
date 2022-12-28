@@ -37,15 +37,21 @@ public class GetActiveClientsQueryHandler : IRequestHandler<GetActiveClientsQuer
             {
                 new SearchClientDto
                 {
-                    Name = "Fred"
+                    Name = "Fred",
+                    PrimaryContactEmail = "fred@scotts.com",
+                    PrimaryContactPhone = "704.555.5555"
                 },
                 new SearchClientDto
                 {
-                    Name = "Mavis"
+                    Name = "Mavis",
+                    PrimaryContactEmail = "mavis@cars.com",
+                    PrimaryContactPhone = "919.888.8888"
                 },
                 new SearchClientDto
                 {
-                    Name = "Clubber Lang"
+                    Name = "Clubber Lang",
+                    PrimaryContactEmail = "clubber.lang@boxingday.com",
+                    PrimaryContactPhone = "828.333.3333"
                 },
             }
         };

@@ -24,3 +24,8 @@ Intended for small scale service workers looking to upgrade their Invoicing prac
 1. VueJS
 1. Vuetify
 1. Vuex
+
+## General Notes
+
+Firefox sometimes plays a Blocking game with CORS and such making development hard. 
+Don't know yet out of the box how to prevent this, but should be adding an exception to it's Safety Blocking mentality.

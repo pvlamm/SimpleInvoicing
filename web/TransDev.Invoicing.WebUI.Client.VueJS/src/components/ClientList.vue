@@ -1,14 +1,17 @@
 <template>
     This is a Client List from Server {{ msg }}
 
-    <ul>
-        <li v-for="item in results" :key="item.name">{{ item.name }}</li>
-    </ul>
+    <EasyDataTable
+        :headers="headers"
+        :items="results"
+                   />
 </template>
 <script lang="ts">
 
-import { defineComponent } from 'vue';
-import { ClientClient, SearchClientDto } from '@/models/serviceModels'
+    import { defineComponent } from 'vue';
+    import type { Header } from "vue3-easy-data-table";
+    import { ClientClient, SearchClientDto } from '@/models/serviceModels'
+
 
 export default defineComponent({
     name: 'ClientList',
@@ -19,6 +22,15 @@ export default defineComponent({
         return {
             results: Array<SearchClientDto>()
         };
+    },
+    setup() {
+        const headers: Header[] = [
+            { text: 'CLIENT', value: 'name' },
+            { text: 'EMAIL', value: 'primaryContactEmail' },
+            { text: 'PHONE', value: 'primaryContactPhone' }
+        ];
+
+        return { headers };
     },
     async mounted() {
 
@@ -33,7 +45,6 @@ export default defineComponent({
             .then(response => response.clients) as SearchClientDto[];
 
         this.results = apiResults;
-        
     }
 });
 

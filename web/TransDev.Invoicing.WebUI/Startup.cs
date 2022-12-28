@@ -68,7 +68,11 @@ public class Startup
 
         app.UseStaticFiles();
 
-        app.UseHttpsRedirection();
+        if (env.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
         app.UseRouting();
 
         const string swaggerRoot = "/api/docs";
