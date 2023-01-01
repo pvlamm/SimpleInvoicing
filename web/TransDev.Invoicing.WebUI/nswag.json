@@ -1,5 +1,5 @@
 {
-  "runtime": "Net50",
+  "runtime": "Net60",
   "defaultVariables": null,
   "documentGenerator": {
     "aspNetCoreToOpenApi": {
@@ -118,7 +118,7 @@
       "checksumCacheEnabled": false,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "ClientApp/src/models/serviceModels.ts",
+      "output": "../TransDev.Invoicing.WebUI.Client.VueJS/src/models/serviceModels.ts",
       "newLineBehavior": "LF"
     }
   }

@@ -1,28 +1,17 @@
 namespace TransDev.Invoicing.WebUI;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using TransDev.Invoicing.Application;
 using TransDev.Invoicing.Infrastructure;
-
-using VueCliMiddleware;
 
 public class Startup
 {
@@ -36,6 +25,14 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+        {
+            builder
+            .WithOrigins("http://localhost:8081")
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }));
         services.AddApplication();
         services.AddInfrastructre(Configuration);
 
@@ -44,15 +41,8 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddSpaStaticFiles(configuration =>
-        {
-            configuration.RootPath = "ClientApp";
-        });
         services.AddSwaggerDocument(options =>
             options.GenerateEnumMappingDescription = true);
-
-        services.AddRazorPages()
-             .AddMicrosoftIdentityUI();
 
         services.AddSwaggerGen(c =>
         {
@@ -63,10 +53,11 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseCors("CorsPolicy");
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
         }
         else
         {
@@ -76,12 +67,12 @@ public class Startup
         }
 
         app.UseStaticFiles();
-        if (!env.IsDevelopment())
+
+        if (env.IsDevelopment())
         {
-            app.UseSpaStaticFiles();
+            app.UseHttpsRedirection();
         }
 
-        app.UseHttpsRedirection();
         app.UseRouting();
 
         const string swaggerRoot = "/api/docs";
@@ -111,20 +102,7 @@ public class Startup
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
-            endpoints.MapRazorPages();
-        });
-
-        app.UseSpa(spa =>
-        {
-            if (env.IsDevelopment())
-                spa.Options.SourcePath = "ClientApp/";
-            else
-                spa.Options.SourcePath = "dist";
-
-            if (env.IsDevelopment())
-            {
-                spa.UseVueCli(npmScript: "serve");
-            }
+            //endpoints.MapRazorPages();
         });
     }
 }
