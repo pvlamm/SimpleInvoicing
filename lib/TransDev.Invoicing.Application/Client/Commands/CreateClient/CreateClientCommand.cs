@@ -31,7 +31,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
         clientHistory = await _clientService.CreateClientAsync(clientHistory, token);
 
-        ClientDto client = new ClientDto();
+        ClientDto client = new ClientDto(clientHistory);
 
         // Convert ClientHistory to ClientDto
 
