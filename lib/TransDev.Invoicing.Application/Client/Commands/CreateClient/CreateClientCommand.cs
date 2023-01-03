@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 using MediatR;
 
@@ -12,33 +13,59 @@ using TransDev.Invoicing.Domain.Entities;
 
 public class CreateClientCommand : IRequest<CreateClientResponse>
 {
-    NewClientDto ClientDto { get; set; }
+    public string Name { get; set; }
+    public ContactDto PrimaryContact { get; set; }
+    public ContactDto BillingContact { get; set; }
 }
 
 public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, CreateClientResponse>
 {
     IClientService _clientService;
-    public CreateClientCommandHandler(IClientService clientService)
+    IDateTimeService _dateTimeService;
+
+    public CreateClientCommandHandler(IClientService clientService, IDateTimeService dateTimeService)
     {
         _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
+        _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
     }
 
     public async Task<CreateClientResponse> Handle(CreateClientCommand request, CancellationToken token)
     {
+        var auditTrail = new AuditTrail
+        {
+            CreatedDate = _dateTimeService.Now,
+            Note = $"Creating Client {request.Name}".Substring(0, 1024)
+        };
+
         ClientHistory clientHistory = new ClientHistory();
 
-        // Convert request.ClientDto to clientHistory;
+        clientHistory.AuditTrail = auditTrail;
 
-        clientHistory = await _clientService.CreateClientAsync(clientHistory, token);
+        var client = new Client
+        {
+            ClientType = Domain.Enums.ClientType.Commercial
+        };
 
-        ClientDto client = new ClientDto(clientHistory);
+        client.History.Add(clientHistory);
 
-        // Convert ClientHistory to ClientDto
+        AddContactRecord(auditTrail, clientHistory.PrimaryContact, request.PrimaryContact);
+        AddContactRecord(auditTrail, clientHistory.PrimaryBillingContact, request.BillingContact);
+
+        await _clientService.CreateClientAsync(client, token);
+
+        var clientDto = new ClientDto(clientHistory);
 
         return new CreateClientResponse
         {
             Success = clientHistory.Id > 0,
-            Client = client
+            Client = clientDto
         };
+    }
+
+    private static void AddContactRecord(AuditTrail auditTrail, Contact contact, ContactDto contactDto)
+    {
+        var contactHistory = contactDto.ConvertToContactHistory();
+        contactHistory.AuditTrail = auditTrail;
+        contact.History.Add(contactHistory);
     }
 }

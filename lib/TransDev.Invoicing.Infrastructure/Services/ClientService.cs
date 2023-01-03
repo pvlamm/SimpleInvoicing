@@ -105,4 +105,10 @@ public class ClientService : IClientService
 
         return await _context.SaveChangesAsync(token) > 0;
     }
+
+    public async Task CreateClientAsync(Client client, CancellationToken token)
+    {
+        await _context.Clients.AddAsync(client,token);
+        await _context.SaveChangesAsync(token);
+    }
 }
