@@ -14,6 +14,7 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Client.Queries;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using TransDev.Invoicing.Application.Client.Commands;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -34,6 +35,26 @@ public class ClientController : BaseController
             return Ok(results);
         }
         catch (Exception ex)
+        {
+            return BadRequest(new SerializableException(ex));
+        }
+    }
+
+    [HttpPost]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(CreateClientResponse), Description = "Create new Client")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
+    public async Task<ActionResult<CreateClientResponse>> Post([FromBody] CreateClientCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+
+            if(result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+        catch(Exception ex)
         {
             return BadRequest(new SerializableException(ex));
         }
