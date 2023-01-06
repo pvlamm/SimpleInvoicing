@@ -120,6 +120,54 @@ export class ClientClient {
         }
         return Promise.resolve<GetActiveClientsResponse>(null as any);
     }
+
+    /**
+     * @return Create new Client
+     */
+    post(command: CreateClientCommand): Promise<CreateClientResponse> {
+        let url_ = this.baseUrl + "/api/Client";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPost(_response);
+        });
+    }
+
+    protected processPost(response: Response): Promise<CreateClientResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateClientResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateClientResponse>(null as any);
+    }
 }
 
 export class ItemClient {
@@ -567,6 +615,199 @@ export interface ISearchClientDto {
     billingContactName?: string | null;
     billingContactEmail?: string | null;
     billingContactPhone?: string | null;
+}
+
+export class CreateClientResponse extends ResponseBase implements ICreateClientResponse {
+    client?: ClientDto | null;
+
+    constructor(data?: ICreateClientResponse) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.client = _data["client"] ? ClientDto.fromJS(_data["client"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateClientResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateClientResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["client"] = this.client ? this.client.toJSON() : <any>null;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ICreateClientResponse extends IResponseBase {
+    client?: ClientDto | null;
+}
+
+export class ClientDto implements IClientDto {
+    id!: string;
+    name?: string | null;
+    primaryContactName?: string | null;
+    primaryContactEmail?: string | null;
+    primaryContactPhone?: string | null;
+    billingContactName?: string | null;
+    billingContactEmail?: string | null;
+    billingContactPhone?: string | null;
+
+    constructor(data?: IClientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.primaryContactName = _data["primaryContactName"] !== undefined ? _data["primaryContactName"] : <any>null;
+            this.primaryContactEmail = _data["primaryContactEmail"] !== undefined ? _data["primaryContactEmail"] : <any>null;
+            this.primaryContactPhone = _data["primaryContactPhone"] !== undefined ? _data["primaryContactPhone"] : <any>null;
+            this.billingContactName = _data["billingContactName"] !== undefined ? _data["billingContactName"] : <any>null;
+            this.billingContactEmail = _data["billingContactEmail"] !== undefined ? _data["billingContactEmail"] : <any>null;
+            this.billingContactPhone = _data["billingContactPhone"] !== undefined ? _data["billingContactPhone"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["primaryContactName"] = this.primaryContactName !== undefined ? this.primaryContactName : <any>null;
+        data["primaryContactEmail"] = this.primaryContactEmail !== undefined ? this.primaryContactEmail : <any>null;
+        data["primaryContactPhone"] = this.primaryContactPhone !== undefined ? this.primaryContactPhone : <any>null;
+        data["billingContactName"] = this.billingContactName !== undefined ? this.billingContactName : <any>null;
+        data["billingContactEmail"] = this.billingContactEmail !== undefined ? this.billingContactEmail : <any>null;
+        data["billingContactPhone"] = this.billingContactPhone !== undefined ? this.billingContactPhone : <any>null;
+        return data;
+    }
+}
+
+export interface IClientDto {
+    id: string;
+    name?: string | null;
+    primaryContactName?: string | null;
+    primaryContactEmail?: string | null;
+    primaryContactPhone?: string | null;
+    billingContactName?: string | null;
+    billingContactEmail?: string | null;
+    billingContactPhone?: string | null;
+}
+
+export class CreateClientCommand implements ICreateClientCommand {
+    name?: string | null;
+    primaryContact?: ContactDto | null;
+    billingContact?: ContactDto | null;
+
+    constructor(data?: ICreateClientCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.primaryContact = _data["primaryContact"] ? ContactDto.fromJS(_data["primaryContact"]) : <any>null;
+            this.billingContact = _data["billingContact"] ? ContactDto.fromJS(_data["billingContact"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateClientCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateClientCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["primaryContact"] = this.primaryContact ? this.primaryContact.toJSON() : <any>null;
+        data["billingContact"] = this.billingContact ? this.billingContact.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export interface ICreateClientCommand {
+    name?: string | null;
+    primaryContact?: ContactDto | null;
+    billingContact?: ContactDto | null;
+}
+
+export class ContactDto implements IContactDto {
+    firstName?: string | null;
+    middleName?: string | null;
+    lastName?: string | null;
+    emailAddress?: string | null;
+    phoneNumber?: string | null;
+
+    constructor(data?: IContactDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : <any>null;
+            this.middleName = _data["middleName"] !== undefined ? _data["middleName"] : <any>null;
+            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : <any>null;
+            this.emailAddress = _data["emailAddress"] !== undefined ? _data["emailAddress"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ContactDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContactDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName !== undefined ? this.firstName : <any>null;
+        data["middleName"] = this.middleName !== undefined ? this.middleName : <any>null;
+        data["lastName"] = this.lastName !== undefined ? this.lastName : <any>null;
+        data["emailAddress"] = this.emailAddress !== undefined ? this.emailAddress : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        return data;
+    }
+}
+
+export interface IContactDto {
+    firstName?: string | null;
+    middleName?: string | null;
+    lastName?: string | null;
+    emailAddress?: string | null;
+    phoneNumber?: string | null;
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {
