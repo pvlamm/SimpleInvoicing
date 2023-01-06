@@ -33,6 +33,7 @@ public class Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         }));
+
         services.AddApplication();
         services.AddInfrastructre(Configuration);
 
@@ -41,7 +42,8 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddSwaggerDocument(options =>
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerDocument(options => 
             options.GenerateEnumMappingDescription = true);
 
         services.AddSwaggerGen(c =>
@@ -54,10 +56,11 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseCors("CorsPolicy");
+        
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI"));
         }
         else
         {
