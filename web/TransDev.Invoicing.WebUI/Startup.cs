@@ -43,13 +43,34 @@ public class Startup
         services.AddControllers();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerDocument(options => 
-            options.GenerateEnumMappingDescription = true);
 
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TransDev.Invoicing.WebUI", Version = "v1" });
-        });
+        //services.AddSwaggerGen(c =>
+        //{
+        //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TransDev.Invoicing.WebUI", Version = "v1" });
+        //});
+
+        //services.AddSwaggerDocument(options =>
+        //{
+        //    options.GenerateEnumMappingDescription = true;
+        //    options.PostProcess = document =>
+        //    {
+        //        document.Info.Version = "v1";
+        //        document.Info.Title = "ToDo API";
+        //        document.Info.Description = "A simple ASP.NET Core web API";
+        //        document.Info.TermsOfService = "None";
+        //        document.Info.Contact = new NSwag.OpenApiContact
+        //        {
+        //            Name = "Shayne Boyer",
+        //            Email = string.Empty,
+        //            Url = "https://twitter.com/spboyer"
+        //        };
+        //        document.Info.License = new NSwag.OpenApiLicense
+        //        {
+        //            Name = "Use under LICX",
+        //            Url = "https://example.com/license"
+        //        };
+        //    };
+        //});
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,12 +101,13 @@ public class Startup
 
         const string swaggerRoot = "/api/docs";
         const string swaggerJson = swaggerRoot + "/v1/swagger.json";
-        app.UseOpenApi(options => options.Path = swaggerJson);
-        app.UseSwaggerUi3(options =>
-        {
-            options.DocumentPath = swaggerJson;
-            options.Path = swaggerRoot;
-        });
+        //app.UseOpenApi(options => options.Path = swaggerJson);
+        //app.UseSwaggerUI();
+        //app.UseSwaggerUi3(options =>
+        //{
+        //    options.DocumentPath = swaggerJson;
+        //    options.Path = swaggerRoot;
+        //});
 
         app.UseAuthentication();
         app.UseAuthorization();
