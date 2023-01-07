@@ -13,7 +13,7 @@ using TransDev.Invoicing.Domain.Entities;
 
 public class CreateClientCommand : IRequest<CreateClientResponse>
 {
-    public string Name { get; set; }
+    public string CompanyName { get; set; }
     public ContactDto PrimaryContact { get; set; }
     public ContactDto BillingContact { get; set; }
 }
@@ -34,7 +34,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
         var auditTrail = new AuditTrail
         {
             CreatedDate = _dateTimeService.Now,
-            Note = $"Creating Client {request.Name}".Substring(0, 1024)
+            Note = $"Creating Client {request.CompanyName}".Substring(0, 1024)
         };
 
         ClientHistory clientHistory = new ClientHistory();

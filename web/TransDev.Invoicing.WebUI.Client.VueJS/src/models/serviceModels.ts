@@ -715,7 +715,7 @@ export interface IClientDto {
 }
 
 export class CreateClientCommand implements ICreateClientCommand {
-    name?: string | null;
+    companyName?: string | null;
     primaryContact?: ContactDto | null;
     billingContact?: ContactDto | null;
 
@@ -730,7 +730,7 @@ export class CreateClientCommand implements ICreateClientCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.companyName = _data["companyName"] !== undefined ? _data["companyName"] : <any>null;
             this.primaryContact = _data["primaryContact"] ? ContactDto.fromJS(_data["primaryContact"]) : <any>null;
             this.billingContact = _data["billingContact"] ? ContactDto.fromJS(_data["billingContact"]) : <any>null;
         }
@@ -745,7 +745,7 @@ export class CreateClientCommand implements ICreateClientCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["companyName"] = this.companyName !== undefined ? this.companyName : <any>null;
         data["primaryContact"] = this.primaryContact ? this.primaryContact.toJSON() : <any>null;
         data["billingContact"] = this.billingContact ? this.billingContact.toJSON() : <any>null;
         return data;
@@ -753,7 +753,7 @@ export class CreateClientCommand implements ICreateClientCommand {
 }
 
 export interface ICreateClientCommand {
-    name?: string | null;
+    companyName?: string | null;
     primaryContact?: ContactDto | null;
     billingContact?: ContactDto | null;
 }
