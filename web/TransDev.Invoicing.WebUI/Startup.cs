@@ -52,24 +52,6 @@ public class Startup
         services.AddSwaggerDocument(options =>
         {
             options.GenerateEnumMappingDescription = true;
-            //options.PostProcess = document =>
-            //{
-            //    document.Info.Version = "v1";
-            //    document.Info.Title = "ToDo API";
-            //    document.Info.Description = "A simple ASP.NET Core web API";
-            //    document.Info.TermsOfService = "None";
-            //    document.Info.Contact = new NSwag.OpenApiContact
-            //    {
-            //        Name = "Shayne Boyer",
-            //        Email = string.Empty,
-            //        Url = "https://twitter.com/spboyer"
-            //    };
-            //    document.Info.License = new NSwag.OpenApiLicense
-            //    {
-            //        Name = "Use under LICX",
-            //        Url = "https://example.com/license"
-            //    };
-            //};
         });
     }
 
@@ -81,7 +63,8 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI"));
+            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/api/docs/v1/swagger.json", "TransDev.Invoicing.WebUI"));
         }
         else
         {
@@ -102,7 +85,6 @@ public class Startup
         const string swaggerRoot = "/api/docs";
         const string swaggerJson = swaggerRoot + "/v1/swagger.json";
         app.UseOpenApi(options => options.Path = swaggerJson);
-        app.UseSwaggerUI();
         app.UseSwaggerUi3(options =>
         {
             options.DocumentPath = swaggerJson;
@@ -117,10 +99,6 @@ public class Startup
             endpoints.MapControllers();
         });
 
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
 
         app.UseEndpoints(endpoints =>
         {
@@ -129,5 +107,10 @@ public class Startup
                 pattern: "{controller}/{action=Index}/{id?}");
             //endpoints.MapRazorPages();
         });
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
     }
 }
