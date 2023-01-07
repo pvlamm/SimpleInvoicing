@@ -58,13 +58,15 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        const string swaggerRoot = "/api/docs";
+        const string swaggerJson = swaggerRoot + "/v1/swagger.json";
+
         app.UseCors("CorsPolicy");
         
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI"));
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/api/docs/v1/swagger.json", "TransDev.Invoicing.WebUI"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint(swaggerJson, "TransDev.Invoicing.WebUI"));
         }
         else
         {
@@ -82,8 +84,6 @@ public class Startup
 
         app.UseRouting();
 
-        const string swaggerRoot = "/api/docs";
-        const string swaggerJson = swaggerRoot + "/v1/swagger.json";
         app.UseOpenApi(options => options.Path = swaggerJson);
         app.UseSwaggerUi3(options =>
         {
