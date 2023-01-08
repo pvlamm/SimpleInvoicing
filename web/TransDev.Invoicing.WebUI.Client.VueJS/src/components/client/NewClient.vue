@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div :style="{ display: display ? 'block' : 'none' }">
         <div>
             <h3>Create Client</h3>
         </div>
         <div>
             <label>
-                Name
+                Client Name
             </label>
             <input type="text" v-model="companyName" />
         </div>
@@ -30,33 +30,25 @@
     </div>
 </template>
 <style>
-
 </style>
 <script lang="ts">
-    /*
-     *    firstName?: string | null;
-    middleName?: string | null;
-    lastName?: string | null;
-    emailAddress?: string | null;
-    phoneNumber?: string | null;
-     * */
     import { defineComponent } from 'vue';
     import { ContactDto } from '@/models/serviceModels'
 
     export default defineComponent({
         name: 'NewClient',
-        data: function() {
+        props: {
+            display: Boolean,
+        },
+        data: function () {
             return {
                 companyName: "",
                 primaryContact: new ContactDto(),
                 billingContact: new ContactDto()
-                }
+            }
         },
-        mounted: async function() {
-
-            this.companyName = "this is just a test to see if I can reference it";
-            this.billingContact.firstName = "billingTEST";
-            this.primaryContact.firstName = "primaryTEST";
+        mounted: function () {
+            console.log('newClient', this.display);
         }
     });
 

@@ -7,14 +7,12 @@
 
 <script lang="ts">
     import { defineComponent } from 'vue';
-    import ClientList from './components/ClientList.vue';
-    import NewClient from './components/client/NewClient.vue';
+    import ClientList from './components/client/ClientList.vue';
 
     export default defineComponent({
         name: 'App',
         components: {
             ClientList,
-            NewClient,
         }
     });
 </script>

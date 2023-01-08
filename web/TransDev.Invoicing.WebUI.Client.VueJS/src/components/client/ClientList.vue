@@ -5,22 +5,30 @@
         :headers="headers"
         :items="results"
                    />
+    <button type="button" @click="addClient">Add Client</button>
+
+    <NewClient v-bind:display="newClient" />
 </template>
 <script lang="ts">
 
     import { defineComponent } from 'vue';
     import type { Header } from "vue3-easy-data-table";
+    import NewClient from './NewClient.vue';
     import { ClientClient, SearchClientDto } from '@/models/serviceModels'
 
 
 export default defineComponent({
     name: 'ClientList',
+    components: {
+        NewClient
+    },
     props: {
         msg: String,
     },
-    data() { 
+    data: function() { 
         return {
-            results: Array<SearchClientDto>()
+            results: Array<SearchClientDto>(),
+            newClient: false,
         };
     },
     setup() {
@@ -37,7 +45,8 @@ export default defineComponent({
         let cClient = new ClientClient('https://localhost:5001');
         let clientTest = new SearchClientDto();
         clientTest.name = 'A Name';
-
+        this.newClient = false;
+        console.log(this.newClient);
         this.results.push(clientTest);
 
         let apiResults = await cClient
@@ -45,7 +54,13 @@ export default defineComponent({
             .then(response => response.clients) as SearchClientDto[];
 
         this.results = apiResults;
-    }
+    },
+    methods: {
+        addClient: function () {
+            this.newClient = true;
+            console.log(this.newClient);
+        }
+        }
 });
 
 </script>
