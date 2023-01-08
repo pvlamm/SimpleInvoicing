@@ -16,7 +16,6 @@
     import NewClient from './NewClient.vue';
     import { ClientClient, SearchClientDto } from '@/models/serviceModels'
 
-
 export default defineComponent({
     name: 'ClientList',
     components: {
