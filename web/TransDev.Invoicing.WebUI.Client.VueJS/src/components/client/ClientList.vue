@@ -1,4 +1,6 @@
 <template>
+    <NewClient v-bind:display="newClient" />
+    
     This is a Client List from Server {{ msg }}
 
     <EasyDataTable
@@ -7,7 +9,6 @@
                    />
     <button type="button" @click="addClient">Add Client</button>
 
-    <NewClient v-bind:display="newClient" />
 </template>
 <script lang="ts">
 

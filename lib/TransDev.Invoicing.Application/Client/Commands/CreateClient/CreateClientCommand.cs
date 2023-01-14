@@ -31,10 +31,16 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
     public async Task<CreateClientResponse> Handle(CreateClientCommand request, CancellationToken token)
     {
+        var message = $"Creating Client {request.CompanyName}";
+        if(message.Length > 1024)
+        {
+            message = message.Substring(0, 1024);
+        }
+
         var auditTrail = new AuditTrail
         {
             CreatedDate = _dateTimeService.Now,
-            Note = $"Creating Client {request.CompanyName}".Substring(0, 1024)
+            Note = message
         };
 
         ClientHistory clientHistory = new ClientHistory();
