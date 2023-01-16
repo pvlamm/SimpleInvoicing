@@ -17,11 +17,14 @@ public class SystemAddressService : ISystemAddressService
 {
     IApplicationDbContext _context;
     ISystemCityService _systemCityService;
+    ISystemStateService _systemStateService;
 
-    public SystemAddressService(IApplicationDbContext context, ISystemCityService systemCityService)
+    public SystemAddressService(IApplicationDbContext context, ISystemCityService systemCityService, ISystemStateService systemStateService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _systemCityService = systemCityService ?? throw new ArgumentNullException(nameof(systemCityService));
+        _systemStateService= systemStateService ?? throw new ArgumentNullException(nameof(systemStateService));
+
     }
 
     public async Task<bool> AddressExistsAsync(string address, string cityName, string stateId, string zipCode, CancellationToken token)
@@ -36,7 +39,14 @@ public class SystemAddressService : ISystemAddressService
                 && addr.SystemStateId == stateId
                 && addr.ZipCode == zipCode, token);
     }
-
+    public async Task<bool> CityExistsAsync(string cityName, string stateId, CancellationToken token)
+    {
+        return await _systemCityService.CityExistsAsync(stateId, cityName, token);
+    }
+    public async Task<bool> StateExistsAsync(string stateId, CancellationToken token)
+    {
+        return await _systemStateService.SystemStateExistsById(stateId, token);
+    }
     public async Task<SystemAddress> CreateSystemAddressAsync(string address, string cityName, string stateId, string zipCode, CancellationToken token)
     {
         SystemCity city;

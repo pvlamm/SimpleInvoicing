@@ -53,7 +53,12 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Property<int>("ClientType")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("PublicId");
 
                     b.ToTable("Client", (string)null);
                 });

@@ -28,8 +28,7 @@ public static class DependencyInjection
                 options
                     .UseLoggerFactory(MyLoggerFactory)
                     .EnableSensitiveDataLogging(true)
-                    .UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
+                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
 

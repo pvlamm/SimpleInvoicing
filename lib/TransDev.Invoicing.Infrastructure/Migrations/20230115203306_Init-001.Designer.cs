@@ -12,8 +12,8 @@ using TransDev.Invoicing.Infrastructure.Persistance;
 namespace TransDev.Invoicing.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220925193422_001-Init")]
-    partial class _001Init
+    [Migration("20230115203306_Init-001")]
+    partial class Init001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,7 +55,12 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Property<int>("ClientType")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("PublicId");
 
                     b.ToTable("Client", (string)null);
                 });

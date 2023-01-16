@@ -16,17 +16,22 @@ public class CreateClientCommand : IRequest<CreateClientResponse>
     public string CompanyName { get; set; }
     public ContactDto PrimaryContact { get; set; }
     public ContactDto BillingContact { get; set; }
+    public AddressDto PrimaryAddress { get; set; }
+    public AddressDto BillingAddress { get; set; }
+
 }
 
 public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, CreateClientResponse>
 {
     IClientService _clientService;
     IDateTimeService _dateTimeService;
+    ISystemAddressService _systemAddressService;
 
-    public CreateClientCommandHandler(IClientService clientService, IDateTimeService dateTimeService)
+    public CreateClientCommandHandler(IClientService clientService, IDateTimeService dateTimeService, ISystemAddressService systemAddressService)
     {
         _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
         _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
+        _systemAddressService = systemAddressService ?? throw new ArgumentNullException(nameof(systemAddressService));
     }
 
     public async Task<CreateClientResponse> Handle(CreateClientCommand request, CancellationToken token)
@@ -45,6 +50,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
         ClientHistory clientHistory = new ClientHistory();
 
+        clientHistory.Name = request.CompanyName;
         clientHistory.AuditTrail = auditTrail;
 
         var client = new Client
@@ -52,10 +58,17 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
             ClientType = Domain.Enums.ClientType.Commercial
         };
 
+        // 1. Check Primary/Billing State Exists
+        // 2. Check Primary/Billing City Exists
+        // 3. Check Primary/Billing Address Exists
+
+        clientHistory.Parent = client;
         client.History.Add(clientHistory);
 
-        AddContactRecord(auditTrail, clientHistory.PrimaryContact, request.PrimaryContact);
-        AddContactRecord(auditTrail, clientHistory.PrimaryBillingContact, request.BillingContact);
+        clientHistory.PrimaryContact = new Contact();
+        AddContactRecord(auditTrail, client, clientHistory.PrimaryContact, request.PrimaryContact);
+        clientHistory.PrimaryBillingContact = new Contact();
+        AddContactRecord(auditTrail, client, clientHistory.PrimaryBillingContact, request.BillingContact);
 
         await _clientService.CreateClientAsync(client, token);
 
@@ -68,9 +81,14 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
         };
     }
 
-    private static void AddContactRecord(AuditTrail auditTrail, Contact contact, ContactDto contactDto)
+    private static void AddContactRecord(AuditTrail auditTrail, Client client, Contact contact, ContactDto contactDto)
     {
         var contactHistory = contactDto.ConvertToContactHistory();
+
+        client.Contacts.Add(contact);
+        contact.Client = client;
+
+        contactHistory.Parent = contact;
         contactHistory.AuditTrail = auditTrail;
         contact.History.Add(contactHistory);
     }

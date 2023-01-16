@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TransDev.Invoicing.Infrastructure.Migrations
 {
-    public partial class _001Init : Migration
+    public partial class Init001 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,11 +29,13 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClientType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Client", x => x.Id);
+                    table.UniqueConstraint("AK_Client_PublicId", x => x.PublicId);
                 });
 
             migrationBuilder.CreateTable(
