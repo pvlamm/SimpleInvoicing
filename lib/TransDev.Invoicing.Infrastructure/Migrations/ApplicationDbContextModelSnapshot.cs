@@ -315,12 +315,309 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(26)
-                        .HasColumnType("nvarchar(26)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.HasKey("Id");
 
                     b.ToTable("SystemState", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "AL",
+                            Name = "Alabama"
+                        },
+                        new
+                        {
+                            Id = "AK",
+                            Name = "Alaska"
+                        },
+                        new
+                        {
+                            Id = "AS",
+                            Name = "American Samoa"
+                        },
+                        new
+                        {
+                            Id = "AZ",
+                            Name = "Arizona"
+                        },
+                        new
+                        {
+                            Id = "AR",
+                            Name = "Arkansas"
+                        },
+                        new
+                        {
+                            Id = "CA",
+                            Name = "California"
+                        },
+                        new
+                        {
+                            Id = "CO",
+                            Name = "Colorado"
+                        },
+                        new
+                        {
+                            Id = "CT",
+                            Name = "Connecticut"
+                        },
+                        new
+                        {
+                            Id = "DE",
+                            Name = "Delaware"
+                        },
+                        new
+                        {
+                            Id = "DC",
+                            Name = "District Of Columbia"
+                        },
+                        new
+                        {
+                            Id = "FM",
+                            Name = "Federated States Of Micronesia"
+                        },
+                        new
+                        {
+                            Id = "FL",
+                            Name = "Florida"
+                        },
+                        new
+                        {
+                            Id = "GA",
+                            Name = "Georgia"
+                        },
+                        new
+                        {
+                            Id = "GU",
+                            Name = "Guam"
+                        },
+                        new
+                        {
+                            Id = "HI",
+                            Name = "Hawaii"
+                        },
+                        new
+                        {
+                            Id = "ID",
+                            Name = "Idaho"
+                        },
+                        new
+                        {
+                            Id = "IL",
+                            Name = "Illinois"
+                        },
+                        new
+                        {
+                            Id = "IN",
+                            Name = "Indiana"
+                        },
+                        new
+                        {
+                            Id = "IA",
+                            Name = "Iowa"
+                        },
+                        new
+                        {
+                            Id = "KS",
+                            Name = "Kansas"
+                        },
+                        new
+                        {
+                            Id = "KY",
+                            Name = "Kentucky"
+                        },
+                        new
+                        {
+                            Id = "LA",
+                            Name = "Louisiana"
+                        },
+                        new
+                        {
+                            Id = "ME",
+                            Name = "Maine"
+                        },
+                        new
+                        {
+                            Id = "MH",
+                            Name = "Marshall Islands"
+                        },
+                        new
+                        {
+                            Id = "MD",
+                            Name = "Maryland"
+                        },
+                        new
+                        {
+                            Id = "MA",
+                            Name = "Massachusetts"
+                        },
+                        new
+                        {
+                            Id = "MI",
+                            Name = "Michigan"
+                        },
+                        new
+                        {
+                            Id = "MN",
+                            Name = "Minnesota"
+                        },
+                        new
+                        {
+                            Id = "MS",
+                            Name = "Mississippi"
+                        },
+                        new
+                        {
+                            Id = "MO",
+                            Name = "Missouri"
+                        },
+                        new
+                        {
+                            Id = "MT",
+                            Name = "Montana"
+                        },
+                        new
+                        {
+                            Id = "NE",
+                            Name = "Nebraska"
+                        },
+                        new
+                        {
+                            Id = "NV",
+                            Name = "Nevada"
+                        },
+                        new
+                        {
+                            Id = "NH",
+                            Name = "New Hampshire"
+                        },
+                        new
+                        {
+                            Id = "NJ",
+                            Name = "New Jersey"
+                        },
+                        new
+                        {
+                            Id = "NM",
+                            Name = "New Mexico"
+                        },
+                        new
+                        {
+                            Id = "NY",
+                            Name = "New York"
+                        },
+                        new
+                        {
+                            Id = "NC",
+                            Name = "North Carolina"
+                        },
+                        new
+                        {
+                            Id = "ND",
+                            Name = "North Dakota"
+                        },
+                        new
+                        {
+                            Id = "MP",
+                            Name = "Northern Mariana Islands"
+                        },
+                        new
+                        {
+                            Id = "OH",
+                            Name = "Ohio"
+                        },
+                        new
+                        {
+                            Id = "OK",
+                            Name = "Oklahoma"
+                        },
+                        new
+                        {
+                            Id = "OR",
+                            Name = "Oregon"
+                        },
+                        new
+                        {
+                            Id = "PW",
+                            Name = "Palau"
+                        },
+                        new
+                        {
+                            Id = "PA",
+                            Name = "Pennsylvania"
+                        },
+                        new
+                        {
+                            Id = "PR",
+                            Name = "Puerto Rico"
+                        },
+                        new
+                        {
+                            Id = "RI",
+                            Name = "Rhode Island"
+                        },
+                        new
+                        {
+                            Id = "SC",
+                            Name = "South Carolina"
+                        },
+                        new
+                        {
+                            Id = "SD",
+                            Name = "South Dakota"
+                        },
+                        new
+                        {
+                            Id = "TN",
+                            Name = "Tennessee"
+                        },
+                        new
+                        {
+                            Id = "TX",
+                            Name = "Texas"
+                        },
+                        new
+                        {
+                            Id = "UT",
+                            Name = "Utah"
+                        },
+                        new
+                        {
+                            Id = "VT",
+                            Name = "Vermont"
+                        },
+                        new
+                        {
+                            Id = "VI",
+                            Name = "Virgin Islands"
+                        },
+                        new
+                        {
+                            Id = "VA",
+                            Name = "Virginia"
+                        },
+                        new
+                        {
+                            Id = "WA",
+                            Name = "Washington"
+                        },
+                        new
+                        {
+                            Id = "WV",
+                            Name = "West Virginia"
+                        },
+                        new
+                        {
+                            Id = "WI",
+                            Name = "Wisconsin"
+                        },
+                        new
+                        {
+                            Id = "WY",
+                            Name = "Wyoming"
+                        });
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.ClientHistory", b =>

@@ -718,6 +718,8 @@ export class CreateClientCommand implements ICreateClientCommand {
     companyName?: string | null;
     primaryContact?: ContactDto | null;
     billingContact?: ContactDto | null;
+    primaryAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
 
     constructor(data?: ICreateClientCommand) {
         if (data) {
@@ -733,6 +735,8 @@ export class CreateClientCommand implements ICreateClientCommand {
             this.companyName = _data["companyName"] !== undefined ? _data["companyName"] : <any>null;
             this.primaryContact = _data["primaryContact"] ? ContactDto.fromJS(_data["primaryContact"]) : <any>null;
             this.billingContact = _data["billingContact"] ? ContactDto.fromJS(_data["billingContact"]) : <any>null;
+            this.primaryAddress = _data["primaryAddress"] ? AddressDto.fromJS(_data["primaryAddress"]) : <any>null;
+            this.billingAddress = _data["billingAddress"] ? AddressDto.fromJS(_data["billingAddress"]) : <any>null;
         }
     }
 
@@ -748,6 +752,8 @@ export class CreateClientCommand implements ICreateClientCommand {
         data["companyName"] = this.companyName !== undefined ? this.companyName : <any>null;
         data["primaryContact"] = this.primaryContact ? this.primaryContact.toJSON() : <any>null;
         data["billingContact"] = this.billingContact ? this.billingContact.toJSON() : <any>null;
+        data["primaryAddress"] = this.primaryAddress ? this.primaryAddress.toJSON() : <any>null;
+        data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>null;
         return data;
     }
 }
@@ -756,6 +762,8 @@ export interface ICreateClientCommand {
     companyName?: string | null;
     primaryContact?: ContactDto | null;
     billingContact?: ContactDto | null;
+    primaryAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
 }
 
 export class ContactDto implements IContactDto {
@@ -808,6 +816,54 @@ export interface IContactDto {
     lastName?: string | null;
     emailAddress?: string | null;
     phoneNumber?: string | null;
+}
+
+export class AddressDto implements IAddressDto {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+
+    constructor(data?: IAddressDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.city = _data["city"] !== undefined ? _data["city"] : <any>null;
+            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+            this.zipCode = _data["zipCode"] !== undefined ? _data["zipCode"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddressDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddressDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["city"] = this.city !== undefined ? this.city : <any>null;
+        data["state"] = this.state !== undefined ? this.state : <any>null;
+        data["zipCode"] = this.zipCode !== undefined ? this.zipCode : <any>null;
+        return data;
+    }
+}
+
+export interface IAddressDto {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {
