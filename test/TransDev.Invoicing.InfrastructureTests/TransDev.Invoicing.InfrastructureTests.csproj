@@ -15,4 +15,8 @@
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
