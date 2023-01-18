@@ -27,9 +27,7 @@ public interface ISystemAddressService
     /// <param name="zipCode"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<SystemAddress> CreateSystemAddressAsync(string address, int cityId, string stateId, string zipCode, CancellationToken token);
     Task<bool> AddressExistsAsync(string address, string cityName, string stateId, string zipCode, CancellationToken token);
-    Task<bool> CityExistsAsync(string cityName, string stateId, CancellationToken token);
     Task<bool> StateExistsAsync(string stateId, CancellationToken token);
     Task<SystemAddress> GetSystemAddressById(int addressId, CancellationToken token);
     Task<IEnumerable<SystemAddress>> SearchAddressAsync(string addressPartial, string cityPartial, string stateId, string zipPartial, CancellationToken token);

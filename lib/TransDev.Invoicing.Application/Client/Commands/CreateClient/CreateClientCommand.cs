@@ -25,22 +25,29 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 {
     IClientService _clientService;
     IDateTimeService _dateTimeService;
-    ISystemAddressService _systemAddressService;
-
-    public CreateClientCommandHandler(IClientService clientService, IDateTimeService dateTimeService, ISystemAddressService systemAddressService)
+    public CreateClientCommandHandler(IClientService clientService, IDateTimeService dateTimeService)
     {
         _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
         _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
-        _systemAddressService = systemAddressService ?? throw new ArgumentNullException(nameof(systemAddressService));
     }
 
     public async Task<CreateClientResponse> Handle(CreateClientCommand request, CancellationToken token)
     {
         var message = $"Creating Client {request.CompanyName}";
-        if(message.Length > 1024)
+        if (message.Length > 1024)
         {
             message = message.Substring(0, 1024);
         }
+
+        request.PrimaryAddress = new AddressDto
+        {
+            Address = "123 Any St",
+            City = "Charlotte",
+            State = "NC",
+            ZipCode = "28173"
+        };
+
+        request.BillingAddress = request.PrimaryAddress;
 
         var auditTrail = new AuditTrail
         {
@@ -58,12 +65,24 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
             ClientType = Domain.Enums.ClientType.Commercial
         };
 
-        // 1. Check Primary/Billing State Exists
-        // 2. Check Primary/Billing City Exists
-        // 3. Check Primary/Billing Address Exists
-
         clientHistory.Parent = client;
         client.History.Add(clientHistory);
+
+        clientHistory.PrimaryAddress = new SystemAddress
+        {
+            Address = request.PrimaryAddress.Address,
+            City = request.PrimaryAddress.City,
+            SystemStateId = request.PrimaryAddress.State,
+            ZipCode = request.PrimaryAddress.ZipCode
+        };
+
+        clientHistory.BillingAddress = new SystemAddress
+        {
+            Address = request.BillingAddress.Address,
+            City = request.BillingAddress.City,
+            SystemStateId = request.BillingAddress.State,
+            ZipCode = request.BillingAddress.ZipCode
+        };
 
         clientHistory.PrimaryContact = new Contact();
         AddContactRecord(auditTrail, client, clientHistory.PrimaryContact, request.PrimaryContact);

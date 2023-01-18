@@ -18,7 +18,6 @@ public interface IApplicationDbContext
     DbSet<Item> Items { get; set; }
     DbSet<ItemHistory> ItemHistories { get; set; }
     DbSet<SystemAddress> SystemAddresses { get; set; }
-    DbSet<SystemCity> SystemCities { get; set; }
     DbSet<SystemState> SystemStates { get; set; }
 
     IModel Model { get; }

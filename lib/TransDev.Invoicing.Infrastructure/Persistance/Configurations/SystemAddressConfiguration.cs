@@ -18,11 +18,6 @@ public class SystemAddressConfiguration : IEntityTypeConfiguration<SystemAddress
             .HasKey(address => address.Id);
 
         builder
-            .HasOne(address => address.City)
-            .WithMany()
-            .HasForeignKey(address => address.SystemCityId);
-
-        builder
             .HasOne(address => address.State)
             .WithMany()
             .HasForeignKey(address => address.SystemStateId);

@@ -47,7 +47,7 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
         builder
             .Property(history => history.MiddleName)
             .HasMaxLength(55)
-            .IsRequired();
+            .IsRequired(false);
 
         builder
             .Property(history => history.LastName)

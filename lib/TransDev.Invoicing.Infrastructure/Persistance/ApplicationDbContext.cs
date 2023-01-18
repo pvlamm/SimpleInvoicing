@@ -26,7 +26,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Item> Items { get; set; }
     public DbSet<ItemHistory> ItemHistories { get; set; }
     public DbSet<SystemAddress> SystemAddresses { get; set; }
-    public DbSet<SystemCity> SystemCities { get; set; }
     public DbSet<SystemState> SystemStates { get; set; }
 
     public ApplicationDbContext(

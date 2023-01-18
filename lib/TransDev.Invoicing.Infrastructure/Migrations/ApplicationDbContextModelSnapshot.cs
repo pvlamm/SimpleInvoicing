@@ -164,7 +164,6 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasColumnType("nvarchar(55)");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
 
@@ -264,8 +263,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("SystemCityId")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SystemStateId")
                         .HasColumnType("nvarchar(2)");
@@ -277,34 +276,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SystemCityId");
-
                     b.HasIndex("SystemStateId");
 
                     b.ToTable("SystemAddress", (string)null);
-                });
-
-            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemCity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(85)
-                        .HasColumnType("nvarchar(85)");
-
-                    b.Property<string>("SystemStateId")
-                        .HasColumnType("nvarchar(2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SystemStateId");
-
-                    b.ToTable("SystemCity", (string)null);
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemState", b =>
@@ -748,25 +722,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemAddress", b =>
                 {
-                    b.HasOne("TransDev.Invoicing.Domain.Entities.SystemCity", "City")
-                        .WithMany()
-                        .HasForeignKey("SystemCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TransDev.Invoicing.Domain.Entities.SystemState", "State")
                         .WithMany()
-                        .HasForeignKey("SystemStateId");
-
-                    b.Navigation("City");
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemCity", b =>
-                {
-                    b.HasOne("TransDev.Invoicing.Domain.Entities.SystemState", "State")
-                        .WithMany("Cities")
                         .HasForeignKey("SystemStateId");
 
                     b.Navigation("State");
@@ -787,11 +744,6 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Item", b =>
                 {
                     b.Navigation("History");
-                });
-
-            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemState", b =>
-                {
-                    b.Navigation("Cities");
                 });
 #pragma warning restore 612, 618
         }

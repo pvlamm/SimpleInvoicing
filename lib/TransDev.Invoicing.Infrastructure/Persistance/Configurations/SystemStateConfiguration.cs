@@ -18,11 +18,6 @@ public class SystemStateConfiguration : IEntityTypeConfiguration<SystemState>
             .HasKey(state => state.Id);
 
         builder
-            .HasMany(state => state.Cities)
-            .WithOne(city => city.State)
-            .HasForeignKey(city => city.SystemStateId);
-
-        builder
             .Property(state => state.Id)
             .IsRequired(true)
             .HasMaxLength(2);

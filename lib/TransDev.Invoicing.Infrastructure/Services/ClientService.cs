@@ -16,11 +16,13 @@ public class ClientService : IClientService
 {
     IApplicationDbContext _context;
     IDateTimeService _dateTime;
+    ISystemAddressService _systemAddress;
 
-    public ClientService(IApplicationDbContext context, IDateTimeService dateTime)
+    public ClientService(IApplicationDbContext context, IDateTimeService dateTime, ISystemAddressService systemAddress)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _dateTime = dateTime ?? throw new ArgumentNullException(nameof(dateTime));
+        _systemAddress = systemAddress ?? throw new ArgumentNullException(nameof(systemAddress));
     }
 
     public async Task<bool> ClientExistsAsync(string name, CancellationToken token)
@@ -108,7 +110,25 @@ public class ClientService : IClientService
 
     public async Task CreateClientAsync(Client client, CancellationToken token)
     {
-        await _context.Clients.AddAsync(client,token);
+        var history = client.History.First();
+
+        history.PrimaryAddress = await CreateOrSetSystemAddress(history.PrimaryAddress, token);
+        history.BillingAddress = await CreateOrSetSystemAddress(history.BillingAddress, token);
+
+        await _context.Clients.AddAsync(client, token);
         await _context.SaveChangesAsync(token);
+    }
+
+    private async Task<SystemAddress> CreateOrSetSystemAddress(SystemAddress address, CancellationToken token)
+    {
+        if(await _systemAddress.AddressExistsAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token))
+        {
+            return (await _systemAddress
+                .SearchAddressAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token)).First();
+        }
+        else
+        {
+            return await _systemAddress.CreateSystemAddressAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token);
+        }
     }
 }

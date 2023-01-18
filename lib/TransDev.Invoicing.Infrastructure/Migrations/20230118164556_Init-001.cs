@@ -118,44 +118,19 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SystemCity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SystemStateId = table.Column<string>(type: "nvarchar(2)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(85)", maxLength: 85, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SystemCity", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SystemCity_SystemState_SystemStateId",
-                        column: x => x.SystemStateId,
-                        principalTable: "SystemState",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SystemAddress",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SystemCityId = table.Column<int>(type: "int", nullable: false),
                     SystemStateId = table.Column<string>(type: "nvarchar(2)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SystemAddress", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SystemAddress_SystemCity_SystemCityId",
-                        column: x => x.SystemCityId,
-                        principalTable: "SystemCity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SystemAddress_SystemState_SystemStateId",
                         column: x => x.SystemStateId,
@@ -230,7 +205,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     ParentId = table.Column<int>(type: "int", nullable: false),
                     SystemAddressId = table.Column<long>(type: "bigint", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
-                    MiddleName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
+                    MiddleName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
                     EmailAddress = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
@@ -412,18 +387,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 column: "UpdatedAuditTrailId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SystemAddress_SystemCityId",
-                table: "SystemAddress",
-                column: "SystemCityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SystemAddress_SystemStateId",
                 table: "SystemAddress",
-                column: "SystemStateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SystemCity_SystemStateId",
-                table: "SystemCity",
                 column: "SystemStateId");
         }
 
@@ -452,9 +417,6 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Client");
-
-            migrationBuilder.DropTable(
-                name: "SystemCity");
 
             migrationBuilder.DropTable(
                 name: "SystemState");
