@@ -24,4 +24,11 @@ public class ClientCommandTests : TestBase
                 .Contains(CreateClientValidator.Message_InvalidPrimaryContact));
 
     }
+
+    [TestMethod]
+    public async Task ClientCommand_CreateClient_DuplicateCompanyName_ThrowsValidationException()
+    {
+        var command = new CreateClientCommand() { };
+
+    }
 }
