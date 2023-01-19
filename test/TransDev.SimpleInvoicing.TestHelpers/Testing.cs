@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Hosting;
@@ -17,7 +16,6 @@ using Newtonsoft.Json;
 using TransDev.Invoicing.Infrastructure.Persistance;
 using TransDev.Invoicing.WebUI;
 using Respawn.Graph;
-using Castle.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using System.Linq.Expressions;
@@ -83,11 +81,18 @@ public static class Testing
         EnsureDatabase();
 
         var connection = _configuration.GetConnectionString("DefaultConnection");
-        _checkpoint = await Respawner.CreateAsync(connection, new RespawnerOptions
+        try
         {
-            TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
-            WithReseed = true
-        });
+            _checkpoint = Respawner.CreateAsync(connection, new RespawnerOptions
+            {
+                TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
+                WithReseed = true
+            }).Result;
+        }
+        catch(Exception e)
+        {
+            string errormsg = e.Message;
+        }
     }
 
     private static void EnsureDatabase()

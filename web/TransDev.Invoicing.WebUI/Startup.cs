@@ -37,10 +37,10 @@ public class Startup
         services.AddApplication();
         services.AddInfrastructre(Configuration);
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
-        services.AddControllers();
+        //services.AddControllers();
 
         services.AddEndpointsApiExplorer();
 
