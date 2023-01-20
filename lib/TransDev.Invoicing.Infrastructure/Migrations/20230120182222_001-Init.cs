@@ -3,10 +3,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace TransDev.Invoicing.Infrastructure.Migrations
 {
-    public partial class Init001 : Migration
+    /// <inheritdoc />
+    public partial class _001Init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -284,14 +288,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     { "NV", "Nevada" },
                     { "NY", "New York" },
                     { "OH", "Ohio" },
-                    { "OK", "Oklahoma" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SystemState",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
+                    { "OK", "Oklahoma" },
                     { "OR", "Oregon" },
                     { "PA", "Pennsylvania" },
                     { "PR", "Puerto Rico" },
@@ -392,6 +389,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 column: "SystemStateId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

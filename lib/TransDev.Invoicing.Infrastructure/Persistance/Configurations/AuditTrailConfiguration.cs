@@ -11,6 +11,7 @@ public class AuditTrailConfiguration : IEntityTypeConfiguration<AuditTrail>
     {
         builder.ToTable("AuditTrail");
         builder.HasKey(a => a.Id);
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
         builder.Property(a => a.CreatedDate).IsRequired();
         builder.Property(a => a.Note).HasMaxLength(1024);
     }

@@ -17,6 +17,8 @@ public class ClientHistoryConfiguration : IEntityTypeConfiguration<ClientHistory
         builder
             .HasKey(x => x.Id);
 
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
+
         builder
             .HasOne(a => a.AuditTrail)
             .WithMany()

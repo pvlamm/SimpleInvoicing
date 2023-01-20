@@ -15,6 +15,8 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
         builder
             .HasKey(x => x.Id);
 
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
+
         builder
             .HasOne(a => a.AuditTrail)
             .WithMany()

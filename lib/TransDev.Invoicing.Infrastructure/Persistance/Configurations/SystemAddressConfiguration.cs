@@ -16,6 +16,7 @@ public class SystemAddressConfiguration : IEntityTypeConfiguration<SystemAddress
 
         builder
             .HasKey(address => address.Id);
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
 
         builder
             .HasOne(address => address.State)
