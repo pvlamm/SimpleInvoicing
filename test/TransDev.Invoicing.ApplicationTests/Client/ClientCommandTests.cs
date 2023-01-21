@@ -18,14 +18,12 @@ public class ClientCommandTests : TestBase
             
         };
 
-        var response = await FluentActions.Invoking(() => SendAsync(command)).Should()
+        await FluentActions.Invoking(() => SendAsync(command))
+            .Should()
             .ThrowAsync<ValidationException>()
-            .Where(e => e.Errors[nameof(CreateClientCommand)]
+            .Where(e => e.Errors["PrimaryContact"]
                 .Contains(CreateClientValidator.Message_InvalidPrimaryContact));
 
-        response.BeOfType<ValidationException>();
-
-        Assert.IsTrue(true);
     }
 
     [TestMethod]

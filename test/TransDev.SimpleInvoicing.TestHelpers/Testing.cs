@@ -47,7 +47,7 @@ public static class Testing
 
         services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
             w.EnvironmentName == "Development" &&
-            w.ApplicationName == "TransDev.SimpleInvoicing"));
+            w.ApplicationName == "TransDev.Invoicing.WebUI"));
 
         services.AddLogging();
 
