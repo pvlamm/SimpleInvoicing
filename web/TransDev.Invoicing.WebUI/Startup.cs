@@ -12,8 +12,10 @@ using Microsoft.OpenApi.Models;
 
 using TransDev.Invoicing.Application;
 using TransDev.Invoicing.Infrastructure;
+using TransDev.Invoicing.Application.Common.Interfaces;
+using TransDev.Invoicing.Application.Common;
 
-public class Startup
+public class Startup : IEnvironmentStartup
 {
     public Startup(IConfiguration configuration)
     {
@@ -62,7 +64,7 @@ public class Startup
         const string swaggerJson = swaggerRoot + "/v1/swagger.json";
 
         app.UseCors("CorsPolicy");
-        
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

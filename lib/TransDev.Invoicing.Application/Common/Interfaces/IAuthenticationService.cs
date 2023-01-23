@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace TransDev.Invoicing.Application.Common.Interfaces;
+
 using System.Threading.Tasks;
 
-namespace TransDev.Invoicing.Application.Common.Interfaces
+public interface IAuthenticationService
 {
-    public interface IAuthenticationService
-    {
-        Task<bool> AuthenticateAsync(string username, string password);
-    }
+    Task<bool> AuthenticateAsync(string username, string password);
 }

@@ -43,6 +43,12 @@ public static class Testing
 
         var startup = new Startup(_configuration);
 
+        RunBeforeAnyTests(context, startup);
+    }
+
+    [AssemblyInitialize]
+    public static async void RunBeforeAnyTests(TestContext context, IEnvironmentStartup startup)
+    {
         var services = new ServiceCollection();
 
         services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>

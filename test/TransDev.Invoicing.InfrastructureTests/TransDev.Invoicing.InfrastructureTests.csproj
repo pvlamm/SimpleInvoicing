@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
+    <ProjectReference Include="..\TransDev.SimpleInvoicing.TestHelpers\TransDev.SimpleInvoicing.TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>
