@@ -41,7 +41,7 @@ public static class Testing
 
         _configuration = builder.Build();
 
-        var startup = new Startup(_configuration);
+        IEnvironmentStartup startup = new Startup(_configuration);
 
         RunBeforeAnyTests(context, startup);
     }
@@ -91,7 +91,7 @@ public static class Testing
         {
             _checkpoint = Respawner.CreateAsync(connection, new RespawnerOptions
             {
-                TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
+                TablesToIgnore = new Table[] { "__EFMigrationsHistory", "SystemState" },
                 WithReseed = true
             }).Result;
         }

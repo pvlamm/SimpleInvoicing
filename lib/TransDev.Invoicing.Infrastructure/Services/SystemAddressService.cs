@@ -76,22 +76,17 @@ public class SystemAddressService : ISystemAddressService
     {
         var query = _context
             .SystemAddresses
-            .Include(addr => addr.City)
             .Include(addr => addr.State)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(addressPartial) && addressPartial.Length > 0)
         {
-            query.Where(addr => 
-                addr.Address.Contains(addressPartial, 
-                StringComparison.InvariantCultureIgnoreCase));
+            query.Where(addr => EF.Functions.Like(addr.Address, addressPartial));
         }
 
         if (!string.IsNullOrWhiteSpace(cityPartial) && cityPartial.Length > 0)
         {
-            query.Where(addr =>
-                addr.City.Contains(cityPartial,
-                StringComparison.InvariantCultureIgnoreCase));
+            query.Where(addr => EF.Functions.Like(addr.City, cityPartial));
         }
 
         if (!string.IsNullOrWhiteSpace(stateId) && stateId.Length > 0)
@@ -101,9 +96,7 @@ public class SystemAddressService : ISystemAddressService
 
         if (!string.IsNullOrWhiteSpace(zipPartial) && zipPartial.Length > 0)
         {
-            query.Where(addr =>
-                addr.ZipCode.Contains(zipPartial,
-                StringComparison.InvariantCultureIgnoreCase));
+            query.Where(addr => EF.Functions.Like(addr.ZipCode, zipPartial));
         }
 
         return await query.ToListAsync(token);

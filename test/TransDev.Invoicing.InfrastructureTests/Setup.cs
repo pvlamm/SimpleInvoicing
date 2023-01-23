@@ -1,12 +1,8 @@
 ﻿namespace TransDev.Invoicing.InfrastructureTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using TransDev.SimpleInvoicing.TestHelpers;
+
+    using static SimpleInvoicing.TestHelpers.Testing;
 
     [TestClass]
     public class Setup
