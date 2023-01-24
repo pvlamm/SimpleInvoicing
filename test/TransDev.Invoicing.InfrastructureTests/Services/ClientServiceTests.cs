@@ -1,5 +1,7 @@
 namespace TransDev.Invoicing.InfrastructureTests.Services;
 
+using FluentAssertions;
+
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
 using TransDev.SimpleInvoicing.TestHelpers;
@@ -42,17 +44,6 @@ public class ClientServiceTests : TestBase
 
     private async Task CreateDefaultCompanyEntry(string companyName)
     {
-        var auditTrail = new AuditTrail
-        {
-            CreatedDate = DateTime.UtcNow,
-            Note = "ClientServiceTests/ClientNameAlreadyExistsCheck"
-        };
-
-        var client = new Client
-        {
-
-        };
-
         var address = new SystemAddress
         {
             Address = "100 East Main St.",
@@ -64,7 +55,6 @@ public class ClientServiceTests : TestBase
 
         var contactHistory = new ContactHistory
         {
-            AuditTrail = auditTrail,
             Address = address,
             EmailAddress = "email@address.org",
             FirstName = "Test",
@@ -72,26 +62,18 @@ public class ClientServiceTests : TestBase
             PhoneNumber = "704.555.5555",
         };
 
-        var contact = new Contact
-        {
-            Client = client,
-            History = new HashSet<ContactHistory> { contactHistory }
-        };
 
         var clientHistory = new ClientHistory
         {
-            Parent = client,
-            AuditTrail = auditTrail,
-            PrimaryContact = contact,
-            PrimaryBillingContact = contact,
-            PrimaryAddress = address,
-            BillingAddress = address,
             Name = companyName,
             IsActive = true
         };
 
-        client.History = new HashSet<ClientHistory> { clientHistory };
+        await _clientService.CreateClientAsync(Domain.Enums.ClientType.Commercial, clientHistory,
+            contactHistory, contactHistory,
+            address, address,
+            default(CancellationToken));
 
-        await _clientService.CreateClientAsync(client, default(CancellationToken));
+        clientHistory.Id.Should().BeGreaterThan(0);
     }
 }

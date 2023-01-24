@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
+using TransDev.Invoicing.Domain.Enums;
 
 public class ClientService : IClientService
 {
@@ -29,7 +30,7 @@ public class ClientService : IClientService
     {
         return await _context
             .ClientHistory
-            .AnyAsync(history => 
+            .AnyAsync(history =>
                 history.UpdatedAuditTrailId == null
                 && history.Name == name, token);
     }
@@ -67,21 +68,13 @@ public class ClientService : IClientService
             .ToListAsync(token);
     }
 
-    public async Task<ClientHistory> CreateClientAsync(ClientHistory history, CancellationToken token)
-    {
-        await _context.ClientHistory.AddAsync(history, token);
-        await _context.SaveChangesAsync(token);
-
-        return history;
-    }
-
     public async Task<bool> ClientIsActiveAsync(int clientId, CancellationToken token)
     {
         return await _context
             .ClientHistory
-            .AnyAsync(client => 
-                client.ParentId == clientId 
-                && client.UpdatedAuditTrailId == null 
+            .AnyAsync(client =>
+                client.ParentId == clientId
+                && client.UpdatedAuditTrailId == null
                 && client.IsActive == true);
     }
 
@@ -112,16 +105,81 @@ public class ClientService : IClientService
     {
         var history = client.History.First();
 
-        history.PrimaryAddress = await CreateOrSetSystemAddress(history.PrimaryAddress, token);
-        history.BillingAddress = await CreateOrSetSystemAddress(history.BillingAddress, token);
+        history.PrimaryAddress = await CreateOrSetSystemAddressAsync(history.PrimaryAddress, token);
+        history.BillingAddress = await CreateOrSetSystemAddressAsync(history.BillingAddress, token);
 
         await _context.Clients.AddAsync(client, token);
         await _context.SaveChangesAsync(token);
     }
 
-    private async Task<SystemAddress> CreateOrSetSystemAddress(SystemAddress address, CancellationToken token)
+    public async Task CreateClientAsync(ClientType clientType, ClientHistory clientHistory, 
+        ContactHistory primaryContactHistory, ContactHistory billingContactHistory, 
+        SystemAddress primaryAddress, SystemAddress billingAddress, CancellationToken token)
     {
-        if(await _systemAddress.AddressExistsAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token))
+        try
+        {
+            await _context.BeginTransactionAsync();
+
+            var auditTrail = new AuditTrail
+            {
+                CreatedDate = _dateTime.Now,
+                Note = "Creating Client"
+            };
+
+            await _context.AuditTrails.AddAsync(auditTrail);
+
+            clientHistory.AuditTrail = auditTrail;
+            primaryContactHistory.AuditTrail = auditTrail;
+            billingContactHistory.AuditTrail = auditTrail;
+
+            primaryAddress = await CreateOrSetSystemAddressAsync(primaryAddress, token);
+            billingAddress = await CreateOrSetSystemAddressAsync(billingAddress, token);
+
+            primaryContactHistory.Address = primaryAddress;
+            billingContactHistory.Address = billingAddress;
+
+            clientHistory.PrimaryAddress = primaryAddress;
+            clientHistory.BillingAddress = billingAddress;
+
+            var client = new Client { ClientType = clientType };
+            var primaryContact = new Contact { Client = client };
+            var billingContact = new Contact { Client = client };
+
+            await _context.Clients.AddAsync(client, token);
+
+            clientHistory.PrimaryContact = primaryContact;
+            clientHistory.PrimaryBillingContact = primaryContact;
+
+            primaryContactHistory.Parent = primaryContact;
+            billingContactHistory.Parent = primaryContact;
+
+            await _context.ContactHistory.AddAsync(primaryContactHistory, token);
+
+            if (primaryContactHistory != billingContactHistory)
+            {
+                clientHistory.PrimaryBillingContact = billingContact;
+                billingContactHistory.Parent = billingContact;
+            }
+
+            await _context.ContactHistory.AddAsync(billingContactHistory, token);
+
+            clientHistory.Parent = client;
+            clientHistory.PrimaryAddress = primaryAddress;
+            clientHistory.BillingAddress = billingAddress;
+
+            await _context.ClientHistory.AddAsync(clientHistory, token);
+            await _context.SaveChangesAsync(token);
+            await _context.CommitTransactionAsync();
+        }
+        catch
+        {
+            _context.RollbackTransaction();
+        }
+    }
+
+    private async Task<SystemAddress> CreateOrSetSystemAddressAsync(SystemAddress address, CancellationToken token)
+    {
+        if (await _systemAddress.AddressExistsAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token))
         {
             return (await _systemAddress
                 .SearchAddressAsync(address.Address, address.City, address.SystemStateId, address.ZipCode, token)).First();

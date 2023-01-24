@@ -9,4 +9,14 @@ public class AddressDto
     public string State { get; set; }
     public string ZipCode { get; set; }
 
+    public SystemAddress ConvertToSystemAddress()
+    {
+        return new SystemAddress
+        {
+            Address = this.Address,
+            City = this.City,
+            SystemStateId = this.State,
+            ZipCode = this.ZipCode,
+        };
+    }
 }
