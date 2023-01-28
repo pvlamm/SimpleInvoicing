@@ -18,6 +18,9 @@ using System.IdentityModel.Tokens.Jwt;
 using TransDev.Invoicing.Application.Common.Helpers;
 using TransDev.Invoicing.Application.Common.Exceptions;
 using Microsoft.Identity.Web.Resource;
+using System.Threading;
+using System.Text;
+using YamlDotNet.Core.Tokens;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
@@ -40,9 +43,9 @@ public class AuthenticationController : BaseController
     [HttpPost]
     [SwaggerResponse(HttpStatusCode.OK, typeof(AuthenticateUserQuery), Description = "System User Authentication. Response includes a JWT token to authorize future requests.")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
-    public async Task<ActionResult<AuthenticateUserResponse>> Authenticate([FromBody] AuthenticateUserQuery query)
+    public async Task<ActionResult<AuthenticateUserResponse>> Login([FromBody] AuthenticateUserQuery query)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         try
         {
@@ -50,14 +53,14 @@ public class AuthenticationController : BaseController
             if (!response.Success)
                 throw new UnauthorizedAccessException("Attempted to login to a deactivated user");
 
-            var token = CreateJWTToken(query.Username);
+            var token = CreateJWTToken(query.Email);
 
             return new AuthenticateUserResponse()
             {
                 Token = token.Token,
                 ExpiresAt = token.ExpiresAt,
                 Success = response.Success,
-                Username = query.Username
+                Username = query.Email
             };
         }
         catch (Exception ex)
@@ -66,6 +69,60 @@ public class AuthenticationController : BaseController
         }
     }
 
+    [HttpPost]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(JWTTokenModel), Description = "System User Authentication. Response includes a JWT token to authorize future requests.")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
+    public async Task<ActionResult<AuthenticateUserResponse>> VeriftyToken([FromBody] string token)
+    {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
+        try
+        {
+            var response = await ValidateJWTAsync(token);
+            if (!response)
+                throw new UnauthorizedAccessException("Unable to Validate Token");
+
+
+            return new AuthenticateUserResponse()
+            {
+                Token = token,
+                Success = response,
+            };
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new SerializableException(ex));
+        }
+    }
+
+    private async Task<bool> ValidateJWTAsync (string token)
+    {
+        var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
+        var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
+
+        var myIssuer = "http://mysite.com";
+        var myAudience = "http://myaudience.com";
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = myIssuer,
+                ValidAudience = myAudience,
+                IssuerSigningKey = mySecurityKey
+            }, out SecurityToken validatedToken);
+        }
+        catch
+        {
+            return false;
+        }
+        return true;
+
+    }
 
     private JWTTokenModel CreateJWTToken(string user)
     {

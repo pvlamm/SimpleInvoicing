@@ -98,11 +98,11 @@
 
                 cClient
                     .post(command)
-                    .then(resp => {
+                    .then((resp: any) => {
                         console.log(resp);
                         // Bubble Up Successful Save
                     })
-                    .catch(err => {
+                    .catch((err: any) => {
                         console.log(err);
                         // Bullble Up Error event
                     });

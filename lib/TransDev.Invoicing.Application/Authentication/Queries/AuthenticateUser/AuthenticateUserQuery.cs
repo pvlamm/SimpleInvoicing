@@ -9,7 +9,7 @@ using TransDev.Invoicing.Application.Common.Interfaces;
 
 public class AuthenticateUserQuery : IRequest<AuthenticateUserResponse>
 {
-    public string Username { get; set; }
+    public string Email { get; set; }
     public string Password { get; set; }
 }
 
@@ -24,7 +24,7 @@ public class AuthenticateUserQueryHandler : IRequestHandler<AuthenticateUserQuer
 
     public async Task<AuthenticateUserResponse> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
     {
-        var result = await _service.AuthenticateAsync(request.Username, request.Password);
+        var result = await _service.AuthenticateAsync(request.Email, request.Password);
 
         return new AuthenticateUserResponse
         {

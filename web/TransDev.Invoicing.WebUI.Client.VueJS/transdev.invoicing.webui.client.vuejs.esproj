@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.45-alpha">
   <PropertyGroup>
-    <StartupCommand>npm run serve</StartupCommand>
+    <!--<StartupCommand>npm run serve</StartupCommand>-->
+    <StartupCommand>yarn dev</StartupCommand>
     <JavaScriptTestRoot>.\</JavaScriptTestRoot>
     <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <!-- Command to run on project build -->

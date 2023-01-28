@@ -36,11 +36,11 @@
 		<ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
 	</ItemGroup>
 	<!--Condition="'$(GenerateTSClient)'=='True' "-->
-	<!--<Target Name="NSwag" AfterTargets="Build">
-		<Exec Command="$(NSwagExe_Net60) run nswag.json /variables:Configuration=$(Configuration)" />-->
-		<!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
-	<!--</Target>-->
+	<Target Name="NSwag" AfterTargets="Build">
+		<Exec Command="$(NSwagExe_Net70) run nswag.json /variables:Configuration=$(Configuration)" />
+		<!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run lint" />-->
+    <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run compodoc" />-->
+	</Target>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<TypeScriptTarget>ES5</TypeScriptTarget>
