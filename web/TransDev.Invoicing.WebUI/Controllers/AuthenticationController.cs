@@ -21,6 +21,8 @@ using Microsoft.Identity.Web.Resource;
 using System.Threading;
 using System.Text;
 using YamlDotNet.Core.Tokens;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
@@ -60,7 +62,9 @@ public class AuthenticationController : BaseController
                 Token = token.Token,
                 ExpiresAt = token.ExpiresAt,
                 Success = response.Success,
-                Username = query.Email
+                Email = query.Email,
+                Name = "John",
+                Surname = "Doe"
             };
         }
         catch (Exception ex)
@@ -69,23 +73,24 @@ public class AuthenticationController : BaseController
         }
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [SwaggerResponse(HttpStatusCode.OK, typeof(JWTTokenModel), Description = "System User Authentication. Response includes a JWT token to authorize future requests.")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "User not authorized. Returns exception details.")]
-    public async Task<ActionResult<AuthenticateUserResponse>> VeriftyToken([FromBody] string token)
+    public async Task<ActionResult<AuthenticateUserResponse>> VeriftyToken([FromBody] ApiTokenVerify verifyToken)
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         try
         {
-            var response = await ValidateJWTAsync(token);
+            var response = await ValidateJWTAsync(verifyToken.ApiToken);
             if (!response)
                 throw new UnauthorizedAccessException("Unable to Validate Token");
 
 
             return new AuthenticateUserResponse()
             {
-                Token = token,
+                Token = verifyToken.ApiToken,
                 Success = response,
             };
         }
@@ -95,13 +100,15 @@ public class AuthenticationController : BaseController
         }
     }
 
+    public class ApiTokenVerify
+    {
+        [JsonPropertyName("api_token")]
+        public string ApiToken { get; set; }
+    }
+
     private async Task<bool> ValidateJWTAsync (string token)
     {
-        var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
-        var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
-
-        var myIssuer = "http://mysite.com";
-        var myAudience = "http://myaudience.com";
+        var credentials = new SigningCredentials(_config.JWTKey(), SecurityAlgorithms.HmacSha256);
 
         var tokenHandler = new JwtSecurityTokenHandler();
         try
@@ -111,9 +118,9 @@ public class AuthenticationController : BaseController
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidIssuer = myIssuer,
-                ValidAudience = myAudience,
-                IssuerSigningKey = mySecurityKey
+                ValidIssuer = _config.JWTIssuer(),
+                ValidAudience = _config.JWTIssuer(),
+                IssuerSigningKey = credentials.Key
             }, out SecurityToken validatedToken);
         }
         catch

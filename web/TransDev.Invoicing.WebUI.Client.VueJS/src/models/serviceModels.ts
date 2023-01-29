@@ -69,11 +69,11 @@ export class AuthenticationClient {
     /**
      * @return System User Authentication. Response includes a JWT token to authorize future requests.
      */
-    veriftyToken(token: string): Promise<JWTTokenModel> {
+    veriftyToken(verifyToken: ApiTokenVerify): Promise<JWTTokenModel> {
         let url_ = this.baseUrl + "/api/Authentication/VeriftyToken";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(token);
+        const content_ = JSON.stringify(verifyToken);
 
         let options_: RequestInit = {
             body: content_,
@@ -555,6 +555,42 @@ export class JWTTokenModel implements IJWTTokenModel {
 export interface IJWTTokenModel {
     token: string;
     expiresAt: Date;
+}
+
+export class ApiTokenVerify implements IApiTokenVerify {
+    api_token?: string | null;
+
+    constructor(data?: IApiTokenVerify) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.api_token = _data["api_token"] !== undefined ? _data["api_token"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ApiTokenVerify {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiTokenVerify();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["api_token"] = this.api_token !== undefined ? this.api_token : <any>null;
+        return data;
+    }
+}
+
+export interface IApiTokenVerify {
+    api_token?: string | null;
 }
 
 export class ResponseBase implements IResponseBase {
