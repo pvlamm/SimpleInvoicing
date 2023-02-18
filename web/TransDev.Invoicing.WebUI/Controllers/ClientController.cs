@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System;
 
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 
@@ -13,7 +12,6 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Client.Queries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using TransDev.Invoicing.Application.Client.Commands;
 
 [Route("api/[controller]")]

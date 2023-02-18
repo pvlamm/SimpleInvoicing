@@ -1,4 +1,4 @@
-<template>
+<template>  
     <div class="modal-window" :style="{ display: display ? 'block' : 'none' }">
         <div>
             <h3>Create Client</h3>
@@ -72,6 +72,7 @@
 <script lang="ts">
     import { defineComponent } from 'vue';
     import { ContactDto, ClientClient, CreateClientCommand } from '@/models/serviceModels'
+    import { getIllustrationsPath } from "@/core/helpers/assets";
 
     export default defineComponent({
         name: 'NewClient',
@@ -86,6 +87,11 @@
             }
         },
         mounted: function () {
+        },
+        setup() {
+            return {
+            getIllustrationsPath,
+            };
         },
         methods: {
             save: async function () {
