@@ -13,6 +13,7 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
     {
         builder.ToTable("Client");
         builder.HasKey(client => client.Id);
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
         builder.HasAlternateKey(client => client.PublicId);
 
         builder.HasMany(client => client.Contacts)

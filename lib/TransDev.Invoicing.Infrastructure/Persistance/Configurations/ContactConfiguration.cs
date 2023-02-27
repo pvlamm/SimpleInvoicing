@@ -15,6 +15,8 @@ public class ContactConfiguration : IEntityTypeConfiguration<Contact>
         builder
             .HasKey(contact => contact.Id);
 
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
+
         builder
             .HasOne(contact => contact.Client)
             .WithMany(client => client.Contacts)

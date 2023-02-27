@@ -12,6 +12,8 @@ public class ItemHistoryConfiguration : IEntityTypeConfiguration<ItemHistory>
         builder.ToTable("ItemHistory");
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
+
         builder.Property(a => a.Description).HasMaxLength(2048);
         builder.Property(a => a.Price);
 

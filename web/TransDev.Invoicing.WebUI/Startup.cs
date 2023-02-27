@@ -12,8 +12,10 @@ using Microsoft.OpenApi.Models;
 
 using TransDev.Invoicing.Application;
 using TransDev.Invoicing.Infrastructure;
+using TransDev.Invoicing.Application.Common.Interfaces;
+using TransDev.Invoicing.Application.Common;
 
-public class Startup
+public class Startup : IEnvironmentStartup
 {
     public Startup(IConfiguration configuration)
     {
@@ -33,31 +35,40 @@ public class Startup
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         }));
+
         services.AddApplication();
         services.AddInfrastructre(Configuration);
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
         services.AddControllers();
 
-        services.AddSwaggerDocument(options =>
-            options.GenerateEnumMappingDescription = true);
+        services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "TransDev.Invoicing.WebUI", Version = "v1" });
+        });
+
+        services.AddSwaggerDocument(options =>
+        {
+            options.GenerateEnumMappingDescription = true;
         });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        const string swaggerRoot = "/api/docs";
+        const string swaggerJson = swaggerRoot + "/v1/swagger.json";
+
         app.UseCors("CorsPolicy");
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TransDev.Invoicing.WebUI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint(swaggerJson, "TransDev.Invoicing.WebUI"));
         }
         else
         {
@@ -75,8 +86,6 @@ public class Startup
 
         app.UseRouting();
 
-        const string swaggerRoot = "/api/docs";
-        const string swaggerJson = swaggerRoot + "/v1/swagger.json";
         app.UseOpenApi(options => options.Path = swaggerJson);
         app.UseSwaggerUi3(options =>
         {
@@ -92,10 +101,6 @@ public class Startup
             endpoints.MapControllers();
         });
 
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
 
         app.UseEndpoints(endpoints =>
         {
@@ -104,5 +109,10 @@ public class Startup
                 pattern: "{controller}/{action=Index}/{id?}");
             //endpoints.MapRazorPages();
         });
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
     }
 }

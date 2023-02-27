@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Client]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [PublicId] UNIQUEIDENTIFIER NULL, 
+    [ClientType] SMALLINT NULL
+)

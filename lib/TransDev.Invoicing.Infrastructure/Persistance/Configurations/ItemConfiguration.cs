@@ -12,6 +12,8 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
         builder.ToTable("Item");
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.Id).ValueGeneratedOnAdd();
+
         builder.Property(a => a.Code).IsRequired().HasMaxLength(16);
 
         builder.HasMany(a => a.History).WithOne(a => a.Parent).HasForeignKey(a => a.ParentId).OnDelete(DeleteBehavior.Cascade);

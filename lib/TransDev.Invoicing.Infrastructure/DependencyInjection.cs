@@ -28,8 +28,7 @@ public static class DependencyInjection
                 options
                     .UseLoggerFactory(MyLoggerFactory)
                     .EnableSensitiveDataLogging(true)
-                    .UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
+                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
 
@@ -38,7 +37,6 @@ public static class DependencyInjection
         services.AddTransient<IDateTimeService, DateTimeService>();
         
         services.AddTransient<ISystemAddressService, SystemAddressService>();
-        services.AddTransient<ISystemCityService, SystemCityService>();
         services.AddTransient<ISystemStateService, SystemStateService>();
         
         services.AddTransient<IAuthenticationService, AuthenticationService>();

@@ -6,8 +6,10 @@ using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System;
 using System.Reflection;
 
+using TransDev.Invoicing.Application.Client.Commands;
 using TransDev.Invoicing.Application.Common.Behaviours;
 
 public static class DependencyInjection

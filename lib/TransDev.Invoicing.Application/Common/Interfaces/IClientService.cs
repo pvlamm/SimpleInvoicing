@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using TransDev.Invoicing.Domain.Entities;
+using TransDev.Invoicing.Domain.Enums;
 
 public interface IClientService
 {
@@ -32,11 +33,13 @@ public interface IClientService
     Task<bool> ClientIsActiveAsync(int clientId, CancellationToken token);
     Task<bool> UpdateClientAsync(ClientHistory clientHistory, CancellationToken token);
     /// <summary>
-    /// Provide a ClientHistory record with Parent/Client to get Created anew;
-    /// Method will 0 out Ids.
+    /// Provide new Client record
     /// </summary>
-    /// <param name="history"></param>
-    /// <param name="token"></param>
+    /// <param name="client">New Client Record</param>
+    /// <param name="token">Cancellation Token</param>
     /// <returns>Newly Created ClientHistory Record with Parent/Client entry</returns>
-    Task<ClientHistory> CreateClientAsync(ClientHistory history, CancellationToken token);
+    Task CreateClientAsync(Client client, CancellationToken token);
+    Task CreateClientAsync(ClientType clientType, ClientHistory clientHistory,
+        ContactHistory primaryContactHistory, ContactHistory billingContactHistory,
+        SystemAddress primaryAddress, SystemAddress billingAddress, CancellationToken token);
 }

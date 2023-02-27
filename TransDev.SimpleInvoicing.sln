@@ -17,6 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransDev.Invoicing.WebUI", 
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "transdev.invoicing.webui.client.vuejs", "web\TransDev.Invoicing.WebUI.Client.VueJS\transdev.invoicing.webui.client.vuejs.esproj", "{2F36FAC3-B41E-4323-BD68-57E30AE48D25}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[Z - Test]", "[Z - Test]", "{132F5EF7-7DFB-4CC2-BBF6-D548B8729C66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.SimpleInvoicing.TestHelpers", "test\TransDev.SimpleInvoicing.TestHelpers\TransDev.SimpleInvoicing.TestHelpers.csproj", "{12701041-D522-47B4-AF00-32A7DD7DBAB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.Invoicing.ApplicationTests", "test\TransDev.Invoicing.ApplicationTests\TransDev.Invoicing.ApplicationTests.csproj", "{FCD46777-F586-4B47-8D7C-EC93EE59FC74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransDev.Invoicing.InfrastructureTests", "test\TransDev.Invoicing.InfrastructureTests\TransDev.Invoicing.InfrastructureTests.csproj", "{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +53,18 @@ Global
 		{2F36FAC3-B41E-4323-BD68-57E30AE48D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F36FAC3-B41E-4323-BD68-57E30AE48D25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F36FAC3-B41E-4323-BD68-57E30AE48D25}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{12701041-D522-47B4-AF00-32A7DD7DBAB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12701041-D522-47B4-AF00-32A7DD7DBAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12701041-D522-47B4-AF00-32A7DD7DBAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12701041-D522-47B4-AF00-32A7DD7DBAB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD46777-F586-4B47-8D7C-EC93EE59FC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD46777-F586-4B47-8D7C-EC93EE59FC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD46777-F586-4B47-8D7C-EC93EE59FC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD46777-F586-4B47-8D7C-EC93EE59FC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +75,9 @@ Global
 		{178E8172-3034-47F0-8AF1-C53C239BAC37} = {AACF2E52-829F-4F0C-8FF6-345F0473516B}
 		{7F46A2CA-CFFD-45B8-9C8E-4350D2AF91D2} = {16378BA6-94AD-4530-9CD2-0F018F7A8A28}
 		{2F36FAC3-B41E-4323-BD68-57E30AE48D25} = {16378BA6-94AD-4530-9CD2-0F018F7A8A28}
+		{12701041-D522-47B4-AF00-32A7DD7DBAB4} = {132F5EF7-7DFB-4CC2-BBF6-D548B8729C66}
+		{FCD46777-F586-4B47-8D7C-EC93EE59FC74} = {132F5EF7-7DFB-4CC2-BBF6-D548B8729C66}
+		{F0EFCDB1-57F7-4A4F-BBDB-B0B1231F0927} = {132F5EF7-7DFB-4CC2-BBF6-D548B8729C66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70C31E89-D881-46E1-A0BA-3785AEF70000}
