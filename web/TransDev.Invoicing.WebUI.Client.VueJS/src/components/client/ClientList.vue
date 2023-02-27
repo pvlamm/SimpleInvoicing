@@ -4,24 +4,30 @@
     <NewClientModal />
     This is a Client List from Server {{ msg }}
 
-<DataTable :header="tableHeader"
-           :data="tableData"
-           :items-per-page="5"
-           :items-per-page-dropdown-enabled="false">
-    <template v-slot:name="{ row: client }">
-        {{ client.name }}
-    </template>
-    <template v-slot:primaryContactName="{ row: client }">
-        <span>
-            {{ client.primaryContactName }}
-        </span>
-    </template>
-    <template v-slot:billingContactName="{ row: client }">
-        <span>
-            {{ client.billingContactName }}
-        </span>
-    </template>
-</DataTable>
+    <Datatable :header="tableHeader" :data="clients">
+  <template v-slot:name="{ row: data }">
+    {{ data.name }}
+  </template>
+  <template v-slot:primaryContactName="{ row: data }">
+    {{  data.primaryContactName }}
+  </template>
+  <template v-slot:primaryContactEmail="{ row: data }">
+    {{ data.primaryContactEmail }}
+  </template>
+  <template v-slot:primaryContactPhone="{ row: data }">
+    {{ data.primaryContactPhone }}
+  </template>
+  <template v-slot:billingContactName="{ row: data }">
+    {{  data.billingContactName }}
+  </template>
+  <template v-slot:billingContactEmail="{ row: data }">
+    {{ data.billingContactEmail }}
+  </template>
+  <template v-slot:billingContactPhone="{ row: data }">
+    {{ data.billingContactPhone }}
+  </template>
+</Datatable>
+
     <button
         type="button"
         class="btn btn-primary er fs-6 px-8 py-4"
@@ -51,35 +57,45 @@
         },
         data: function () {
             return {
-                results: Array<SearchClientDto>(),
+                clients: Array<SearchClientDto>(),
                 newClient: false,
             };
         },
         setup() {
             const tableHeader = ref([
-                {
-                    columnName: "Name",
-                    columnLabel: "name",
-                    sortEnabled: true,
-                },
-                {
-                    columnName: "Primary Contact",
-                    columnLabel: "primaryContactEmail",
-                    sortEnabled: false,
-                },
-                {
-                    columnName: "Billing Contact",
-                    columnLabel: "billingContactName",
-                    sortEnabled: false,
-                },
-            ]);
-            const tableData = ref([
-                {
-                    name: "Test A",
-                    primaryContactName: "Alpha",
-                    billingContactName: "BAlpha"
-                    }]);
-            return { tableHeader, tableData };
+      {
+        columnName: "Name",
+        columnLabel: "name",
+      },
+      {
+        columnName: "Primary Contact",
+        columnLabel: "primaryContactName",
+      },
+      {
+        columnName: "Primary Email",
+        columnLabel: "primaryContactEmail",
+      },
+      {
+        columnName: "Phone",
+        columnLabel: "primaryContactPhone",
+      },
+      {
+        columnName: "Billing Contact",
+        columnLabel: "billingContactName",
+      },
+      {
+        columnName: "Billing Email",
+        columnLabel: "billingContactEmail",
+      },
+      {
+        columnName: "Billing Phone",
+        columnLabel: "billingContactPhone",
+      },
+    ]);
+
+    return {
+      tableHeader
+    }
         },
         async mounted() {
 
@@ -88,13 +104,13 @@
             clientTest.name = 'A Name';
             this.newClient = false;
             console.log(clientTest);
-            this.results.push(clientTest);
+            this.clients.push(clientTest);
 
             let apiResults = await cClient
                 .get()
                 .then(response => response.clients) as SearchClientDto[];
 
-            this.results = apiResults;
+            this.clients = apiResults;
         },
         methods: {
             addClient: function () {

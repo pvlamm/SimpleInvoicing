@@ -35,6 +35,12 @@
 		<ProjectReference Include="..\..\lib\TransDev.Invoicing.Domain\TransDev.Invoicing.Domain.csproj" />
 		<ProjectReference Include="..\..\lib\TransDev.Invoicing.Infrastructure\TransDev.Invoicing.Infrastructure.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 	<!--Condition="'$(GenerateTSClient)'=='True' "-->
 	<Target Name="NSwag" AfterTargets="Build">
 		<Exec Command="$(NSwagExe_Net70) run nswag.json /variables:Configuration=$(Configuration)" />

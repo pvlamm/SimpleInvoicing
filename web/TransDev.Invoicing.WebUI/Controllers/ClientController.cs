@@ -13,6 +13,7 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Client.Queries;
 using TransDev.Invoicing.Application.Client.Commands;
+using System.Drawing;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -45,6 +46,16 @@ public class ClientController : BaseController
     {
         try
         {
+            /** Primary Address **/
+            command.PrimaryAddress = new Application.Common.Dtos.AddressDto
+            {
+                Address = "2317 Beechwood Dr",
+                City = "Waxhaw",
+                State = "NC",
+                ZipCode = "28173"
+            };
+            command.BillingAddress = command.PrimaryAddress;
+
             var result = await _mediator.Send(command);
 
             if(result.Success)

@@ -49,7 +49,11 @@ public class ClientService : IClientService
             .Include(history => history.PrimaryAddress)
             .Include(history => history.BillingAddress)
             .Include(history => history.PrimaryContact)
+                .ThenInclude(contact => contact.History)
+                    .Where(history => history.UpdatedAuditTrailId == null)
             .Include(history => history.PrimaryBillingContact)
+                .ThenInclude(contact => contact.History)
+                    .Where(history => history.UpdatedAuditTrailId == null)
             .Where(history => history.UpdatedAuditTrailId == null)
             .ToListAsync(token);
     }
