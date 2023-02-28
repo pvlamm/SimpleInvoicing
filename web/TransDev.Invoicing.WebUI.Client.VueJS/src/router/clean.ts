@@ -47,6 +47,25 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: "/",
+        name: "invoices",
+        component: () => import("@/layouts/main-layout/MainLayout.vue"),
+        meta: {
+            middleware: "auth",
+        },
+        children: [
+            {
+                path: "/invoices",
+                name: "invoices",
+                component: () => import("@/views/Invoices.vue"),
+                meta: {
+                    pageTitle: "Invoices",
+                    breadcrumbs: ["Invoices"]
+                },
+            },
+        ],
+    },
+    {
+        path: "/",
         component: () => import("@/layouts/AuthLayout.vue"),
         children: [
             {

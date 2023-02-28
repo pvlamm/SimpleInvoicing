@@ -31,6 +31,12 @@ const MainMenuConfig: Array<MenuItem> = [
                 svgIcon: getAssetPath("media/icons/duotune/art/art002.svg"),
                 fontIcon: "bi-app-indicator",
             },
+            {
+                heading: "Invoices",
+                route: "/invoices",
+                svgIcon: getAssetPath("media/icons/duotune/art/art003.svg"),
+                fontIcon: "bi-app-indicator",
+            }
         ],
     },
     {
