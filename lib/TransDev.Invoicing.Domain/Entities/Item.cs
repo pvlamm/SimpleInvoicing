@@ -6,8 +6,8 @@ using TransDev.Invoicing.Domain.Enums;
 
 public record Item
 {
-    public int Id { get; set; }
-    public string Code { get; set; }
-    public ItemType Type { get; set; }
-    public ICollection<ItemHistory> History { get; set; } = new HashSet<ItemHistory>();
+    public int Id { get; init; }
+    public string Code { get; init; }
+    public ItemType Type { get; init; }
+    public ICollection<ItemHistory> History { get; init; } = new HashSet<ItemHistory>();
 }

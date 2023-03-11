@@ -4,7 +4,7 @@ using System;
 
 public record AuditTrail
 {
-    public long Id { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public string Note { get; set; }
+    public long Id { get; init; }
+    public DateTime CreatedDate { get; init; }
+    public string Note { get; init; }
 }

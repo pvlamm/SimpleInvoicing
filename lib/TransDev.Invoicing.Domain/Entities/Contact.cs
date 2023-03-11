@@ -1,13 +1,12 @@
 ﻿namespace TransDev.Invoicing.Domain.Entities;
 
 using System.Collections.Generic;
-using System.Linq;
 
 public record Contact
 {
-    public int Id { get; set; }
-    public int ClientId { get; set; }
-    public Client Client { get; set; }
+    public int Id { get; init; }
+    public int ClientId { get; init; }
+    public Client Client { get; init; }
 
     public ICollection<ContactHistory> History { get; set; } = new HashSet<ContactHistory>();
 }

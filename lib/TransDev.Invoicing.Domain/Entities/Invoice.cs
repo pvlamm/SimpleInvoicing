@@ -5,11 +5,13 @@ using System.Collections.Generic;
 
 public record Invoice
 {
-    public int Id { get; set; }
-    public Guid PublicId { get; set; } = Guid.NewGuid();
-    public string Number { get; set; }
-    public int ClientId { get; set; }
-    public Client Client { get; set; }
-    public IEnumerable<InvoiceHistory> History { get; set; }
-    public IEnumerable<InvoiceStatus> Status { get; set; }
+    public int Id { get; init; }
+    public Guid PublicId { get; init; } = Guid.NewGuid();
+    public string Number { get; init; }
+    public int ClientId { get; init; }
+    public Client Client { get; init; }
+    public int ContactId { get; init; }
+    public Contact Contact { get; init; }
+    public ICollection<InvoiceDetail> Details { get; init; } = new HashSet<InvoiceDetail>();
+    public ICollection<InvoiceStatus> Status { get; init; } = new HashSet<InvoiceStatus>();
 }

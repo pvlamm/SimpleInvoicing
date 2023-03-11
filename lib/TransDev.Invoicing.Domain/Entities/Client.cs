@@ -7,9 +7,9 @@ using TransDev.Invoicing.Domain.Enums;
 
 public record Client
 {
-    public int Id { get; set; }
-    public Guid PublicId { get; set; } = Guid.NewGuid();
-    public ClientType ClientType { get; set; }
-    public ICollection<ClientHistory> History { get; set; } = new HashSet<ClientHistory>();
-    public ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
+    public int Id { get; init; }
+    public Guid PublicId { get; init; } = Guid.NewGuid();
+    public ClientType ClientType { get; init; }
+    public ICollection<ClientHistory> History { get; init; } = new HashSet<ClientHistory>();
+    public ICollection<Contact> Contacts { get; init; } = new HashSet<Contact>();
 }
