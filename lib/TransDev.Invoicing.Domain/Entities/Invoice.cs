@@ -13,5 +13,5 @@ public record Invoice
     public int ContactId { get; init; }
     public Contact Contact { get; init; }
     public ICollection<InvoiceDetail> Details { get; init; } = new HashSet<InvoiceDetail>();
-    public ICollection<InvoiceStatus> Status { get; init; } = new HashSet<InvoiceStatus>();
+    public ICollection<InvoiceStatusHistory> StatusHistory { get; init; } = new HashSet<InvoiceStatusHistory>();
 }
