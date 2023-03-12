@@ -28,15 +28,8 @@ public class SystemInvoiceStatusConfiguration : IEntityTypeConfiguration<SystemI
             .HasMaxLength(15);
 
         builder
-            .Property(x => x.Quote)
-
-        builder
-            .Property(x => x.IsClosed)
-            .IsRequired()
-            .HasDefaultValue(false);
-
-        builder
-            .Property(x => x.IsCancelled)
+            .Property(x => x.StatusType)
+            .HasColumnType("SMALLINT")
             .IsRequired()
             .HasDefaultValue(false);
 

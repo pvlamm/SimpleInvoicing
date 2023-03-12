@@ -33,7 +33,20 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
             .HasOne(x => x.Contact)
             .WithMany()
             .HasForeignKey(x => x.ContactId);
+
+        builder
+            .HasOne(x => x.SystemPaymentTerm)
+            .WithMany()
+            .HasForeignKey(x => x.SystemPaymentTermId);
+
+        builder
+            .Property(x => x.Invoiced)
+            .IsRequired(false)
+            .HasColumnType("date");
+
+        builder
+            .Property(x => x.DueDate)
+            .IsRequired(false)
+            .HasColumnType("date");
     }
 }
-/*
- */
