@@ -38,6 +38,38 @@ public class SystemInvoiceStatusConfiguration : IEntityTypeConfiguration<SystemI
             .IsRequired()
             .HasMaxLength(512);
 
-
+        builder
+            .HasData(new SystemInvoiceStatus[] {
+                new SystemInvoiceStatus()
+                {
+                    Name = "Detailing",
+                    Description = "For Invoices not ready Invoicing",
+                    StatusType = Domain.Enums.InvoiceStatusType.Detailling
+                },
+                new SystemInvoiceStatus()
+                {
+                    Name = "Opened",
+                    Description = "Invoice is ready for Invoicing",
+                    StatusType = Domain.Enums.InvoiceStatusType.Open
+                },
+                new SystemInvoiceStatus()
+                {
+                    Name = "Invoiced",
+                    Description = "This item has been Invoiced",
+                    StatusType = Domain.Enums.InvoiceStatusType.Invoiced
+                },
+                new SystemInvoiceStatus()
+                {
+                    Name = "Closed",
+                    Description = "Invoice has been paid in full",
+                    StatusType = Domain.Enums.InvoiceStatusType.Closed
+                },
+                new SystemInvoiceStatus()
+                {
+                    Name = "Cancelled",
+                    Description = "Invoice has been cancelled",
+                    StatusType = Domain.Enums.InvoiceStatusType.Cancelled
+                }
+            });
     }
 }
