@@ -1,7 +1,5 @@
 ﻿namespace TransDev.Invoicing.Infrastructure.Persistance.Configurations;
 
-using System;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

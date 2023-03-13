@@ -11,7 +11,12 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
     {
         builder.ToTable("Invoice");
 
-        builder.HasKey(x => x.Id);
+        builder
+            .HasKey(x => x.Id);
+
+        builder
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
 
         builder
             .Property(x => x.PublicId)

@@ -66,6 +66,5 @@ public class ContactHistoryConfiguration : IEntityTypeConfiguration<ContactHisto
             .HasMaxLength(15)
             .IsRequired();
 
-
     }
 }
