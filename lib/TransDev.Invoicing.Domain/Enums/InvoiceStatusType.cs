@@ -3,8 +3,8 @@
 public enum InvoiceStatusType
 {
     Detailling = 0,
-    Open = 1,
-    Invoiced = 2,
-    Closed = 50,
+    Open = 10,
+    Invoiced = 20,
+    Closed = 30,
     Cancelled = 100
 }

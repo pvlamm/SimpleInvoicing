@@ -57,6 +57,33 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SystemInvoiceStatus",
+                columns: table => new
+                {
+                    Id = table.Column<byte>(type: "tinyint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    StatusType = table.Column<short>(type: "SMALLINT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemInvoiceStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemPaymentTerm",
+                columns: table => new
+                {
+                    Id = table.Column<byte>(type: "tinyint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    DueInDays = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemPaymentTerm", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SystemState",
                 columns: table => new
                 {
@@ -139,6 +166,40 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_SystemAddress_SystemState_SystemStateId",
                         column: x => x.SystemStateId,
                         principalTable: "SystemState",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Number = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ContactId = table.Column<int>(type: "int", nullable: false),
+                    SystemPaymentTermId = table.Column<byte>(type: "tinyint", nullable: false),
+                    Invoiced = table.Column<DateTime>(type: "date", nullable: true),
+                    DueDate = table.Column<DateTime>(type: "date", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoice_Client_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Client",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoice_Contact_ContactId",
+                        column: x => x.ContactId,
+                        principalTable: "Contact",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoice_SystemPaymentTerm_SystemPaymentTermId",
+                        column: x => x.SystemPaymentTermId,
+                        principalTable: "SystemPaymentTerm",
                         principalColumn: "Id");
                 });
 
@@ -240,6 +301,97 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         column: x => x.SystemAddressId,
                         principalTable: "SystemAddress",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceDetail",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ParentId = table.Column<int>(type: "int", nullable: false),
+                    ItemId = table.Column<long>(type: "bigint", nullable: false),
+                    SequenceNumber = table.Column<short>(type: "SMALLINT", nullable: false),
+                    Cost = table.Column<decimal>(type: "DECIMAL(15,5)", nullable: false, defaultValue: 0m),
+                    Quantity = table.Column<decimal>(type: "DECIMAL(15,5)", nullable: false, defaultValue: 0m),
+                    Price = table.Column<decimal>(type: "DECIMAL(15,5)", nullable: false, defaultValue: 0m)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceDetail", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetail_Invoice_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Invoice",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetail_ItemHistory_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "ItemHistory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceStatusHistory",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ParentId = table.Column<int>(type: "int", nullable: false),
+                    SystemInvoiceStatusId = table.Column<byte>(type: "tinyint", nullable: false),
+                    AuditTrailId = table.Column<long>(type: "bigint", nullable: false),
+                    UpdatedAuditTrailId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceStatusHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceStatusHistory_AuditTrail_AuditTrailId",
+                        column: x => x.AuditTrailId,
+                        principalTable: "AuditTrail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InvoiceStatusHistory_AuditTrail_UpdatedAuditTrailId",
+                        column: x => x.UpdatedAuditTrailId,
+                        principalTable: "AuditTrail",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InvoiceStatusHistory_Invoice_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Invoice",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InvoiceStatusHistory_SystemInvoiceStatus_SystemInvoiceStatusId",
+                        column: x => x.SystemInvoiceStatusId,
+                        principalTable: "SystemInvoiceStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "SystemInvoiceStatus",
+                columns: new[] { "Id", "Description", "Name", "StatusType" },
+                values: new object[,]
+                {
+                    { (byte)0, "For Invoices not ready Invoicing", "Detailing", (short)0 },
+                    { (byte)1, "Invoice is ready for Invoicing", "Opened", (short)10 },
+                    { (byte)2, "This item has been Invoiced", "Invoiced", (short)20 },
+                    { (byte)3, "Invoice has been paid in full", "Closed", (short)30 },
+                    { (byte)4, "Invoice has been cancelled", "Cancelled", (short)100 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SystemPaymentTerm",
+                columns: new[] { "Id", "DueInDays", "Name" },
+                values: new object[,]
+                {
+                    { (byte)1, (short)30, "Due in 30" },
+                    { (byte)2, (short)60, "Due in 60" },
+                    { (byte)3, (short)90, "Due in 90" }
                 });
 
             migrationBuilder.InsertData(
@@ -369,6 +521,51 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 column: "UpdatedAuditTrailId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoice_ClientId",
+                table: "Invoice",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoice_ContactId",
+                table: "Invoice",
+                column: "ContactId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoice_SystemPaymentTermId",
+                table: "Invoice",
+                column: "SystemPaymentTermId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetail_ItemId",
+                table: "InvoiceDetail",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetail_ParentId",
+                table: "InvoiceDetail",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceStatusHistory_AuditTrailId",
+                table: "InvoiceStatusHistory",
+                column: "AuditTrailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceStatusHistory_ParentId",
+                table: "InvoiceStatusHistory",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceStatusHistory_SystemInvoiceStatusId",
+                table: "InvoiceStatusHistory",
+                column: "SystemInvoiceStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceStatusHistory_UpdatedAuditTrailId",
+                table: "InvoiceStatusHistory",
+                column: "UpdatedAuditTrailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ItemHistory_AuditTrailId",
                 table: "ItemHistory",
                 column: "AuditTrailId");
@@ -399,13 +596,25 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 name: "ContactHistory");
 
             migrationBuilder.DropTable(
-                name: "ItemHistory");
+                name: "InvoiceDetail");
 
             migrationBuilder.DropTable(
-                name: "Contact");
+                name: "InvoiceStatusHistory");
 
             migrationBuilder.DropTable(
                 name: "SystemAddress");
+
+            migrationBuilder.DropTable(
+                name: "ItemHistory");
+
+            migrationBuilder.DropTable(
+                name: "Invoice");
+
+            migrationBuilder.DropTable(
+                name: "SystemInvoiceStatus");
+
+            migrationBuilder.DropTable(
+                name: "SystemState");
 
             migrationBuilder.DropTable(
                 name: "AuditTrail");
@@ -414,10 +623,13 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 name: "Item");
 
             migrationBuilder.DropTable(
-                name: "Client");
+                name: "Contact");
 
             migrationBuilder.DropTable(
-                name: "SystemState");
+                name: "SystemPaymentTerm");
+
+            migrationBuilder.DropTable(
+                name: "Client");
         }
     }
 }

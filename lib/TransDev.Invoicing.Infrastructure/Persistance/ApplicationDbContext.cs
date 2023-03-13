@@ -27,6 +27,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<ItemHistory> ItemHistories { get; set; }
     public DbSet<SystemAddress> SystemAddresses { get; set; }
     public DbSet<SystemState> SystemStates { get; set; }
+    public DbSet<Invoice> Invoices { get; set; }
+    public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+    public DbSet<InvoiceStatusHistory> InvoiceStatusHistories { get; set; }
+    public DbSet<SystemInvoiceStatus> SystemInvoiceStatuses { get; set; }
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,

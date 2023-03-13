@@ -5,7 +5,7 @@ using TransDev.Invoicing.Domain.Enums;
 public record SystemInvoiceStatus
 {
     public byte Id { get; init; }
-    public string Name { get; init; }
-    public string Description { get; init; }
-    public InvoiceStatusType StatusType { get; init; } = InvoiceStatusType.Detailling;
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public InvoiceStatusType StatusType { get; set; } = InvoiceStatusType.Detailling;
 }

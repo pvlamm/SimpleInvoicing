@@ -6,16 +6,16 @@ using System.Collections.Generic;
 public record Invoice
 {
     public int Id { get; init; }
-    public Guid PublicId { get; init; } = Guid.NewGuid();
-    public string Number { get; init; }
-    public int ClientId { get; init; }
-    public virtual Client Client { get; init; }
-    public int ContactId { get; init; }
-    public virtual Contact Contact { get; init; }
-    public short SystemPaymentTermId { get; init; }
-    public virtual SystemPaymentTerm SystemPaymentTerm { get; init; }
-    public DateOnly? Invoiced { get; init; }
-    public DateOnly? DueDate { get; init; }
-    public ICollection<InvoiceDetail> Details { get; init; } = new HashSet<InvoiceDetail>();
-    public ICollection<InvoiceStatusHistory> StatusHistory { get; init; } = new HashSet<InvoiceStatusHistory>();
+    public Guid PublicId { get; set; } = Guid.NewGuid();
+    public string Number { get; set; }
+    public int ClientId { get; set; }
+    public virtual Client Client { get; set; }
+    public int ContactId { get; set; }
+    public virtual Contact Contact { get; set; }
+    public byte SystemPaymentTermId { get; set; }
+    public virtual SystemPaymentTerm SystemPaymentTerm { get; set; }
+    public DateOnly? Invoiced { get; set; }
+    public DateOnly? DueDate { get; set; }
+    public ICollection<InvoiceDetail> Details { get; set; } = new HashSet<InvoiceDetail>();
+    public ICollection<InvoiceStatusHistory> StatusHistory { get; set; } = new HashSet<InvoiceStatusHistory>();
 }

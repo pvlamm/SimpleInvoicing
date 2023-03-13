@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using TransDev.Invoicing.Application.Common.Converters;
 using TransDev.Invoicing.Domain.Entities;
 
 public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
@@ -32,26 +33,32 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder
             .HasOne(x => x.Client)
             .WithMany(x => x.Invoices)
-            .HasForeignKey(x => x.ClientId);
+            .HasForeignKey(x => x.ClientId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(x => x.Contact)
             .WithMany()
-            .HasForeignKey(x => x.ContactId);
+            .HasForeignKey(x => x.ContactId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(x => x.SystemPaymentTerm)
             .WithMany()
-            .HasForeignKey(x => x.SystemPaymentTermId);
+            .HasForeignKey(x => x.SystemPaymentTermId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .Property(x => x.Invoiced)
+            .HasConversion<NullableDateOnlyConverter>()
             .IsRequired(false)
             .HasColumnType("date");
 
         builder
             .Property(x => x.DueDate)
+            .HasConversion<NullableDateOnlyConverter>()
             .IsRequired(false)
             .HasColumnType("date");
+
     }
 }

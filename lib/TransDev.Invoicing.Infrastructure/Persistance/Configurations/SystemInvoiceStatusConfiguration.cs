@@ -30,8 +30,7 @@ public class SystemInvoiceStatusConfiguration : IEntityTypeConfiguration<SystemI
         builder
             .Property(x => x.StatusType)
             .HasColumnType("SMALLINT")
-            .IsRequired()
-            .HasDefaultValue(false);
+            .IsRequired();
 
         builder
             .Property(x => x.Description)
@@ -42,30 +41,35 @@ public class SystemInvoiceStatusConfiguration : IEntityTypeConfiguration<SystemI
             .HasData(new SystemInvoiceStatus[] {
                 new SystemInvoiceStatus()
                 {
+                    Id = 0,
                     Name = "Detailing",
                     Description = "For Invoices not ready Invoicing",
                     StatusType = Domain.Enums.InvoiceStatusType.Detailling
                 },
                 new SystemInvoiceStatus()
                 {
+                    Id = 1,
                     Name = "Opened",
                     Description = "Invoice is ready for Invoicing",
                     StatusType = Domain.Enums.InvoiceStatusType.Open
                 },
                 new SystemInvoiceStatus()
                 {
+                    Id = 2,
                     Name = "Invoiced",
                     Description = "This item has been Invoiced",
                     StatusType = Domain.Enums.InvoiceStatusType.Invoiced
                 },
                 new SystemInvoiceStatus()
                 {
+                    Id = 3,
                     Name = "Closed",
                     Description = "Invoice has been paid in full",
                     StatusType = Domain.Enums.InvoiceStatusType.Closed
                 },
                 new SystemInvoiceStatus()
                 {
+                    Id = 4,
                     Name = "Cancelled",
                     Description = "Invoice has been cancelled",
                     StatusType = Domain.Enums.InvoiceStatusType.Cancelled

@@ -28,9 +28,9 @@ public class SystemPaymentTermConfiguration : IEntityTypeConfiguration<SystemPay
             .IsRequired();
 
         builder.HasData(new SystemPaymentTerm[] { 
-            new SystemPaymentTerm { Name = "Due in 30", DueInDays = 30 },
-            new SystemPaymentTerm { Name = "Due in 60", DueInDays = 60 },
-            new SystemPaymentTerm { Name = "Due in 90", DueInDays = 90 },
+            new SystemPaymentTerm { Id = 1, Name = "Due in 30", DueInDays = 30 },
+            new SystemPaymentTerm { Id = 2, Name = "Due in 60", DueInDays = 60 },
+            new SystemPaymentTerm { Id = 3, Name = "Due in 90", DueInDays = 90 },
         });
     }
 }

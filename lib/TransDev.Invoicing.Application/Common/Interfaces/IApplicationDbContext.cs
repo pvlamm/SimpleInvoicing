@@ -19,6 +19,10 @@ public interface IApplicationDbContext
     DbSet<ItemHistory> ItemHistories { get; set; }
     DbSet<SystemAddress> SystemAddresses { get; set; }
     DbSet<SystemState> SystemStates { get; set; }
+    DbSet<Invoice> Invoices { get; set; }
+    DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+    DbSet<InvoiceStatusHistory> InvoiceStatusHistories { get; set; }
+    DbSet<SystemInvoiceStatus> SystemInvoiceStatuses { get; set; }
 
     IModel Model { get; }
 

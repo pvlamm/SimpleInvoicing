@@ -1,7 +1,6 @@
 ﻿namespace TransDev.Invoicing.Domain.Entities;
 
 using System;
-using System.Collections.Generic;
 
 public record SystemState
 {

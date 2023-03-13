@@ -5,13 +5,13 @@ using TransDev.Invoicing.Domain.BaseEntities;
 public record ContactHistory : HistoryEntityBase
 {
     public long Id { get; init; }
-    public int ParentId { get; init; }
-    public virtual Contact Parent { get; init; }
-    public long SystemAddressId { get; init; }
-    public virtual SystemAddress Address { get; init; }
-    public string FirstName { get; init; }
-    public string MiddleName { get; init; }
-    public string LastName { get; init; }
-    public string EmailAddress { get; init; }
-    public string PhoneNumber { get; init; }
+    public int ParentId { get; set; }
+    public virtual Contact Parent { get; set; }
+    public long SystemAddressId { get; set; }
+    public virtual SystemAddress Address { get; set; }
+    public string FirstName { get; set; }
+    public string MiddleName { get; set; }
+    public string LastName { get; set; }
+    public string EmailAddress { get; set; }
+    public string PhoneNumber { get; set; }
 }
