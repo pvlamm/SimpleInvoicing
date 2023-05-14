@@ -9,12 +9,15 @@
 
     using MediatR;
 
+    using TransDev.Invoicing.Application.Common.Dtos;
+
     public class CreateInvoiceCommand : IRequest<CreateInvoiceResponse>
     {
         public int ClientId { get; set; }
         public int ContactId { get; set; }
-
-
+        public byte SystemPaymentTermId { get; set; }
+        public byte SystemInvoiceStatusId { get; set; }
+        public InvoiceDetailDto[] InvoiceDetails { get; set; }
     }
 
     public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, CreateInvoiceResponse>

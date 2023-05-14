@@ -15,4 +15,5 @@ public interface IContactService
     Task<bool> DeleteContactAsync(int contactId, CancellationToken token);
     Task<ContactHistory> GetContactByContactHistoryIdAsync(long contactHistoryId, CancellationToken token);
     Task<ContactHistory> GetContactByContactId(int contactId, CancellationToken token);
+    Task<bool> ContactExists(int contactId, CancellationToken token);
 }   
