@@ -10,6 +10,7 @@
     using MediatR;
 
     using TransDev.Invoicing.Application.Common.Dtos;
+    using TransDev.Invoicing.Application.Common.Interfaces;
 
     public class CreateInvoiceCommand : IRequest<CreateInvoiceResponse>
     {
@@ -22,9 +23,10 @@
 
     public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, CreateInvoiceResponse>
     {
-        public CreateInvoiceCommandHandler()
+        private readonly IInvoiceService _invoiceService;
+        public CreateInvoiceCommandHandler(IInvoiceService invoiceService)
         {
-
+            _invoiceService = invoiceService ?? throw new ArgumentNullException(nameof(invoiceService));
         }
 
         public Task<CreateInvoiceResponse> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
