@@ -75,6 +75,9 @@
 
         public Task<bool> ProcessPendingInvoicesAsync(CancellationToken token = default)
         {
+            // update status of Pending Invoices to Processed
+            // post message/email notifying of Due Invoices
+            // 
             throw new NotImplementedException();
         }
 
