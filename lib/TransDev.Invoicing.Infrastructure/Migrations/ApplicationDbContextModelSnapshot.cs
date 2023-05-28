@@ -22,6 +22,29 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Account", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("PublicId");
+
+                    b.ToTable("Account", (string)null);
+                });
+
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.AuditTrail", b =>
                 {
                     b.Property<long>("Id")
@@ -53,6 +76,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClientType")
                         .HasColumnType("int");
 
@@ -62,6 +88,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasAlternateKey("PublicId");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Client", (string)null);
                 });
@@ -205,6 +233,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -229,6 +260,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("ClientId");
 
@@ -321,6 +354,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(16)
@@ -330,6 +366,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Item", (string)null);
                 });
@@ -835,11 +873,22 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Property<Guid>("PublicId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasDefaultValue(new Guid("9f40cf27-1dbc-44a1-8709-d6f1c4eb0184"));
+                        .HasDefaultValue(new Guid("04ec7681-5072-4ee4-b7d1-9944791d2c82"));
 
                     b.HasKey("Id");
 
                     b.ToTable("SystemUser", (string)null);
+                });
+
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Client", b =>
+                {
+                    b.HasOne("TransDev.Invoicing.Domain.Entities.Account", "Account")
+                        .WithMany("Clients")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.ClientHistory", b =>
@@ -945,6 +994,12 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Invoice", b =>
                 {
+                    b.HasOne("TransDev.Invoicing.Domain.Entities.Account", "Account")
+                        .WithMany("Invoices")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TransDev.Invoicing.Domain.Entities.Client", "Client")
                         .WithMany("Invoices")
                         .HasForeignKey("ClientId")
@@ -962,6 +1017,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasForeignKey("SystemPaymentTermId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Account");
 
                     b.Navigation("Client");
 
@@ -1022,6 +1079,17 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Navigation("UpdatedAuditTrail");
                 });
 
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Item", b =>
+                {
+                    b.HasOne("TransDev.Invoicing.Domain.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.ItemHistory", b =>
                 {
                     b.HasOne("TransDev.Invoicing.Domain.Entities.AuditTrail", "AuditTrail")
@@ -1054,6 +1122,13 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasForeignKey("SystemStateId");
 
                     b.Navigation("State");
+                });
+
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Account", b =>
+                {
+                    b.Navigation("Clients");
+
+                    b.Navigation("Invoices");
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.Client", b =>

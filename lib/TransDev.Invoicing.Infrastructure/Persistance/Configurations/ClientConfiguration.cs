@@ -23,5 +23,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .WithOne(history => history.Parent)
             .HasForeignKey(history => history.ParentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Account)
+            .WithMany(x => x.Clients)
+            .HasForeignKey(x => x.AccountId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -14,6 +14,21 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Account",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(75)", maxLength: 75, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Account", x => x.Id);
+                    table.UniqueConstraint("AK_Account_PublicId", x => x.PublicId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AuditTrail",
                 columns: table => new
                 {
@@ -26,35 +41,6 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuditTrail", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Client",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClientType = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Client", x => x.Id);
-                    table.UniqueConstraint("AK_Client_PublicId", x => x.PublicId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Item",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Item", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,7 +88,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("9f40cf27-1dbc-44a1-8709-d6f1c4eb0184")),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("04ec7681-5072-4ee4-b7d1-9944791d2c82")),
                     DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -110,6 +96,70 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SystemUser", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Client",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    ClientType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Client", x => x.Id);
+                    table.UniqueConstraint("AK_Client_PublicId", x => x.PublicId);
+                    table.ForeignKey(
+                        name: "FK_Client_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Item",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Item", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Item_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemAddress",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SystemStateId = table.Column<string>(type: "nvarchar(2)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemAddress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SystemAddress_SystemState_SystemStateId",
+                        column: x => x.SystemStateId,
+                        principalTable: "SystemState",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -163,61 +213,6 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         principalTable: "Item",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SystemAddress",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SystemStateId = table.Column<string>(type: "nvarchar(2)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SystemAddress", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SystemAddress_SystemState_SystemStateId",
-                        column: x => x.SystemStateId,
-                        principalTable: "SystemState",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Invoice",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Number = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ContactId = table.Column<int>(type: "int", nullable: false),
-                    SystemPaymentTermId = table.Column<byte>(type: "tinyint", nullable: false),
-                    Invoiced = table.Column<DateTime>(type: "date", nullable: true),
-                    DueDate = table.Column<DateTime>(type: "date", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invoice", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invoice_Client_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Client",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invoice_Contact_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "Contact",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invoice_SystemPaymentTerm_SystemPaymentTermId",
-                        column: x => x.SystemPaymentTermId,
-                        principalTable: "SystemPaymentTerm",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -317,6 +312,47 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_ContactHistory_SystemAddress_SystemAddressId",
                         column: x => x.SystemAddressId,
                         principalTable: "SystemAddress",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    Number = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ContactId = table.Column<int>(type: "int", nullable: false),
+                    SystemPaymentTermId = table.Column<byte>(type: "tinyint", nullable: false),
+                    Invoiced = table.Column<DateTime>(type: "date", nullable: true),
+                    DueDate = table.Column<DateTime>(type: "date", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoice_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoice_Client_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Client",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoice_Contact_ContactId",
+                        column: x => x.ContactId,
+                        principalTable: "Contact",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoice_SystemPaymentTerm_SystemPaymentTermId",
+                        column: x => x.SystemPaymentTermId,
+                        principalTable: "SystemPaymentTerm",
                         principalColumn: "Id");
                 });
 
@@ -478,6 +514,11 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Client_AccountId",
+                table: "Client",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientHistory_AuditTrailId",
                 table: "ClientHistory",
                 column: "AuditTrailId");
@@ -538,6 +579,11 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 column: "UpdatedAuditTrailId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoice_AccountId",
+                table: "Invoice",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Invoice_ClientId",
                 table: "Invoice",
                 column: "ClientId");
@@ -581,6 +627,11 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 name: "IX_InvoiceStatusHistory_UpdatedAuditTrailId",
                 table: "InvoiceStatusHistory",
                 column: "UpdatedAuditTrailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Item_AccountId",
+                table: "Item",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemHistory_AuditTrailId",
@@ -650,6 +701,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Client");
+
+            migrationBuilder.DropTable(
+                name: "Account");
         }
     }
 }
