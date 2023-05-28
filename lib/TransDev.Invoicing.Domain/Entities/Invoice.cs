@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public record Invoice
 {
     public int Id { get; init; }
-    public Guid PublicId { get; set; } = Guid.NewGuid();
+    public Guid PublicId { get; set; }
     public string Number { get; set; }
     public int ClientId { get; set; }
     public virtual Client Client { get; set; }

@@ -7,41 +7,70 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
+
     using TransDev.Invoicing.Application.Common.Interfaces;
     using TransDev.Invoicing.Domain.Entities;
 
-    internal class InvoiceService : IInvoiceService
+    public class InvoiceService : IInvoiceService
     {
-        public IQueryable<Invoice> Invoices => throw new NotImplementedException();
+        private readonly IApplicationDbContext _context;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IDateTimeService _dateTimeService;
 
-        public Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken token = default)
+        public InvoiceService(IApplicationDbContext context, IAuthenticationService authenticationService, IDateTimeService dateTimeService)
         {
-            throw new NotImplementedException();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _authenticationService = authenticationService 
+                ?? throw new ArgumentNullException(nameof(authenticationService));
+            _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
+
+        }
+        public IQueryable<Invoice> Invoices { get; }
+
+        public async Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken token = default)
+        {
+            await _context.Invoices.AddAsync(invoice, token);
+            await _context.SaveChangesAsync(token);
+
+            return invoice.PublicId;
         }
 
-        public Task<IEnumerable<Invoice>> GetActiveInvoicesByClientIdAsync(int clientId, CancellationToken token = default)
+        public async Task<IEnumerable<Invoice>> GetActiveInvoicesByClientIdAsync(int clientId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var results = await _context
+                .Invoices
+                .Where(x => x.ClientId == clientId)
+                .ToListAsync(token);
+            return results;
         }
 
-        public Task<Invoice> GetInvoiceByInvoiceIdAsync(int invoiceId, CancellationToken token = default)
+        public async Task<Invoice> GetInvoiceByInvoiceIdAsync(int invoiceId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var result = await _context
+                .Invoices
+                .Where(x => x.Id == invoiceId)
+                .SingleOrDefaultAsync(token);
+            return result;
         }
 
-        public Task<IEnumerable<Invoice>> GetInvoicesByClientIdAsync(int clientId, CancellationToken token = default)
+        public async Task<IEnumerable<Invoice>> GetInvoicesByClientIdAsync(int clientId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var results = await _context
+                .Invoices
+                .Where(x => x.ClientId == clientId)
+                .ToListAsync(token);
+            return results;
         }
 
-        public Task<bool> InvoiceExistsAsync(int invoiceId, CancellationToken token = default)
+        public async Task<bool> InvoiceExistsAsync(int invoiceId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            return await _context.InvoiceDetails.AnyAsync(x => x.Id == invoiceId, token);
         }
 
-        public Task<bool> PaymentTermExistsAsync(byte paymentTermId, CancellationToken token = default)
+        public async Task<bool> PaymentTermExistsAsync(byte paymentTermId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            return await _context.SystemPaymentTerms.AnyAsync(x => x.Id == paymentTermId, token);
         }
 
         public Task<bool> ProcessPendingInvoicesAsync(CancellationToken token = default)
@@ -49,9 +78,9 @@
             throw new NotImplementedException();
         }
 
-        public Task<bool> StatusExistsAsync(byte invoiceStatusId, CancellationToken token = default)
+        public async Task<bool> StatusExistsAsync(byte invoiceStatusId, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            return await _context.SystemInvoiceStatuses.AnyAsync(x => x.Id == invoiceStatusId, token);
         }
 
         public Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default)
@@ -59,9 +88,41 @@
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)
+        public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var user = _authenticationService.GetCurrentUser();
+            var invoice = await _context.Invoices.FindAsync(invoiceId, token);
+
+            var currentInvoiceStatus = await _context.InvoiceStatusHistories
+                .SingleOrDefaultAsync(x => x.ParentId == invoiceId 
+                    && x.UpdatedAuditTrailId == null, token);
+
+            var auditTrail = new AuditTrail
+            {
+                UserId = user.Id,
+                CreatedDate = _dateTimeService.Now,
+                Note = $"Invoice {invoice.Number} Status Update"
+            };
+
+            try
+            {
+                await _context.BeginTransactionAsync();
+                currentInvoiceStatus.UpdatedAuditTrail = auditTrail;
+                await _context.InvoiceStatusHistories.AddAsync(new InvoiceStatusHistory
+                {
+                    AuditTrail = auditTrail,
+                    Status = status,
+                    Parent = invoice,
+                    UpdatedAuditTrailId = null
+                });
+                await _context.CommitTransactionAsync();
+                return true;
+            }
+            catch
+            {
+                _context.RollbackTransaction();
+                return false;
+            }
         }
     }
 }

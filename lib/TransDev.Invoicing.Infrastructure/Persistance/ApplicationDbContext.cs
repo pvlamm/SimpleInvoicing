@@ -31,6 +31,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
     public DbSet<InvoiceStatusHistory> InvoiceStatusHistories { get; set; }
     public DbSet<SystemInvoiceStatus> SystemInvoiceStatuses { get; set; }
+    public DbSet<SystemPaymentTerm> SystemPaymentTerms { get; set; }
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,

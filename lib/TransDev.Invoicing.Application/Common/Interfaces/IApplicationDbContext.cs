@@ -23,6 +23,7 @@ public interface IApplicationDbContext
     DbSet<InvoiceDetail> InvoiceDetails { get; set; }
     DbSet<InvoiceStatusHistory> InvoiceStatusHistories { get; set; }
     DbSet<SystemInvoiceStatus> SystemInvoiceStatuses { get; set; }
+    DbSet<SystemPaymentTerm> SystemPaymentTerms { get; set; }
 
     IModel Model { get; }
 
