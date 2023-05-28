@@ -11,6 +11,7 @@
 
     using TransDev.Invoicing.Application.Common.Dtos;
     using TransDev.Invoicing.Application.Common.Interfaces;
+    using TransDev.Invoicing.Domain.Entities;
 
     public class CreateInvoiceCommand : IRequest<CreateInvoiceResponse>
     {
@@ -24,14 +25,30 @@
     public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, CreateInvoiceResponse>
     {
         private readonly IInvoiceService _invoiceService;
+
         public CreateInvoiceCommandHandler(IInvoiceService invoiceService)
         {
             _invoiceService = invoiceService ?? throw new ArgumentNullException(nameof(invoiceService));
         }
 
-        public Task<CreateInvoiceResponse> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+        public async Task<CreateInvoiceResponse> Handle(CreateInvoiceCommand request, 
+            CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var invoice = new Invoice
+            {
+                SystemPaymentTermId = request.SystemPaymentTermId,
+                ClientId = request.ClientId,
+                ContactId = request.ContactId,
+                DueDate = null,
+                Invoiced = null,                
+            };
+
+            invoice.PublicId = await _invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
+
+            return new CreateInvoiceResponse
+            {
+                InvoiceId = invoice.PublicId
+            };
         }
     }
 }
