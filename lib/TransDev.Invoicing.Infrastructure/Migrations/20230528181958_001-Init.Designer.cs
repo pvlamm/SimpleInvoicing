@@ -12,7 +12,7 @@ using TransDev.Invoicing.Infrastructure.Persistance;
 namespace TransDev.Invoicing.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230313031838_001-Init")]
+    [Migration("20230528181958_001-Init")]
     partial class _001Init
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -809,6 +812,37 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                             Id = "WY",
                             Name = "Wyoming"
                         });
+                });
+
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValue(new Guid("9f40cf27-1dbc-44a1-8709-d6f1c4eb0184"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemUser", (string)null);
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.ClientHistory", b =>

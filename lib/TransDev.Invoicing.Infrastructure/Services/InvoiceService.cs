@@ -94,7 +94,7 @@
 
         public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)
         {
-            var user = _authenticationService.GetCurrentUser();
+            var user = await _authenticationService.GetCurrentUserAsync();
             var invoice = await _context.Invoices.FindAsync(invoiceId, token);
 
             var currentInvoiceStatus = await _context.InvoiceStatusHistories

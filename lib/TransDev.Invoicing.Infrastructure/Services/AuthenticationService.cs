@@ -10,11 +10,19 @@ public class AuthenticationService : IAuthenticationService
 {
     public async Task<bool> AuthenticateAsync(string emailaddress, string password)
     {
-        return true;
+        return await Task.FromResult(true);
     }
 
-    public Task<SystemUser> GetCurrentUser()
+    public async Task<SystemUser> GetCurrentUserAsync()
     {
-        throw new NotImplementedException();
+        var guid = Guid.Parse("76D888A4-88C5-4276-ABEC-36EC4D44027F");
+        return new SystemUser
+        {
+            Id = 1,
+            DisplayName = "Patrick Lamm",
+            Email = "lammster@gmail.com",
+            Password = "this is a test",
+            PublicId = guid
+        };
     }
 }

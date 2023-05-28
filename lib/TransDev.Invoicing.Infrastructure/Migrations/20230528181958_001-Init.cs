@@ -19,6 +19,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true)
                 },
@@ -93,6 +94,22 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SystemState", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemUser",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("9f40cf27-1dbc-44a1-8709-d6f1c4eb0184")),
+                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemUser", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -600,6 +617,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "InvoiceStatusHistory");
+
+            migrationBuilder.DropTable(
+                name: "SystemUser");
 
             migrationBuilder.DropTable(
                 name: "SystemAddress");

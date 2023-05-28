@@ -37,6 +37,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("AuditTrail", (string)null);
@@ -806,6 +809,37 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                             Id = "WY",
                             Name = "Wyoming"
                         });
+                });
+
+            modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.SystemUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PublicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValue(new Guid("9f40cf27-1dbc-44a1-8709-d6f1c4eb0184"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemUser", (string)null);
                 });
 
             modelBuilder.Entity("TransDev.Invoicing.Domain.Entities.ClientHistory", b =>
