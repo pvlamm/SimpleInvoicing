@@ -83,9 +83,10 @@
             return await _context.SystemInvoiceStatuses.AnyAsync(x => x.Id == invoiceStatusId, token);
         }
 
-        public Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default)
+        public async Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            _context.Invoices.Attach(invoice);
+            return (await _context.SaveChangesAsync(token)) == 1;
         }
 
         public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)
