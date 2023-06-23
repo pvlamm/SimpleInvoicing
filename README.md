@@ -29,3 +29,12 @@ Intended for small scale service workers looking to upgrade their Invoicing prac
 
 Firefox sometimes plays a Blocking game with CORS and such making development hard. 
 Don't know yet out of the box how to prevent this, but should be adding an exception to it's Safety Blocking mentality.
+
+## Invoices
+
+### ProcessPendingInvoicesAsync
+
+Processing Invoices Means updating them to AR as part of the General Ledger -
+
+- This means that this functionality will have to be apart of a GL Module that will implement an AR and AP
+- 

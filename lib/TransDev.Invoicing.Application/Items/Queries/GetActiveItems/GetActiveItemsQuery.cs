@@ -33,7 +33,7 @@ public class GetActiveItemsQueryHandler : IRequestHandler<GetActiveItemsQuery, G
 
     public async Task<GetActiveItemsResponse> Handle(GetActiveItemsQuery request, CancellationToken token)
     {
-        var items = await _itemService.ItemLookup(request.SearchQuery, request.PageSize, request.Page);
+        var items = await _itemService.ItemLookupAsync(request.SearchQuery, request.PageSize, request.Page, token: token);
         var dtos = _mapper.Map<ItemDto[]>(items);
 
         return new GetActiveItemsResponse

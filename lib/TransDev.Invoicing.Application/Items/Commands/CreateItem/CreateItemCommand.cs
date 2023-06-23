@@ -37,7 +37,7 @@ public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Creat
 
         try
         {
-            await _itemService.SaveChangesToItemSaveAsync(itemHistory);
+            await _itemService.SaveChangesToItemSaveAsync(itemHistory, cancellationToken);
             return new CreateItemResponse
             {
                 Success = true

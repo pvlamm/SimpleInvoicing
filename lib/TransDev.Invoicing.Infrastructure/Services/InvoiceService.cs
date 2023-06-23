@@ -7,6 +7,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Azure;
+
     using Microsoft.EntityFrameworkCore;
 
     using TransDev.Invoicing.Application.Common.Interfaces;
@@ -83,9 +85,11 @@
             return await _context.SystemInvoiceStatuses.AnyAsync(x => x.Id == invoiceStatusId, token);
         }
 
-        public Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default)
+        public async Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            _context.Invoices.Update(invoice);
+            await _context.SaveChangesAsync(token);
+            return true;
         }
 
         public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)

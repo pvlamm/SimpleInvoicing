@@ -36,9 +36,9 @@ public class GetItemHistoryHandler : IRequestHandler<GetItemHistoryQuery, GetIte
     {
         var itemHistory = new List<ItemHistory>();
         if (request.Id.HasValue)
-            itemHistory = (await _itemService.GetItemHistoryByItemIdAsync(request.Id.Value)).ToList();
+            itemHistory = (await _itemService.GetItemHistoryByItemIdAsync(request.Id.Value, cancellationToken)).ToList();
         else
-            itemHistory = (await _itemService.GetItemHistoryByCodeAsync(request.Code)).ToList();
+            itemHistory = (await _itemService.GetItemHistoryByCodeAsync(request.Code, cancellationToken)).ToList();
 
         var itemHistoryArray = _mapper.Map<ItemHistoryDto[]>(itemHistory);
         return new GetItemHistoryResponse

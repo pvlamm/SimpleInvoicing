@@ -2,7 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
 using TransDev.Invoicing.Domain.Entities;
@@ -16,35 +20,46 @@ public class ItemService : IItemService
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public Task DeleteItemAsync(int itemId)
+    public async Task DeleteItemAsync(int itemId, CancellationToken token)
+    {
+        var item = await _context.Items.SingleAsync(x => x.Id == itemId, token);
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync(token);
+    }
+
+    public Task<ItemHistory> GetItemByCodeAsync(string code, CancellationToken token)
     {
         throw new NotImplementedException();
     }
 
-    public Task<ItemHistory> GetItemByCodeAsync(string code)
+    public async Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return await _context.ItemHistories
+                .SingleAsync(x => x.Id ==  itemHistoryId, token);
     }
 
-    public Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId)
+    public async Task<ICollection<ItemHistory>> GetItemHistoryByCodeAsync(string code, CancellationToken token)
     {
-        throw new NotImplementedException();
+        var item = await _context.Items
+            .Select(x => new { x.Id, x.Code })
+            .SingleAsync(x => x.Code == code, token);
+
+        return await GetItemHistoryByItemIdAsync(item.Id, token);
     }
 
-    public Task<ICollection<ItemHistory>> GetItemHistoryByCodeAsync(string code)
+    public async Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return await _context.ItemHistories
+            .Where(x => x.ParentId == itemId)
+            .OrderBy(x => x.AuditTrailId)
+            .ToListAsync(token);
     }
 
-    public Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<ICollection<ItemHistory>> ItemLookup(string searchString, int pageSize, int page, bool ActiveOnly = true)
+    public async Task<ICollection<ItemHistory>> ItemLookupAsync(string searchString, int pageSize, int page, bool ActiveOnly = true, CancellationToken token = default)
     {
         List<ItemHistory> itemHistories = new List<ItemHistory>();
-        itemHistories.Add(new ItemHistory() {
+        itemHistories.Add(new ItemHistory()
+        {
             Description = "Labor Item/Basic",
             Price = 7500,
             Parent = new Item
@@ -80,8 +95,24 @@ public class ItemService : IItemService
         return await Task.FromResult(itemHistories);
     }
 
-    public Task<ItemHistory> SaveChangesToItemSaveAsync(ItemHistory itemHistory)
+    public async Task<ItemHistory> SaveChangesToItemSaveAsync(ItemHistory itemHistory, CancellationToken token)
     {
-        throw new NotImplementedException();
+        var currentItemHistory = await _context.ItemHistories
+            .FirstOrDefaultAsync(x => x.ParentId == itemHistory.ParentId, token);
+
+        var auditTrail = new AuditTrail
+        {
+            Note = "Updating Item History",
+            UserId = 1
+        };
+
+        currentItemHistory.UpdatedAuditTrail = auditTrail;
+        itemHistory.AuditTrail = auditTrail;
+        itemHistory.UpdatedAuditTrail = null;
+
+        await _context.ItemHistories.AddAsync(itemHistory,token);
+        await _context.SaveChangesAsync(token);
+
+        return itemHistory;
     }
 }

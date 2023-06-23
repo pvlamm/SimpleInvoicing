@@ -1,27 +1,28 @@
-﻿using System;
+﻿namespace TransDev.Invoicing.Application.Common.Interfaces;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
 using TransDev.Invoicing.Domain.Entities;
 
-namespace TransDev.Invoicing.Application.Common.Interfaces
+public interface IItemService
 {
-    public interface IItemService
-    {
-        Task<ItemHistory> SaveChangesToItemSaveAsync(ItemHistory itemHistory);
-        Task DeleteItemAsync(int itemId);
+    Task<ItemHistory> SaveChangesToItemSaveAsync(ItemHistory itemHistory, CancellationToken token);
+    Task DeleteItemAsync(int itemId, CancellationToken token);
 
-        Task<ItemHistory> GetItemByCodeAsync(string code);
-        Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId);
+    Task<ItemHistory> GetItemByCodeAsync(string code, CancellationToken token);
+    Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId, CancellationToken token);
 
-        Task<ICollection<ItemHistory>> GetItemHistoryByCodeAsync(string code);
-        Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId);
-        /// <summary>
-        /// Returns Active only Items by default lookup
-        /// </summary>
-        /// <param name="searchString">Search part for fuzzy lookup</param>
-        /// <returns>List of ItemHistory</returns>
-        Task<ICollection<ItemHistory>> ItemLookup(string searchString, int pageSize, int page, bool ActiveOnly = true);
-    }
+    Task<ICollection<ItemHistory>> GetItemHistoryByCodeAsync(string code, CancellationToken token);
+    Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId, CancellationToken token);
+    /// <summary>
+    /// Returns Active only Items by default lookup
+    /// </summary>
+    /// <param name="searchString">Search part for fuzzy lookup</param>
+    /// <returns>List of ItemHistory</returns>
+    Task<ICollection<ItemHistory>> ItemLookupAsync(string searchString, int pageSize, int page, bool ActiveOnly = true, CancellationToken token = default);
 }
