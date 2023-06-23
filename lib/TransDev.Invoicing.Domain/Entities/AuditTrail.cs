@@ -2,10 +2,10 @@
 
 using System;
 
-public class AuditTrail
+public record AuditTrail
 {
     public long Id { get; init; }
     public int UserId { get; set; }
     public DateTime CreatedDate { get; set; }
-    public string Note { get; init; }
+    public string Note { get; set; }
 }

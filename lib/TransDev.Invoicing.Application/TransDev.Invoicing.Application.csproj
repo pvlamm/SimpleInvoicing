@@ -29,7 +29,6 @@
     <Folder Include="Authentication\Commands\" />
     <Folder Include="Contact\Commands\UpdateContactEmail\" />
     <Folder Include="Contact\Queries\" />
-    <Folder Include="Invoices\Queries\" />
   </ItemGroup>
 
 </Project>

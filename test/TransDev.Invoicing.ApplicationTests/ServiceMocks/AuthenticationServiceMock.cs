@@ -10,10 +10,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
+using TransDev.Invoicing.Domain.Entities;
 
 public class AuthenticationServiceMock : IAuthenticationService
 {
     public Task<bool> AuthenticateAsync(string username, string password)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<SystemUser> GetCurrentUser()
     {
         throw new NotImplementedException();
     }
