@@ -56,6 +56,15 @@
             return result;
         }
 
+        public async Task<Invoice> GetInvoiceByPublicIdAsync(Guid publicId, CancellationToken token = default)
+        {
+            var invoiceStub = await _context.Invoices
+                .Select(x => new { x.Id, x.PublicId })
+                .SingleAsync(x => x.PublicId == publicId, token);
+
+            return await GetInvoiceByInvoiceIdAsync(invoiceStub.Id, token);
+        }
+
         public async Task<IEnumerable<Invoice>> GetInvoicesByClientIdAsync(int clientId, CancellationToken token = default)
         {
             var results = await _context
@@ -65,9 +74,19 @@
             return results;
         }
 
+        public bool InvoiceExists(Guid publicId)
+        {
+            return _context.Invoices.Any(x => x.PublicId == publicId);
+        }
+
         public async Task<bool> InvoiceExistsAsync(int invoiceId, CancellationToken token = default)
         {
             return await _context.InvoiceDetails.AnyAsync(x => x.Id == invoiceId, token);
+        }
+
+        public async Task<bool> InvoiceExistsAsync(Guid publicId, CancellationToken token = default)
+        {
+            return await _context.Invoices.AnyAsync(x => x.PublicId == publicId, token);
         }
 
         public async Task<bool> PaymentTermExistsAsync(byte paymentTermId, CancellationToken token = default)

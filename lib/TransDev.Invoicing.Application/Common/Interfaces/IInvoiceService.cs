@@ -25,8 +25,11 @@
         Task<IEnumerable<Invoice>> GetActiveInvoicesByClientIdAsync(int clientId, CancellationToken token = default);
         Task<IEnumerable<Invoice>> GetInvoicesByClientIdAsync(int clientId, CancellationToken token = default);
         Task<Invoice> GetInvoiceByInvoiceIdAsync(int invoiceId, CancellationToken token = default);
+        Task<Invoice> GetInvoiceByPublicIdAsync(Guid publicId, CancellationToken token = default);
         Task<bool> ProcessPendingInvoicesAsync(CancellationToken token = default);
         Task<bool> InvoiceExistsAsync(int invoiceId, CancellationToken token = default);
+        Task<bool> InvoiceExistsAsync(Guid publicId, CancellationToken token = default);
+        bool InvoiceExists(Guid publicId);
         Task<bool> StatusExistsAsync(byte invoiceStatusId, CancellationToken token = default);
         Task<bool> PaymentTermExistsAsync(byte paymentTermId, CancellationToken token = default);
     }

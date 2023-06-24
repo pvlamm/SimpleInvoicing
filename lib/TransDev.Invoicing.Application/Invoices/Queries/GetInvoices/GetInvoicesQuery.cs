@@ -9,7 +9,6 @@ using TransDev.Invoicing.Application.Common.Abstracts;
 
 public class GetInvoicesQuery : PaginationBase, IRequest<GetInvoicesQueryResult>
 {
-    public 
 }
 
 public class GetInvoicesQueryHandler : IRequestHandler<GetInvoicesQuery, GetInvoicesQueryResult>

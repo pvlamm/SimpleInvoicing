@@ -1,4 +1,4 @@
-﻿namespace TransDev.Invoicing.Application.Invoices.Commands.CreateInvoice
+﻿namespace TransDev.Invoicing.Application.Invoices.Commands
 {
     using System;
     using System.Collections.Generic;

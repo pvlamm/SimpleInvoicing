@@ -19,7 +19,7 @@ public class AuthenticationServiceMock : IAuthenticationService
         throw new NotImplementedException();
     }
 
-    public Task<SystemUser> GetCurrentUser()
+    public Task<SystemUser> GetCurrentUserAsync()
     {
         throw new NotImplementedException();
     }
