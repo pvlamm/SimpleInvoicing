@@ -40,7 +40,7 @@ public class InvoiceController : BaseController
     [HttpPost]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetInvoicesQuery), Description = "Invoice Query Search")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<GetInvoicesQueryResult>> Post([FromBody] GetInvoicesQuery query)
+    public async Task<ActionResult<GetInvoicesQueryResult>> Post([FromBody] GetInvoicesQuery query, CancellationToken token)
     {
         var result = await _mediator.Send(query, token);
         return Ok(result);
