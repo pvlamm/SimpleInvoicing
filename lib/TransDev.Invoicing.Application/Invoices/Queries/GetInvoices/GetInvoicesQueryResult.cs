@@ -6,7 +6,10 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using TransDev.Invoicing.Application.Common.Dtos;
+
     public class GetInvoicesQueryResult
     {
+        public InvoiceDto[] Invoices { get; set; }
     }
 }

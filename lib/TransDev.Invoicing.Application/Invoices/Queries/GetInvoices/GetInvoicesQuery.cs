@@ -1,11 +1,17 @@
 ﻿namespace TransDev.Invoicing.Application.Invoices.Queries.GetInvoices;
 
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using MediatR;
 
+using Microsoft.EntityFrameworkCore;
+
 using TransDev.Invoicing.Application.Common.Abstracts;
+using TransDev.Invoicing.Application.Common.Dtos;
+using TransDev.Invoicing.Application.Common.Interfaces;
 
 public class GetInvoicesQuery : PaginationBase, IRequest<GetInvoicesQueryResult>
 {
@@ -13,8 +19,24 @@ public class GetInvoicesQuery : PaginationBase, IRequest<GetInvoicesQueryResult>
 
 public class GetInvoicesQueryHandler : IRequestHandler<GetInvoicesQuery, GetInvoicesQueryResult>
 {
-    public Task<GetInvoicesQueryResult> Handle(GetInvoicesQuery request, CancellationToken cancellationToken)
+    private readonly IInvoiceService _invoiceService;
+
+    public GetInvoicesQueryHandler(IInvoiceService invoiceService)
     {
-        throw new System.NotImplementedException();
+        _invoiceService = invoiceService ?? throw new ArgumentNullException(nameof(invoiceService));
+    }
+    public async Task<GetInvoicesQueryResult> Handle(GetInvoicesQuery request, CancellationToken cancellationToken)
+    {
+        var invoiceResults = await _invoiceService
+            .Invoices
+            .Skip((request.PageSize - 1) * request.PageNumber)
+            .Take(request.PageSize)
+            .ToListAsync(cancellationToken);
+
+        // Just empty return
+        return new GetInvoicesQueryResult
+        {
+            Invoices = new InvoiceDto[5]
+        };
     }
 }
