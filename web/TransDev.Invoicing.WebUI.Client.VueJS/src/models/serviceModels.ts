@@ -232,7 +232,7 @@ export class InvoiceClient {
      * @return New Invoice Command
      */
     post(command: CreateInvoiceCommand): Promise<CreateInvoiceCommand> {
-        let url_ = this.baseUrl + "/api/Invoice/Post";
+        let url_ = this.baseUrl + "/";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -280,7 +280,7 @@ export class InvoiceClient {
      * @return Update Invoice Status Command
      */
     updateInvoiceStatus(publicId: string, invoiceStatusId: number): Promise<CreateInvoiceCommand> {
-        let url_ = this.baseUrl + "/api/Invoice/UpdateInvoiceStatus/{publicId}/status";
+        let url_ = this.baseUrl + "/{publicId}/status";
         if (publicId === undefined || publicId === null)
             throw new Error("The parameter 'publicId' must be defined.");
         url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
@@ -330,8 +330,8 @@ export class InvoiceClient {
     /**
      * @return Update Invoice Command
      */
-    updateInvoice(publicId: string, invoice: InvoiceDto): Promise<CreateInvoiceCommand> {
-        let url_ = this.baseUrl + "/api/Invoice/UpdateInvoice/{publicId}";
+    updateInvoice(publicId: string, invoice: InvoiceDto): Promise<UpdateInvoiceCommand> {
+        let url_ = this.baseUrl + "/{publicId}";
         if (publicId === undefined || publicId === null)
             throw new Error("The parameter 'publicId' must be defined.");
         url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
@@ -341,7 +341,7 @@ export class InvoiceClient {
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -353,14 +353,14 @@ export class InvoiceClient {
         });
     }
 
-    protected processUpdateInvoice(response: Response): Promise<CreateInvoiceCommand> {
+    protected processUpdateInvoice(response: Response): Promise<UpdateInvoiceCommand> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CreateInvoiceCommand.fromJS(resultData200);
+            result200 = UpdateInvoiceCommand.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -375,14 +375,14 @@ export class InvoiceClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CreateInvoiceCommand>(null as any);
+        return Promise.resolve<UpdateInvoiceCommand>(null as any);
     }
 
     /**
      * @return Get Invoice by PublicId
      */
     get(publicId: string): Promise<string> {
-        let url_ = this.baseUrl + "/api/Invoice/Get/{publicId}";
+        let url_ = this.baseUrl + "/api/Invoice/{publicId}";
         if (publicId === undefined || publicId === null)
             throw new Error("The parameter 'publicId' must be defined.");
         url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
@@ -1308,6 +1308,42 @@ export interface IInvoiceDetailDto {
     cost: number;
     quantity: number;
     price: number;
+}
+
+export class UpdateInvoiceCommand implements IUpdateInvoiceCommand {
+    invoice?: InvoiceDto | null;
+
+    constructor(data?: IUpdateInvoiceCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.invoice = _data["invoice"] ? InvoiceDto.fromJS(_data["invoice"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): UpdateInvoiceCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateInvoiceCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["invoice"] = this.invoice ? this.invoice.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export interface IUpdateInvoiceCommand {
+    invoice?: InvoiceDto | null;
 }
 
 export class InvoiceDto implements IInvoiceDto {

@@ -1,4 +1,4 @@
-﻿namespace TransDev.Invoicing.Application.Invoices.Queries.GetInvoices;
+﻿namespace TransDev.Invoicing.Application.Invoices.Queries;
 
 using System;
 using System.Linq;

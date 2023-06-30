@@ -17,7 +17,10 @@ using TransDev.Invoicing.Application.Invoices.Commands;
 using TransDev.Invoicing.Application.Invoices.Queries;
 using TransDev.Invoicing.Domain.Entities;
 
-[Route("api/[controller]/[action]")]
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using YamlDotNet.Core.Tokens;
+
+[Route("api/[controller]")]
 [ApiController]
 public class InvoiceController : BaseController
 {
@@ -34,7 +37,17 @@ public class InvoiceController : BaseController
         return Ok(result);
     }
 
-    [HttpPut("{publicId}/status")]
+    [HttpPost]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(GetInvoicesQuery), Description = "Invoice Query Search")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
+    public async Task<ActionResult<GetInvoicesQueryResult>> Post([FromBody] GetInvoicesQuery query)
+    {
+        var result = await _mediator.Send(query, token);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [Route("{publicId}/status")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(CreateInvoiceCommand), Description = "Update Invoice Status Command")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<bool>> UpdateInvoiceStatus(Guid publicId, [FromBody] byte invoiceStatusId)
@@ -44,7 +57,8 @@ public class InvoiceController : BaseController
         return Ok(result);
     }
 
-    [HttpPut("{publicId}")]
+    [HttpPut]
+    [Route("{publicId}")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(UpdateInvoiceCommand), Description = "Update Invoice Command")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<bool>> UpdateInvoice(Guid publicId, [FromBody] InvoiceDto invoice, CancellationToken token)
@@ -56,7 +70,8 @@ public class InvoiceController : BaseController
     }
 
 
-    [HttpGet("{publicId}")]
+    [HttpGet]
+    [Route("{publicId}")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(Guid), Description = "Get Invoice by PublicId")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<GetInvoiceByPublicIdQueryResponse>> Get(Guid publicId, CancellationToken token)
