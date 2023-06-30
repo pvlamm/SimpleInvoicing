@@ -30,7 +30,7 @@ public class InvoiceController : BaseController
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<CreateInvoiceResponse>> Post(CreateInvoiceCommand command, CancellationToken token)
     {
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command, token);
         return Ok(result);
     }
 
@@ -44,13 +44,17 @@ public class InvoiceController : BaseController
         return Ok(result);
     }
 
-    [HttpPost("{publicId}")]
-    [SwaggerResponse(HttpStatusCode.OK, typeof(CreateInvoiceCommand), Description = "Update Invoice Command")]
+    [HttpPut("{publicId}")]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(UpdateInvoiceCommand), Description = "Update Invoice Command")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<bool>> UpdateInvoice(Guid publicId, [FromBody] InvoiceDto invoice)
+    public async Task<ActionResult<bool>> UpdateInvoice(Guid publicId, [FromBody] InvoiceDto invoice, CancellationToken token)
     {
-        return Ok(await Task.FromResult(true));
+        return Ok(_mediator.Send(new UpdateInvoiceCommand
+        {
+            Invoice = invoice
+        }, token));
     }
+
 
     [HttpGet("{publicId}")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(Guid), Description = "Get Invoice by PublicId")]
