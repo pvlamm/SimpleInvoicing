@@ -277,6 +277,108 @@ export class InvoiceClient {
     }
 
     /**
+     * @return Update Invoice Status Command
+     */
+    updateInvoiceStatus(publicId: string, invoiceStatusId: number): Promise<CreateInvoiceCommand> {
+        let url_ = this.baseUrl + "/api/Invoice/UpdateInvoiceStatus/{publicId}/status";
+        if (publicId === undefined || publicId === null)
+            throw new Error("The parameter 'publicId' must be defined.");
+        url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(invoiceStatusId);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateInvoiceStatus(_response);
+        });
+    }
+
+    protected processUpdateInvoiceStatus(response: Response): Promise<CreateInvoiceCommand> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateInvoiceCommand.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateInvoiceCommand>(null as any);
+    }
+
+    /**
+     * @return Update Invoice Command
+     */
+    updateInvoice(publicId: string, invoice: InvoiceDto): Promise<CreateInvoiceCommand> {
+        let url_ = this.baseUrl + "/api/Invoice/UpdateInvoice/{publicId}";
+        if (publicId === undefined || publicId === null)
+            throw new Error("The parameter 'publicId' must be defined.");
+        url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(invoice);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateInvoice(_response);
+        });
+    }
+
+    protected processUpdateInvoice(response: Response): Promise<CreateInvoiceCommand> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateInvoiceCommand.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateInvoiceCommand>(null as any);
+    }
+
+    /**
      * @return Get Invoice by PublicId
      */
     get(publicId: string): Promise<string> {
@@ -1206,6 +1308,67 @@ export interface IInvoiceDetailDto {
     cost: number;
     quantity: number;
     price: number;
+}
+
+export class InvoiceDto implements IInvoiceDto {
+    publicId!: string;
+    clientPublicId!: string;
+    primaryContactPublicId!: string;
+    primaryBillingContactPublicId!: string;
+    invoiceStatus!: InvoiceStatusType;
+
+    constructor(data?: IInvoiceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.publicId = _data["publicId"] !== undefined ? _data["publicId"] : <any>null;
+            this.clientPublicId = _data["clientPublicId"] !== undefined ? _data["clientPublicId"] : <any>null;
+            this.primaryContactPublicId = _data["primaryContactPublicId"] !== undefined ? _data["primaryContactPublicId"] : <any>null;
+            this.primaryBillingContactPublicId = _data["primaryBillingContactPublicId"] !== undefined ? _data["primaryBillingContactPublicId"] : <any>null;
+            this.invoiceStatus = _data["invoiceStatus"] !== undefined ? _data["invoiceStatus"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): InvoiceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InvoiceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        data["clientPublicId"] = this.clientPublicId !== undefined ? this.clientPublicId : <any>null;
+        data["primaryContactPublicId"] = this.primaryContactPublicId !== undefined ? this.primaryContactPublicId : <any>null;
+        data["primaryBillingContactPublicId"] = this.primaryBillingContactPublicId !== undefined ? this.primaryBillingContactPublicId : <any>null;
+        data["invoiceStatus"] = this.invoiceStatus !== undefined ? this.invoiceStatus : <any>null;
+        return data;
+    }
+}
+
+export interface IInvoiceDto {
+    publicId: string;
+    clientPublicId: string;
+    primaryContactPublicId: string;
+    primaryBillingContactPublicId: string;
+    invoiceStatus: InvoiceStatusType;
+}
+
+/** 0 = Detailling 10 = Open 20 = Invoiced 30 = Closed 100 = Cancelled */
+export enum InvoiceStatusType {
+    Detailling = 0,
+    Open = 10,
+    Invoiced = 20,
+    Closed = 30,
+    Cancelled = 100,
 }
 
 export class CreateItemResponse extends ResponseBase implements ICreateItemResponse {

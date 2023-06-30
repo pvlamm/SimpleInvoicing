@@ -20,7 +20,7 @@
         /// <returns></returns>
         Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken token = default);
         Task<bool> UpdateInvoiceAsync(Invoice invoice, CancellationToken token = default);
-        Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default);
+        Task<bool> UpdateInvoiceStatusAsync(int invoiceId, byte systemInvoiceStatusId, CancellationToken token = default);
 
         Task<IEnumerable<Invoice>> GetActiveInvoicesByClientIdAsync(int clientId, CancellationToken token = default);
         Task<IEnumerable<Invoice>> GetInvoicesByClientIdAsync(int clientId, CancellationToken token = default);

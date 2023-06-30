@@ -114,9 +114,10 @@
             return true;
         }
 
-        public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, SystemInvoiceStatus status, CancellationToken token = default)
+        public async Task<bool> UpdateInvoiceStatusAsync(int invoiceId, byte systemInvoiceStatusId, CancellationToken token = default)
         {
             var user = await _authenticationService.GetCurrentUserAsync();
+            var systemInvoiceStatus = await _context.SystemInvoiceStatuses.SingleAsync(x => x.Id == systemInvoiceStatusId, token);
             var invoice = await _context.Invoices.FindAsync(invoiceId, token);
 
             var currentInvoiceStatus = await _context.InvoiceStatusHistories
@@ -137,7 +138,7 @@
                 await _context.InvoiceStatusHistories.AddAsync(new InvoiceStatusHistory
                 {
                     AuditTrail = auditTrail,
-                    Status = status,
+                    Status = systemInvoiceStatus,
                     Parent = invoice,
                     UpdatedAuditTrailId = null
                 });
