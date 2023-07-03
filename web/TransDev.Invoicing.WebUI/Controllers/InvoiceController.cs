@@ -38,6 +38,7 @@ public class InvoiceController : BaseController
     }
 
     [HttpPost]
+    [Route("search")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetInvoicesQuery), Description = "Invoice Query Search")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<GetInvoicesQueryResult>> Post([FromBody] GetInvoicesQuery query, CancellationToken token)
@@ -63,7 +64,7 @@ public class InvoiceController : BaseController
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<bool>> UpdateInvoice(Guid publicId, [FromBody] InvoiceDto invoice, CancellationToken token)
     {
-        return Ok(_mediator.Send(new UpdateInvoiceCommand
+        return Ok(await _mediator.Send(new UpdateInvoiceCommand
         {
             Invoice = invoice
         }, token));

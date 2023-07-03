@@ -17,8 +17,7 @@ using TransDev.Invoicing.Domain.Entities;
 
 public class GetItemHistoryQuery : IRequest<GetItemHistoryResponse>
 {
-    public string Code { get; set; }
-    public int? Id { get; set; }
+    public int Id { get; set; }
 }
 
 public class GetItemHistoryHandler : IRequestHandler<GetItemHistoryQuery, GetItemHistoryResponse>
@@ -35,10 +34,8 @@ public class GetItemHistoryHandler : IRequestHandler<GetItemHistoryQuery, GetIte
     public async Task<GetItemHistoryResponse> Handle(GetItemHistoryQuery request, CancellationToken cancellationToken)
     {
         var itemHistory = new List<ItemHistory>();
-        if (request.Id.HasValue)
-            itemHistory = (await _itemService.GetItemHistoryByItemIdAsync(request.Id.Value, cancellationToken)).ToList();
-        else
-            itemHistory = (await _itemService.GetItemHistoryByCodeAsync(request.Code, cancellationToken)).ToList();
+
+        itemHistory = (await _itemService.GetItemHistoryByItemIdAsync(request.Id, cancellationToken)).ToList();
 
         var itemHistoryArray = _mapper.Map<ItemHistoryDto[]>(itemHistory);
         return new GetItemHistoryResponse

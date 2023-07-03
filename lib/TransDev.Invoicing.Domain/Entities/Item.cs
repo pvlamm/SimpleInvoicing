@@ -1,5 +1,6 @@
 ﻿namespace TransDev.Invoicing.Domain.Entities;
 
+using System;
 using System.Collections.Generic;
 
 using TransDev.Invoicing.Domain.Enums;

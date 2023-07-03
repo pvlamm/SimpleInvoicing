@@ -232,7 +232,7 @@ export class InvoiceClient {
      * @return New Invoice Command
      */
     post(command: CreateInvoiceCommand): Promise<CreateInvoiceCommand> {
-        let url_ = this.baseUrl + "/";
+        let url_ = this.baseUrl + "/api/Invoice";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -277,10 +277,58 @@ export class InvoiceClient {
     }
 
     /**
+     * @return Invoice Query Search
+     */
+    post2(query: GetInvoicesQuery): Promise<GetInvoicesQuery> {
+        let url_ = this.baseUrl + "/api/Invoice/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPost2(_response);
+        });
+    }
+
+    protected processPost2(response: Response): Promise<GetInvoicesQuery> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetInvoicesQuery.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetInvoicesQuery>(null as any);
+    }
+
+    /**
      * @return Update Invoice Status Command
      */
     updateInvoiceStatus(publicId: string, invoiceStatusId: number): Promise<CreateInvoiceCommand> {
-        let url_ = this.baseUrl + "/{publicId}/status";
+        let url_ = this.baseUrl + "/api/Invoice/{publicId}/status";
         if (publicId === undefined || publicId === null)
             throw new Error("The parameter 'publicId' must be defined.");
         url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
@@ -331,7 +379,7 @@ export class InvoiceClient {
      * @return Update Invoice Command
      */
     updateInvoice(publicId: string, invoice: InvoiceDto): Promise<UpdateInvoiceCommand> {
-        let url_ = this.baseUrl + "/{publicId}";
+        let url_ = this.baseUrl + "/api/Invoice/{publicId}";
         if (publicId === undefined || publicId === null)
             throw new Error("The parameter 'publicId' must be defined.");
         url_ = url_.replace("{publicId}", encodeURIComponent("" + publicId));
@@ -441,7 +489,7 @@ export class ItemClient {
      * @return Item successfully Created in the System
      */
     createItem(command: CreateItemCommand): Promise<CreateItemResponse> {
-        let url_ = this.baseUrl + "/api/Item/CreateItem";
+        let url_ = this.baseUrl + "/api/Item";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -489,7 +537,7 @@ export class ItemClient {
      * @return Active Item List Lookup
      */
     searchActiveItems(query: GetActiveItemsQuery): Promise<GetActiveItemsResponse> {
-        let url_ = this.baseUrl + "/api/Item/SearchActiveItems";
+        let url_ = this.baseUrl + "/api/Item/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(query);
@@ -536,17 +584,16 @@ export class ItemClient {
     /**
      * @return Get Item History by Code or Id
      */
-    getItemHistory(query: GetItemHistoryQuery): Promise<GetActiveItemsResponse> {
-        let url_ = this.baseUrl + "/api/Item/GetItemHistory";
+    getItemHistory(itemId: number): Promise<GetActiveItemsResponse> {
+        let url_ = this.baseUrl + "/api/Item/{itemId}/history";
+        if (itemId === undefined || itemId === null)
+            throw new Error("The parameter 'itemId' must be defined.");
+        url_ = url_.replace("{itemId}", encodeURIComponent("" + itemId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(query);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -585,16 +632,15 @@ export class ItemClient {
      * @return Get Item History by Code or Id
      */
     deleteItemById(itemId: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Item/DeleteItemById";
+        let url_ = this.baseUrl + "/api/Item/{itemId}";
+        if (itemId === undefined || itemId === null)
+            throw new Error("The parameter 'itemId' must be defined.");
+        url_ = url_.replace("{itemId}", encodeURIComponent("" + itemId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(itemId);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1310,6 +1356,75 @@ export interface IInvoiceDetailDto {
     price: number;
 }
 
+export abstract class PaginationBase implements IPaginationBase {
+    pageNumber!: number;
+    pageSize!: number;
+    pageCount!: number;
+
+    constructor(data?: IPaginationBase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.pageCount = _data["pageCount"] !== undefined ? _data["pageCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginationBase {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'PaginationBase' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["pageCount"] = this.pageCount !== undefined ? this.pageCount : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginationBase {
+    pageNumber: number;
+    pageSize: number;
+    pageCount: number;
+}
+
+export class GetInvoicesQuery extends PaginationBase implements IGetInvoicesQuery {
+
+    constructor(data?: IGetInvoicesQuery) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+    }
+
+    static fromJS(data: any): GetInvoicesQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetInvoicesQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGetInvoicesQuery extends IPaginationBase {
+}
+
 export class UpdateInvoiceCommand implements IUpdateInvoiceCommand {
     invoice?: InvoiceDto | null;
 
@@ -1616,46 +1731,6 @@ export interface IGetActiveItemsQuery {
     searchQuery?: string | null;
     pageSize: number;
     page: number;
-}
-
-export class GetItemHistoryQuery implements IGetItemHistoryQuery {
-    code?: string | null;
-    id?: number | null;
-
-    constructor(data?: IGetItemHistoryQuery) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
-            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): GetItemHistoryQuery {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetItemHistoryQuery();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["code"] = this.code !== undefined ? this.code : <any>null;
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        return data;
-    }
-}
-
-export interface IGetItemHistoryQuery {
-    code?: string | null;
-    id?: number | null;
 }
 
 export class ApiException extends Error {

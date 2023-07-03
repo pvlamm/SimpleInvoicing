@@ -13,7 +13,6 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Client.Queries;
 using TransDev.Invoicing.Application.Client.Commands;
-using System.Drawing;
 
 [Route("api/[controller]")]
 [ApiController]

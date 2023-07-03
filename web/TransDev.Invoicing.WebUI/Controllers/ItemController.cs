@@ -14,7 +14,7 @@ using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Items.Queries;
 
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 [ApiController]
 public class ItemController : BaseController
 {
@@ -25,6 +25,7 @@ public class ItemController : BaseController
     }
 
     [HttpPost]
+    [Route("")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(CreateItemResponse), Description = "Item successfully Created in the System")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<CreateItemResponse>> CreateItem([FromBody] CreateItemCommand command)
@@ -41,6 +42,7 @@ public class ItemController : BaseController
     }
 
     [HttpPost]
+    [Route("search")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetActiveItemsResponse), Description = "Active Item List Lookup")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
     public async Task<ActionResult<GetActiveItemsResponse>> SearchActiveItems([FromBody] GetActiveItemsQuery query)
@@ -56,14 +58,15 @@ public class ItemController : BaseController
         }
     }
 
-    [HttpPost]
+    [HttpGet]
+    [Route("{itemId}/history")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetActiveItemsResponse), Description = "Get Item History by Code or Id")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<GetItemHistoryResponse>> GetItemHistory([FromBody] GetItemHistoryQuery query)
+    public async Task<ActionResult<GetItemHistoryResponse>> GetItemHistory(int itemId)
     {
         try
         {
-            var results = await _mediator.Send(query);
+            var results = await _mediator.Send(new GetItemHistoryQuery { Id = itemId });
             return Ok(results);
         }
         catch (Exception ex)
@@ -73,10 +76,27 @@ public class ItemController : BaseController
     }
 
 
+    [HttpGet]
+    [Route("{itemId}")]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(GetActiveItemsResponse), Description = "Get Item History by Code or Id")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
+    public async Task<ActionResult<GetItemResponse>> GetItemByItemId(int itemId)
+    {
+        try
+        {
+            var results = await _mediator.Send(new GetItemQuery { Id = itemId });
+            return Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new SerializableException(ex));
+        }
+    }
     [HttpDelete]
+    [Route("{itemId}")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(bool), Description = "Get Item History by Code or Id")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<bool>> DeleteItemById([FromBody] int itemId)
+    public async Task<ActionResult<bool>> DeleteItemById(int itemId)
     {
         try
         {

@@ -27,13 +27,13 @@ public class GetInvoicesQueryHandler : IRequestHandler<GetInvoicesQuery, GetInvo
     }
     public async Task<GetInvoicesQueryResult> Handle(GetInvoicesQuery request, CancellationToken cancellationToken)
     {
-        var invoiceResults = await _invoiceService
-            .Invoices
-            .Skip((request.PageSize - 1) * request.PageNumber)
-            .Take(request.PageSize)
-            .ToListAsync(cancellationToken);
+        //var invoiceResults = await _invoiceService
+        //    .Invoices
+        //    .Skip((request.PageSize - 1) * request.PageNumber)
+        //    .Take(request.PageSize)
+        //    .ToListAsync(cancellationToken);
 
-        // Just empty return
+        // Just empty return FOR NOW!
         return new GetInvoicesQueryResult
         {
             Invoices = new InvoiceDto[5]

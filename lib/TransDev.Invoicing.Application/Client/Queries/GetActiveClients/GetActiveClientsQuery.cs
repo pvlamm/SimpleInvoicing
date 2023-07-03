@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 using MediatR;
 
+using TransDev.Invoicing.Application.Common.Abstracts;
 using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 
-public class GetActiveClientsQuery : IRequest<GetActiveClientsResponse>
+public class GetActiveClientsQuery : PaginationBase, IRequest<GetActiveClientsResponse>
 {
 
 }

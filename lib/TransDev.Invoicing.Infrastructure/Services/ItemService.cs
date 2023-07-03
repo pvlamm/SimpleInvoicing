@@ -27,9 +27,18 @@ public class ItemService : IItemService
         await _context.SaveChangesAsync(token);
     }
 
-    public Task<ItemHistory> GetItemByCodeAsync(string code, CancellationToken token)
+    public async Task<ItemHistory> GetItemByCodeAsync(string code, CancellationToken token)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<ItemHistory> GetItemByIdAsync(int itemId, CancellationToken token)
+    {
+        var item = await _context.ItemHistories
+            .Include(x => x.Parent)
+            .FirstOrDefaultAsync(x => 
+            x.ParentId == itemId && x.UpdatedAuditTrailId == null, token);
+        return item;
     }
 
     public async Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId, CancellationToken token)
@@ -53,6 +62,16 @@ public class ItemService : IItemService
             .Where(x => x.ParentId == itemId)
             .OrderBy(x => x.AuditTrailId)
             .ToListAsync(token);
+    }
+
+    public bool ItemExists(int itemId)
+    {
+        return _context.Items.Any(x => x.Id == itemId);
+    }
+
+    public async Task<bool> ItemExistsAsync(int itemId, CancellationToken token)
+    {
+        return await _context.Items.AnyAsync(x => x.Id == itemId, token);
     }
 
     public async Task<ICollection<ItemHistory>> ItemLookupAsync(string searchString, int pageSize, int page, bool ActiveOnly = true, CancellationToken token = default)
