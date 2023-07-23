@@ -15,8 +15,11 @@ public class AccountController : BaseController
     public AccountController(IMediator mediator) : base(mediator)
     {
     }
+
     [HttpGet]
     [Route("")]
-    public async Task<ActionResult<AccountsPagination> Get(CancellationToken token){
-        }
+    public async Task<ActionResult<AccountsPagination>> Get(CancellationToken token)
+    {
+        var result = await _mediator.Send(new GetActiveAccounts());
+    }
 }
