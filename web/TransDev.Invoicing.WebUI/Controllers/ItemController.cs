@@ -2,14 +2,17 @@
 
 using MediatR;
 
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 using NSwag.Annotations;
 
 using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
+using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Items.Commands;
 using TransDev.Invoicing.Application.Items.Queries;
@@ -75,12 +78,11 @@ public class ItemController : BaseController
         }
     }
 
-
     [HttpGet]
     [Route("{itemId}")]
     [SwaggerResponse(HttpStatusCode.OK, typeof(GetActiveItemsResponse), Description = "Get Item History by Code or Id")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(SerializableException), Description = "Error was thrown")]
-    public async Task<ActionResult<GetItemResponse>> GetItemByItemId(int itemId)
+    public async Task<ActionResult<ItemDto>> GetItemByItemId(int itemId)
     {
         try
         {

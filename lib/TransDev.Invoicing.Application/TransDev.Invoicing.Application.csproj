@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Account\Commands\CreateAccount\" />
+    <Folder Include="Account\Queries\" />
     <Folder Include="Authentication\Commands\" />
     <Folder Include="Contact\Commands\UpdateContactEmail\" />
     <Folder Include="Contact\Queries\" />

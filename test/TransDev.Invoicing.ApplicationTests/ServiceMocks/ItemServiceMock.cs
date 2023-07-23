@@ -32,6 +32,11 @@ public class ItemServiceMock : IItemService
         throw new NotImplementedException();
     }
 
+    public Task<ItemHistory> GetItemByIdAsync(int itemId, CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<ItemHistory> GetItemByItemHistoryIdAsync(long itemHistoryId)
     {
         throw new NotImplementedException();
@@ -58,6 +63,16 @@ public class ItemServiceMock : IItemService
     }
 
     public Task<ICollection<ItemHistory>> GetItemHistoryByItemIdAsync(int itemId, CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool ItemExists(int itemId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ItemExistsAsync(int itemId, CancellationToken token)
     {
         throw new NotImplementedException();
     }

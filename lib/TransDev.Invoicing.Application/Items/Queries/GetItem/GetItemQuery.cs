@@ -28,8 +28,8 @@ public class GetItemQueryHandler : IRequestHandler<GetItemQuery, ItemDto>
 
     public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
     {
-        var item = _itemService.GetItemByItemIdAsync(request.Id, cancellationToken);
+        var item = await _itemService.GetItemByIdAsync(request.Id, cancellationToken);
         var itemDto = new ItemDto(item);
-        return new ItemDto { };
+        return itemDto;
     }
 }

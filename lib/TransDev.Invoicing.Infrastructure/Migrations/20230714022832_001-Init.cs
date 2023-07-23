@@ -88,7 +88,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("04ec7681-5072-4ee4-b7d1-9944791d2c82")),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("6168fc39-5d9d-4d36-be04-fa961092fcc6")),
                     DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true)

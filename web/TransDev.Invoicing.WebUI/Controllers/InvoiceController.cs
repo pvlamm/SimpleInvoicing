@@ -19,6 +19,7 @@ using TransDev.Invoicing.Domain.Entities;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using YamlDotNet.Core.Tokens;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -81,4 +82,5 @@ public class InvoiceController : BaseController
 
         return Ok(result);
     }
+
 }

@@ -12,7 +12,7 @@ using TransDev.Invoicing.Infrastructure.Persistance;
 namespace TransDev.Invoicing.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230528220453_001-Init")]
+    [Migration("20230714022832_001-Init")]
     partial class _001Init
     {
         /// <inheritdoc />
@@ -876,7 +876,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     b.Property<Guid>("PublicId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasDefaultValue(new Guid("04ec7681-5072-4ee4-b7d1-9944791d2c82"));
+                        .HasDefaultValue(new Guid("6168fc39-5d9d-4d36-be04-fa961092fcc6"));
 
                     b.HasKey("Id");
 

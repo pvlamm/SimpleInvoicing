@@ -16,6 +16,20 @@ public class ItemDto : IMapFrom<ItemHistory>
             .ReverseMap();
     }
 
+    public ItemDto()
+    {
+        
+    }
+
+    public ItemDto(ItemHistory itemHistory)
+    {
+        this.Id = itemHistory.ParentId;
+        this.Code = itemHistory?.Parent?.Code;
+        this.Type = itemHistory?.Parent?.Type ?? ItemType.Labor;
+        this.Description = itemHistory.Description;
+        this.Price = itemHistory.Price;
+    }
+
     public long Id { get; set; }
     public string Code { get; set; }
     public ItemType Type { get; set; }
