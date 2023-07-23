@@ -2,14 +2,12 @@
 
 using MediatR;
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 using NSwag.Annotations;
 
 using System;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
 using TransDev.Invoicing.Application.Common.Dtos;

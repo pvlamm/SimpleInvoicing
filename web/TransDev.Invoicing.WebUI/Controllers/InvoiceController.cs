@@ -15,11 +15,6 @@ using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Exceptions;
 using TransDev.Invoicing.Application.Invoices.Commands;
 using TransDev.Invoicing.Application.Invoices.Queries;
-using TransDev.Invoicing.Domain.Entities;
-
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using YamlDotNet.Core.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 [Route("api/[controller]")]
 [ApiController]
