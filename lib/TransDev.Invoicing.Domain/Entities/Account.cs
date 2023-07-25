@@ -9,6 +9,7 @@
         public Guid PublicId { get; set; }
         public string Name { get; set; }
 
+        public IEnumerable<SystemUser> Users { get; set; } = new HashSet<SystemUser>();
         public IEnumerable<Client> Clients { get; set; } = new HashSet<Client>();
         public IEnumerable<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
     }
