@@ -71,6 +71,102 @@ export class AccountClient {
         }
         return Promise.resolve<GetActiveAccountsPagination>(null as any);
     }
+
+    /**
+     * @return Create Account
+     */
+    post(account: CreateAccountCommand): Promise<CreateAccountCommand> {
+        let url_ = this.baseUrl + "/api/Account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(account);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPost(_response);
+        });
+    }
+
+    protected processPost(response: Response): Promise<CreateAccountCommand> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateAccountCommand.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateAccountCommand>(null as any);
+    }
+
+    /**
+     * @return Update Account
+     */
+    put(account: AccountDto): Promise<AccountDto> {
+        let url_ = this.baseUrl + "/api/Account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(account);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPut(_response);
+        });
+    }
+
+    protected processPut(response: Response): Promise<AccountDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AccountDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AccountDto>(null as any);
+    }
 }
 
 export class AuthenticationClient {
@@ -984,6 +1080,162 @@ export interface ISerializableException {
     inner?: SerializableException[] | null;
 }
 
+export class CreateAccountCommand implements ICreateAccountCommand {
+    emailAddress?: string | null;
+    password?: string | null;
+    name?: string | null;
+    primaryAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
+    subscriptionId!: number;
+
+    constructor(data?: ICreateAccountCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailAddress = _data["emailAddress"] !== undefined ? _data["emailAddress"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.primaryAddress = _data["primaryAddress"] ? AddressDto.fromJS(_data["primaryAddress"]) : <any>null;
+            this.billingAddress = _data["billingAddress"] ? AddressDto.fromJS(_data["billingAddress"]) : <any>null;
+            this.subscriptionId = _data["subscriptionId"] !== undefined ? _data["subscriptionId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateAccountCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateAccountCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailAddress"] = this.emailAddress !== undefined ? this.emailAddress : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["primaryAddress"] = this.primaryAddress ? this.primaryAddress.toJSON() : <any>null;
+        data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>null;
+        data["subscriptionId"] = this.subscriptionId !== undefined ? this.subscriptionId : <any>null;
+        return data;
+    }
+}
+
+export interface ICreateAccountCommand {
+    emailAddress?: string | null;
+    password?: string | null;
+    name?: string | null;
+    primaryAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
+    subscriptionId: number;
+}
+
+export class AddressDto implements IAddressDto {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+
+    constructor(data?: IAddressDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.city = _data["city"] !== undefined ? _data["city"] : <any>null;
+            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+            this.zipCode = _data["zipCode"] !== undefined ? _data["zipCode"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddressDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddressDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["city"] = this.city !== undefined ? this.city : <any>null;
+        data["state"] = this.state !== undefined ? this.state : <any>null;
+        data["zipCode"] = this.zipCode !== undefined ? this.zipCode : <any>null;
+        return data;
+    }
+}
+
+export interface IAddressDto {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+}
+
+export class AccountDto implements IAccountDto {
+    email?: string | null;
+    password?: string | null;
+    name?: string | null;
+    mailingAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
+
+    constructor(data?: IAccountDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.mailingAddress = _data["mailingAddress"] ? AddressDto.fromJS(_data["mailingAddress"]) : <any>null;
+            this.billingAddress = _data["billingAddress"] ? AddressDto.fromJS(_data["billingAddress"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AccountDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccountDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["mailingAddress"] = this.mailingAddress ? this.mailingAddress.toJSON() : <any>null;
+        data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export interface IAccountDto {
+    email?: string | null;
+    password?: string | null;
+    name?: string | null;
+    mailingAddress?: AddressDto | null;
+    billingAddress?: AddressDto | null;
+}
+
 export class AuthenticateUserQuery implements IAuthenticateUserQuery {
     email?: string | null;
     password?: string | null;
@@ -1447,54 +1699,6 @@ export interface IContactDto {
     lastName?: string | null;
     emailAddress?: string | null;
     phoneNumber?: string | null;
-}
-
-export class AddressDto implements IAddressDto {
-    address?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-
-    constructor(data?: IAddressDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
-            this.city = _data["city"] !== undefined ? _data["city"] : <any>null;
-            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
-            this.zipCode = _data["zipCode"] !== undefined ? _data["zipCode"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): AddressDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AddressDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["address"] = this.address !== undefined ? this.address : <any>null;
-        data["city"] = this.city !== undefined ? this.city : <any>null;
-        data["state"] = this.state !== undefined ? this.state : <any>null;
-        data["zipCode"] = this.zipCode !== undefined ? this.zipCode : <any>null;
-        return data;
-    }
-}
-
-export interface IAddressDto {
-    address?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
 }
 
 export class CreateInvoiceCommand implements ICreateInvoiceCommand {

@@ -10,6 +10,8 @@ using TransDev.Invoicing.Domain.Entities;
 
 public interface IApplicationDbContext
 {
+    DbSet<Account> Accounts { get; set; }
+    DbSet<AccountSubscription> AccountSubscriptions { get; set; }
     DbSet<AuditTrail> AuditTrails { get; set; }
     DbSet<Client> Clients { get; set; }
     DbSet<ClientHistory> ClientHistory { get; set; }

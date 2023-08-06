@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     private IDbContextTransaction _currentTransaction;
 
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<AccountSubscription> AccountSubscriptions { get; set; }
     public DbSet<AuditTrail> AuditTrails { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<ClientHistory> ClientHistory { get; set; }
