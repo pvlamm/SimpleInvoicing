@@ -1,6 +1,7 @@
 ﻿namespace TransDev.Invoicing.Infrastructure.Services;
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TransDev.Invoicing.Application.Common.Interfaces;
@@ -8,7 +9,7 @@ using TransDev.Invoicing.Domain.Entities;
 
 public class AuthenticationService : IAuthenticationService
 {
-    public async Task<bool> AuthenticateAsync(string emailaddress, string password)
+    public async Task<bool> AuthenticateAsync(string emailaddress, string password, CancellationToken token)
     {
         return await Task.FromResult(true);
     }

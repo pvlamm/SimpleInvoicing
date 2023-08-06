@@ -13,7 +13,7 @@ using TransDev.Invoicing.Application.Common.Abstracts;
 using TransDev.Invoicing.Application.Common.Dtos;
 using TransDev.Invoicing.Application.Common.Interfaces;
 
-public class GetInvoicesQuery : PaginationBase, IRequest<GetInvoicesQueryResult>
+public class GetInvoicesQuery : IRequest<GetInvoicesQueryResult>
 {
 }
 

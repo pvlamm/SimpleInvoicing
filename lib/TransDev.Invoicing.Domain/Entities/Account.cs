@@ -1,16 +1,15 @@
-﻿namespace TransDev.Invoicing.Domain.Entities
+﻿namespace TransDev.Invoicing.Domain.Entities;
+
+using System;
+using System.Collections.Generic;
+
+public record Account
 {
-    using System;
-    using System.Collections.Generic;
+    public int Id { get; set; }
+    public Guid PublicId { get; set; }
+    public string Name { get; set; }
 
-    public record Account
-    {
-        public int Id { get; set; }
-        public Guid PublicId { get; set; }
-        public string Name { get; set; }
-
-        public IEnumerable<SystemUser> Users { get; set; } = new HashSet<SystemUser>();
-        public IEnumerable<Client> Clients { get; set; } = new HashSet<Client>();
-        public IEnumerable<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
-    }
+    public IEnumerable<SystemUser> Users { get; set; } = new HashSet<SystemUser>();
+    public IEnumerable<Client> Clients { get; set; } = new HashSet<Client>();
+    public IEnumerable<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
 }

@@ -8,6 +8,71 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class AccountClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param page (optional) 
+     * @param pageSize (optional) 
+     * @return List of Active Accounts
+     */
+    get(page: number | undefined, pageSize: number | undefined): Promise<GetActiveAccountsPagination> {
+        let url_ = this.baseUrl + "/api/Account?";
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<GetActiveAccountsPagination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetActiveAccountsPagination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = SerializableException.fromJS(resultData400);
+            return throwException("Error was thrown", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetActiveAccountsPagination>(null as any);
+    }
+}
+
 export class AuthenticationClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -724,11 +789,13 @@ export class ItemClient {
     }
 }
 
-export class AuthenticateUserQuery implements IAuthenticateUserQuery {
-    email?: string | null;
-    password?: string | null;
+export abstract class PaginationBaseOfActiveAccount implements IPaginationBaseOfActiveAccount {
+    items?: ActiveAccount[] | null;
+    pageNumber!: number;
+    pageSize!: number;
+    pageCount!: number;
 
-    constructor(data?: IAuthenticateUserQuery) {
+    constructor(data?: IPaginationBaseOfActiveAccount) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -739,29 +806,127 @@ export class AuthenticateUserQuery implements IAuthenticateUserQuery {
 
     init(_data?: any) {
         if (_data) {
-            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
-            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(ActiveAccount.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.pageCount = _data["pageCount"] !== undefined ? _data["pageCount"] : <any>null;
         }
     }
 
-    static fromJS(data: any): AuthenticateUserQuery {
+    static fromJS(data: any): PaginationBaseOfActiveAccount {
         data = typeof data === 'object' ? data : {};
-        let result = new AuthenticateUserQuery();
+        throw new Error("The abstract class 'PaginationBaseOfActiveAccount' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["pageCount"] = this.pageCount !== undefined ? this.pageCount : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginationBaseOfActiveAccount {
+    items?: ActiveAccount[] | null;
+    pageNumber: number;
+    pageSize: number;
+    pageCount: number;
+}
+
+export class GetActiveAccountsPagination extends PaginationBaseOfActiveAccount implements IGetActiveAccountsPagination {
+
+    constructor(data?: IGetActiveAccountsPagination) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+    }
+
+    static fromJS(data: any): GetActiveAccountsPagination {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetActiveAccountsPagination();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["email"] = this.email !== undefined ? this.email : <any>null;
-        data["password"] = this.password !== undefined ? this.password : <any>null;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IAuthenticateUserQuery {
-    email?: string | null;
-    password?: string | null;
+export interface IGetActiveAccountsPagination extends IPaginationBaseOfActiveAccount {
+}
+
+export class ActiveAccount implements IActiveAccount {
+    publicId!: string;
+    createdDate!: Date;
+    primaryContact?: string | null;
+    primaryContactPublicId!: string;
+    primaryBillingContact?: string | null;
+    primaryBillingContactPrimaryId!: string;
+
+    constructor(data?: IActiveAccount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.publicId = _data["publicId"] !== undefined ? _data["publicId"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+            this.primaryContact = _data["primaryContact"] !== undefined ? _data["primaryContact"] : <any>null;
+            this.primaryContactPublicId = _data["primaryContactPublicId"] !== undefined ? _data["primaryContactPublicId"] : <any>null;
+            this.primaryBillingContact = _data["primaryBillingContact"] !== undefined ? _data["primaryBillingContact"] : <any>null;
+            this.primaryBillingContactPrimaryId = _data["primaryBillingContactPrimaryId"] !== undefined ? _data["primaryBillingContactPrimaryId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ActiveAccount {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActiveAccount();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        data["primaryContact"] = this.primaryContact !== undefined ? this.primaryContact : <any>null;
+        data["primaryContactPublicId"] = this.primaryContactPublicId !== undefined ? this.primaryContactPublicId : <any>null;
+        data["primaryBillingContact"] = this.primaryBillingContact !== undefined ? this.primaryBillingContact : <any>null;
+        data["primaryBillingContactPrimaryId"] = this.primaryBillingContactPrimaryId !== undefined ? this.primaryBillingContactPrimaryId : <any>null;
+        return data;
+    }
+}
+
+export interface IActiveAccount {
+    publicId: string;
+    createdDate: Date;
+    primaryContact?: string | null;
+    primaryContactPublicId: string;
+    primaryBillingContact?: string | null;
+    primaryBillingContactPrimaryId: string;
 }
 
 export class SerializableException implements ISerializableException {
@@ -817,6 +982,46 @@ export interface ISerializableException {
     message: string;
     stackTrace?: string | null;
     inner?: SerializableException[] | null;
+}
+
+export class AuthenticateUserQuery implements IAuthenticateUserQuery {
+    email?: string | null;
+    password?: string | null;
+
+    constructor(data?: IAuthenticateUserQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AuthenticateUserQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticateUserQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export interface IAuthenticateUserQuery {
+    email?: string | null;
+    password?: string | null;
 }
 
 export class JWTTokenModel implements IJWTTokenModel {
@@ -1403,12 +1608,9 @@ export interface IInvoiceDetailDto {
     price: number;
 }
 
-export abstract class PaginationBase implements IPaginationBase {
-    pageNumber!: number;
-    pageSize!: number;
-    pageCount!: number;
+export class GetInvoicesQuery implements IGetInvoicesQuery {
 
-    constructor(data?: IPaginationBase) {
+    constructor(data?: IGetInvoicesQuery) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1418,41 +1620,6 @@ export abstract class PaginationBase implements IPaginationBase {
     }
 
     init(_data?: any) {
-        if (_data) {
-            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
-            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
-            this.pageCount = _data["pageCount"] !== undefined ? _data["pageCount"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): PaginationBase {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'PaginationBase' cannot be instantiated.");
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
-        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
-        data["pageCount"] = this.pageCount !== undefined ? this.pageCount : <any>null;
-        return data;
-    }
-}
-
-export interface IPaginationBase {
-    pageNumber: number;
-    pageSize: number;
-    pageCount: number;
-}
-
-export class GetInvoicesQuery extends PaginationBase implements IGetInvoicesQuery {
-
-    constructor(data?: IGetInvoicesQuery) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
     }
 
     static fromJS(data: any): GetInvoicesQuery {
@@ -1464,12 +1631,11 @@ export class GetInvoicesQuery extends PaginationBase implements IGetInvoicesQuer
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
         return data;
     }
 }
 
-export interface IGetInvoicesQuery extends IPaginationBase {
+export interface IGetInvoicesQuery {
 }
 
 export class UpdateInvoiceCommand implements IUpdateInvoiceCommand {

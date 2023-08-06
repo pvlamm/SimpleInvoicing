@@ -24,7 +24,7 @@ public class AuthenticateUserQueryHandler : IRequestHandler<AuthenticateUserQuer
 
     public async Task<AuthenticateUserResponse> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
     {
-        var result = await _service.AuthenticateAsync(request.Email, request.Password);
+        var result = await _service.AuthenticateAsync(request.Email, request.Password, cancellationToken);
 
         return new AuthenticateUserResponse
         {

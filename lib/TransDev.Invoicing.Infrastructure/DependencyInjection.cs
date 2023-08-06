@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddTransient<IClientService, ClientService>();
         services.AddTransient<IContactService, ContactService>();
         services.AddTransient<IInvoiceService, InvoiceService>();
+        services.AddTransient<IAccountService, AccountService>();
 
         return services;
     }

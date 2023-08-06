@@ -1,9 +1,6 @@
 ﻿namespace TransDev.Invoicing.Application.Account.Commands;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,8 +11,11 @@ using TransDev.Invoicing.Application.Common.Interfaces;
 
 public class CreateAccountCommand : IRequest<Guid>
 {
-    public SystemUserDto AccountOwner { get; set; }
-    public string AccountName { get; set; }
+    public string EmailAddress  { get; set; }
+    public string Password { get; set; }
+    public string Name { get; set; }
+    public AddressDto PrimaryAddress { get; set; }
+    public AddressDto BillingAddress { get; set; }
 
 }
 
@@ -30,8 +30,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
 
     public async Task<Guid> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
-        _accountService.CreateAccountAsync(request.AccountName, "", cancellationToken);
-        _
-        throw new NotImplementedException();
+        return await _accountService.CreateAccountAsync(request.Name, request.Password, cancellationToken);
     }
 }
