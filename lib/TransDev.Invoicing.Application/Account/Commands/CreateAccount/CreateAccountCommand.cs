@@ -16,7 +16,7 @@ public class CreateAccountCommand : IRequest<Guid>
     public string Name { get; set; }
     public AddressDto PrimaryAddress { get; set; }
     public AddressDto BillingAddress { get; set; }
-
+    public int SubscriptionId { get; set; }
 }
 
 public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Guid>

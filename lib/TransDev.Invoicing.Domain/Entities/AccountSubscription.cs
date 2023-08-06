@@ -4,7 +4,7 @@ using System;
 
 using TransDev.Invoicing.Domain.BaseEntities;
 
-public class AccountSubscription : HistoryEntityBase
+public record AccountSubscription : HistoryEntityBase
 {
     public int Id { get; set; }
     public Guid PublicId { get; set; }

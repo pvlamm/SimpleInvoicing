@@ -2,7 +2,7 @@
 
 using TransDev.Invoicing.Domain.Entities;
 
-public class HistoryEntityBase
+public record HistoryEntityBase
 {
     public long AuditTrailId { get; set; }
     public AuditTrail AuditTrail { get; set; }
