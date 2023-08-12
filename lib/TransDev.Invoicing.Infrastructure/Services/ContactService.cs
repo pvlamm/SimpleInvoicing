@@ -7,14 +7,24 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
+
     using TransDev.Invoicing.Application.Common.Interfaces;
     using TransDev.Invoicing.Domain.Entities;
 
     internal class ContactService : IContactService
     {
-        public Task<bool> ContactExists(int contactId, CancellationToken token)
+        private readonly IApplicationDbContext _context;
+
+        public ContactService(IApplicationDbContext context)
         {
-            throw new NotImplementedException();
+
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+
+        }
+        public async Task<bool> ContactExists(int contactId, CancellationToken token)
+        {
+            return await _context.Contacts.AnyAsync(x => x.Id == contactId, token);
         }
 
         public Task<ContactHistory> CreateContactAsync(long clientId, string firstName, string middleName, string lastName, string emailAddress, string phoneNumber, SystemAddress systemAddress, CancellationToken token)

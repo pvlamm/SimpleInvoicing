@@ -23,13 +23,13 @@
                 .HasMaxLength(75)
                 .IsRequired();
 
-            builder.HasMany(x => x.Invoices)
-                .WithOne(x => x.Account)
-                .HasForeignKey(x => x.AccountId);
+            //builder.HasMany(x => x.Invoices)
+            //    .WithOne(x => x.Account)
+            //    .HasForeignKey(x => x.AccountId);
 
-            builder.HasMany(x => x.Clients)
-                .WithOne(x => x.Account)
-                .HasForeignKey(x => x.AccountId);
+            //builder.HasMany(x => x.Clients)
+            //    .WithOne(x => x.Account)
+            //    .HasForeignKey(x => x.AccountId);
 
         }
     }

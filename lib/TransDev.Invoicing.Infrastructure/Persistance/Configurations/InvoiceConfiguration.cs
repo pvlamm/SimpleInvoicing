@@ -60,9 +60,9 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
             .IsRequired(false)
             .HasColumnType("date");
 
-        builder.HasOne(x => x.Account)
-            .WithMany(x => x.Invoices)
-            .HasForeignKey(x => x.AccountId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasOne(x => x.Account)
+        //    .WithMany(x => x.Invoices)
+        //    .HasForeignKey(x => x.AccountId)
+        //    .OnDelete(DeleteBehavior.Cascade);
     }
 }

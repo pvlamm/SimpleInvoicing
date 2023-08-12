@@ -34,11 +34,19 @@
         public async Task<CreateInvoiceResponse> Handle(CreateInvoiceCommand request, 
             CancellationToken cancellationToken)
         {
+            /*
+             TO DO 
+            -> Translate Invoice Details, Apply to Invoice
+            -> Get actual PublicId
+            -> 
+             
+             */
             var invoice = new Invoice
             {
                 SystemPaymentTermId = request.SystemPaymentTermId,
                 ClientId = request.ClientId,
                 ContactId = request.ContactId,
+                Number = "1000",
                 DueDate = null,
                 Invoiced = null,                
             };

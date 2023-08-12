@@ -83,19 +83,21 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SystemUser",
+                name: "SystemSubscription",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("6168fc39-5d9d-4d36-be04-fa961092fcc6")),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BeginDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateToSubscription = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SystemUser", x => x.Id);
+                    table.PrimaryKey("PK_SystemSubscription", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,8 +107,8 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    ClientType = table.Column<int>(type: "int", nullable: false)
+                    ClientType = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,8 +118,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_Client_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -142,6 +143,28 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SystemUser",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValue: new Guid("0f4b92c5-478d-4830-9f67-871af26d1bef")),
+                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccountId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemUser", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SystemUser_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SystemAddress",
                 columns: table => new
                 {
@@ -160,6 +183,50 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         column: x => x.SystemStateId,
                         principalTable: "SystemState",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountSubscription",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ParentId = table.Column<int>(type: "int", nullable: false),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionId = table.Column<int>(type: "int", nullable: false),
+                    BeginDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RenewalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CancelDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AuditTrailId = table.Column<long>(type: "bigint", nullable: false),
+                    UpdatedAuditTrailId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountSubscription", x => x.Id);
+                    table.UniqueConstraint("AK_AccountSubscription_ParentId", x => x.ParentId);
+                    table.ForeignKey(
+                        name: "FK_AccountSubscription_Account_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountSubscription_AuditTrail_AuditTrailId",
+                        column: x => x.AuditTrailId,
+                        principalTable: "AuditTrail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountSubscription_AuditTrail_UpdatedAuditTrailId",
+                        column: x => x.UpdatedAuditTrailId,
+                        principalTable: "AuditTrail",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AccountSubscription_SystemSubscription_SubscriptionId",
+                        column: x => x.SubscriptionId,
+                        principalTable: "SystemSubscription",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -322,13 +389,13 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
                     Number = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     ContactId = table.Column<int>(type: "int", nullable: false),
                     SystemPaymentTermId = table.Column<byte>(type: "tinyint", nullable: false),
                     Invoiced = table.Column<DateTime>(type: "date", nullable: true),
-                    DueDate = table.Column<DateTime>(type: "date", nullable: true)
+                    DueDate = table.Column<DateTime>(type: "date", nullable: true),
+                    AccountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -337,8 +404,7 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                         name: "FK_Invoice_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Invoice_Client_ClientId",
                         column: x => x.ClientId,
@@ -514,6 +580,21 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountSubscription_AuditTrailId",
+                table: "AccountSubscription",
+                column: "AuditTrailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountSubscription_SubscriptionId",
+                table: "AccountSubscription",
+                column: "SubscriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountSubscription_UpdatedAuditTrailId",
+                table: "AccountSubscription",
+                column: "UpdatedAuditTrailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Client_AccountId",
                 table: "Client",
                 column: "AccountId");
@@ -652,11 +733,19 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
                 name: "IX_SystemAddress_SystemStateId",
                 table: "SystemAddress",
                 column: "SystemStateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SystemUser_AccountId",
+                table: "SystemUser",
+                column: "AccountId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccountSubscription");
+
             migrationBuilder.DropTable(
                 name: "ClientHistory");
 
@@ -671,6 +760,9 @@ namespace TransDev.Invoicing.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "SystemUser");
+
+            migrationBuilder.DropTable(
+                name: "SystemSubscription");
 
             migrationBuilder.DropTable(
                 name: "SystemAddress");
